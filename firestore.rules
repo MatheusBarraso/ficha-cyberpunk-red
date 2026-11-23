@@ -1,0 +1,132 @@
+rules_version = '2';
+// Regras de segurança da Comunidade da Ficha Cyberpunk RED.
+// O servidor (Firebase) confere tudo isto: o site sozinho não consegue passar por cima.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function logado() { return request.auth != null; }
+    function eu() { return request.auth.uid; }
+    function sessDoc(gm, sid) { return /databases/$(database)/documents/mestres/$(gm)/sessoes/$(sid); }
+    function gmDe(sid) { return get(/databases/$(database)/documents/sessoes/$(sid)).data.gm; }
+
+    // Quem pode ver o conteúdo de uma sessão: o mestre dela, quem ele aprovou,
+    // ou (na entrada direta) quem pediu com um código válido e não foi removido.
+    function liberado(gm, sid) {
+      let s = get(sessDoc(gm, sid)).data;
+      let mPath = /databases/$(database)/documents/mestres/$(gm)/sessoes/$(sid)/membros/$(eu());
+      let pPath = /databases/$(database)/documents/mestres/$(gm)/sessoes/$(sid)/pedidos/$(eu());
+      let estado = exists(mPath) ? get(mPath).data.estado : 'nenhum';
+      return logado() && (eu() == gm || (
+        s.get('encerrada', false) != true && (
+          estado == 'aprovado' || (
+            estado == 'nenhum' && s.get('aprovacao', '') == 'automatica' && exists(pPath)
+            && get(pPath).data.get('cancelado', false) != true
+            && get(pPath).data.get('codigo', '') in s.get('codigosAceitos', [])))));
+    }
+    function membroSala(sid) { return logado() && exists(/databases/$(database)/documents/sessoes/$(sid)) && liberado(gmDe(sid), sid); }
+    function gmSala(sid) { return logado() && exists(/databases/$(database)/documents/sessoes/$(sid)) && gmDe(sid) == eu(); }
+    function autorNovo() { return request.resource.data.autor == eu(); }
+    function autorAtual() { return resource.data.autor == eu(); }
+
+    // ----- contas -----
+    match /usuarios/{uid} {
+      allow get: if logado();
+      allow write: if logado() && uid == eu() && request.resource.data.nome is string && request.resource.data.nome.size() <= 80;
+    }
+    match /perfis/{uid} {
+      allow read: if logado();
+      allow write: if logado() && uid == eu();
+    }
+    // lista particular de sessões que o player pediu pra entrar
+    match /pedidos/{uid} {
+      allow read, write: if logado() && uid == eu();
+    }
+    // imagens enviadas pelo mestre
+    match /assets/{id} {
+      allow get: if logado();
+      allow create: if logado() && request.resource.data.dono == eu() && request.resource.data.url is string && request.resource.data.url.size() < 1000000;
+      allow delete: if logado() && resource.data.dono == eu();
+    }
+    // tudo que é particular de cada pessoa (rascunhos do mestre, o que já viu)
+    match /data/users/{uid}/{resto=**} {
+      allow read, write: if logado() && uid == eu();
+    }
+
+    // ----- códigos de convite: só dá pra abrir sabendo o código (não dá pra listar) -----
+    match /convites/{codigo} {
+      allow get: if logado();
+      allow create: if logado() && request.resource.data.gm == eu() && codigo.matches('^[A-Z0-9]{4}-[A-Z0-9]{4}$');
+      allow update, delete: if logado() && resource.data.gm == eu();
+    }
+
+    // ----- sessões: só o mestre dono cria, edita e administra -----
+    match /mestres/{gm}/sessoes/{sid} {
+      allow get: if logado();
+      allow list: if logado() && gm == eu();
+      allow write: if logado() && gm == eu() && (request.resource == null || request.resource.data.gm == eu());
+
+      match /membros/{uid} {
+        allow read: if logado();
+        allow write: if logado() && gm == eu();
+      }
+      // cópia do pedido de entrada: o próprio player grava; o mestre lê
+      match /pedidos/{uid} {
+        allow read: if logado();
+        allow write: if logado() && uid == eu() && uid != gm;
+      }
+      // mapa, locais, NPCs, pistas, missões, reputação: o mestre escreve, a mesa lê
+      match /{col}/{id} {
+        allow read: if liberado(gm, sid);
+        allow write: if logado() && gm == eu();
+      }
+    }
+    // marca de qual mestre é cada sessão (usada nas conferências acima)
+    match /sessoes/{sid} {
+      allow get: if logado();
+      allow create: if logado() && request.resource.data.gm == eu() && exists(sessDoc(eu(), sid));
+      allow update, delete: if logado() && resource.data.gm == eu();
+
+      // ----- o que a mesa escreve dentro da sala -----
+      match /mural/{id} {
+        allow read: if membroSala(sid);
+        allow create: if membroSala(sid) && autorNovo();
+        // reagir: só muda a própria reação
+        allow update: if membroSala(sid) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reacoes'])
+          && request.resource.data.reacoes.diff(resource.data.get('reacoes', {})).affectedKeys().hasOnly([eu()]);
+        allow delete: if logado() && (autorAtual() || gmSala(sid));
+      }
+      match /comentarios/{id} {
+        allow read: if membroSala(sid);
+        allow create: if membroSala(sid) && autorNovo();
+        allow delete: if logado() && (autorAtual() || gmSala(sid));
+      }
+      match /descobertas/{id} {
+        allow read: if membroSala(sid);
+        allow create: if membroSala(sid) && autorNovo();
+        allow delete: if logado() && (autorAtual() || gmSala(sid));
+      }
+      match /aceites/{id} {
+        allow read: if membroSala(sid);
+        allow create, update: if membroSala(sid) && autorNovo() && id == request.resource.data.missao + '_' + eu();
+        allow delete: if logado() && (autorAtual() || gmSala(sid));
+      }
+      // conversa com NPCs: cada player só vê a sua; o mestre vê todas e responde como NPC
+      match /conversas/{uid} {
+        allow get: if logado() && ((uid == eu() && membroSala(sid)) || gmSala(sid));
+        allow list: if gmSala(sid);
+        allow write: if logado() && ((uid == eu() && membroSala(sid)) || gmSala(sid));
+        match /msgs/{m} {
+          allow read: if logado() && ((uid == eu() && membroSala(sid)) || gmSala(sid));
+          allow create: if logado() && ((uid == eu() && membroSala(sid) && autorNovo() && request.resource.data.de == 'jogador') || gmSala(sid));
+          allow delete: if gmSala(sid);
+        }
+      }
+      // denúncias: o player escreve a dele, só o mestre lê todas
+      match /denuncias/{uid} {
+        allow get: if logado() && (uid == eu() || gmSala(sid));
+        allow list: if gmSala(sid);
+        allow write: if logado() && ((uid == eu() && membroSala(sid)) || gmSala(sid));
+      }
+    }
+  }
+}
