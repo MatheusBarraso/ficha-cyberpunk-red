@@ -1,12 +1,10 @@
-// ⚙️ CONFIGURAÇÃO DO FIREBASE
-// 1) No console do Firebase: ⚙️ Configurações do projeto → Seus apps → </> (Web) → copie o firebaseConfig.
-// 2) Cole os valores abaixo, no lugar de cada "COLE_AQUI" (mantenha as aspas).
+// ⚙️ CONFIGURAÇÃO DO FIREBASE (projeto ficha-cpr)
 // Esses valores não são senha: o que protege os dados são as regras do arquivo firestore.rules.
 window.FIREBASE_CONFIG = {
-  apiKey: "COLE_AQUI",
-  authDomain: "COLE_AQUI",
-  projectId: "COLE_AQUI",
-  storageBucket: "COLE_AQUI",
-  messagingSenderId: "COLE_AQUI",
-  appId: "COLE_AQUI"
+  apiKey: "AIzaSyCzXk9gg5zN_4LUFlqNfizpDroLCqYqNig",
+  authDomain: "ficha-cpr.firebaseapp.com",
+  projectId: "ficha-cpr",
+  storageBucket: "ficha-cpr.firebasestorage.app",
+  messagingSenderId: "885815130735",
+  appId: "1:885815130735:web:cdd38909c111487df1eb9a"
 };
