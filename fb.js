@@ -63,7 +63,8 @@ if (!cfg || !cfg.apiKey || /COLE/i.test(cfg.apiKey)) {
     window.__cmLogin = async () => {
       try { await A.signInWithPopup(auth, provedor); location.reload(); }
       catch (e) {
-        if (/popup|cancelled|operation-not-supported/.test(e && e.code || '')) { try { await A.signInWithRedirect(auth, provedor); return; } catch { /* segue */ } }
+        if (/popup-blocked|operation-not-supported/.test(e && e.code || '')) { try { sessionStorage.setItem('cpr-fb-redir', '1'); await A.signInWithRedirect(auth, provedor); return; } catch { /* segue */ } }
+        if (/popup-closed|cancelled-popup/.test(e && e.code || '')) return;
         alertar(e && e.code === 'auth/unauthorized-domain'
           ? 'Este endereço ainda não foi autorizado no Firebase (Authentication → Configurações → Domínios autorizados).'
           : 'Não deu pra entrar com o Google agora. Tente de novo.');
@@ -72,6 +73,9 @@ if (!cfg || !cfg.apiKey || /COLE/i.test(cfg.apiKey)) {
     window.__cmLogout = async () => { try { await A.signOut(auth); } finally { location.reload(); } };
     try { await A.getRedirectResult(auth); } catch { /* sem login pendente */ }
     const eu = await new Promise((res) => { const un = A.onAuthStateChanged(auth, (u) => { un(); res(u); }); });
+    // voltou do login por redirecionamento sem entrar (Safari/Firefox bloqueiam esse caminho): avisa
+    let voltouRedir = false; try { voltouRedir = sessionStorage.getItem('cpr-fb-redir') === '1'; sessionStorage.removeItem('cpr-fb-redir'); } catch { /* ok */ }
+    if (voltouRedir && !eu) setTimeout(() => alertar('O navegador bloqueou a janela de login. Permita pop-ups para este site (ícone na barra de endereço) e toque em “Entrar com Google” de novo.'), 800);
     if (eu) {
       // nome que os outros veem nos avisos e listas
       F.setDoc(F.doc(fs, 'usuarios/' + eu.uid), { nome: eu.displayName || (eu.email || '').split('@')[0] || 'Jogador', ts: Date.now() }, { merge: true }).catch(() => {});
