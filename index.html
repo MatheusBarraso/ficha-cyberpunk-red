@@ -3574,7 +3574,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     document.querySelectorAll('[data-total]').forEach((b) => { b.textContent = fmt(nv.length + lob); });
     // avisos de coisas que chegaram agora (só depois da primeira carga)
     if (buscandoNomes) return;
-    if (!S.conhecidos) { if (S.visto && S.carregou.size >= 6) { S.conhecidos = new Set(itens().map((x) => x.sec + x.id + x.ts)); } return; }
+    if (!S.conhecidos) { if (S.visto && [...S.carregou].filter((k) => !k.startsWith('lob:')).length >= 6) { S.conhecidos = new Set(itens().map((x) => x.sec + x.id + x.ts)); } return; }
     const novos = nv.filter((x) => !S.conhecidos.has(x.sec + x.id + x.ts));
     itens().forEach((x) => S.conhecidos.add(x.sec + x.id + x.ts));
     const mostrar = novos.filter((x) => !(S.aberto && S.sec === x.sec));
@@ -4340,9 +4340,10 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   function sub(q, fn, chave, guarda = S.subsSala) {
     const t = setTimeout(() => { S.lento = true; if (S.aberto) montar(); }, 10000);
     const un = q.onSnapshot((snap) => {
-      if (!snap.metadata || !snap.metadata.fromCache) { clearTimeout(t); S.carregou.add(chave); }
+      // qualquer resposta (do servidor ou da memória do aparelho) já conta como carregado
+      clearTimeout(t); S.carregou.add(chave); S.lento = false;
       fn(snap); mudou();
-    }, (e) => { clearTimeout(t); S.carregou.add(chave); console.warn('comunidade', chave, e && e.code); mudou(); });
+    }, (e) => { clearTimeout(t); S.carregou.add(chave); S.lento = false; console.warn('comunidade', chave, e && e.code); mudou(); });
     const fim = () => { clearTimeout(t); un(); };
     if (guarda) guarda.push(fim);
     return fim;
@@ -4393,7 +4394,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     S.subsSala.splice(0).forEach((f) => f());
     fecharThread();
     S.d = { mapa: null, locais: [], npcs: [], pistas: [], rasc: [], missoes: [], aceites: [], rep: {}, perfis: S.d.perfis || {}, mural: [], coment: [], desc: [], conversas: [], minhaConv: null, msgs: [], den: [], thread: [] };
-    S.visto = null; S.conhecidos = null; S.carregou = new Set(); S.lob.membrosSala = {};
+    S.visto = null; S.conhecidos = null; S.carregou = new Set([...S.carregou].filter((k) => k.startsWith('lob:'))); S.lob.membrosSala = {}; S.lento = false;
     S.npcAberto = null; S.chatNpc = null; S.perfilAberto = null; S.verDen = false; S.filtroLocal = ''; S.ui = {};
     for (const k in decifradas) delete decifradas[k];
   }
