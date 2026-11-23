@@ -602,6 +602,8 @@ body.mob .mcell.c.tem-selo .mslot>input{padding-left:4px!important}
 #lv-falta p{margin:0;opacity:.85}
 #lv-falta[hidden],#lv-msg[hidden]{display:none!important}
 #lv-msg{position:sticky;top:0;z-index:6;background:#111;color:#fff;padding:8px 12px;font-size:14px;text-align:center;border-bottom:2px solid var(--tint,#e0004d)}
+#lv-mesa{width:100%;margin-top:6px}#lv-mesa[hidden]{display:none!important}
+.lv-falta-bts{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}.lv-falta-bts [hidden]{display:none!important}
 .lv-semlivro .lv-stack,.lv-semlivro #lv-frame{display:none!important}
 </style>
 <style>
@@ -1098,6 +1100,7 @@ window.confirmar = function (msg, sim = 'Sim', nao = 'Cancelar') {
           <option value="red">Cyberpunk RED — Livro Básico</option>
         </select>
         <div class="lv-addrow" id="lv-addrow"><button class="btool" id="lv-add" type="button">＋ Adicionar PDF</button><button class="btool" id="lv-rem" type="button" title="Tirar este livro do aparelho">Tirar</button></div>
+        <button class="btool" id="lv-mesa" type="button" hidden>📤 Enviar pra mesa</button>
         <button class="btool" id="lv-prev" type="button" title="Página anterior">‹</button>
         <input class="lvpage" id="lv-page" type="number" min="1" value="1" aria-label="Página atual">
         <span class="lv-total" id="lv-total">/ 71</span>
@@ -2818,7 +2821,7 @@ function setupLivros() {
     $('#lvb-tot').textContent = `/ ${LIVROS[curBook].paginas}`;
   };
   const drawer = $('#lvdrawer');
-  const moverDrawer = [$('#lv-book'), $('#lv-addrow'), $('#lv-save'), document.querySelector('.p6 .lv-side')];
+  const moverDrawer = [$('#lv-book'), $('#lv-addrow'), $('#lv-mesa'), $('#lv-save'), document.querySelector('.p6 .lv-side')];
   const casas = moverDrawer.map((n) => ({ n, pai: n.parentNode, depois: n.nextSibling }));
   // abrir/fechar o painel muda a largura da página: mantém a página que estava sendo lida
   const setDrawer = (on) => {
@@ -4262,7 +4265,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
 
   // ---------- caminhos dos dados (cada sessão tem os seus) ----------
   // conteúdo do mestre: só o mestre da sessão escreve (regra mestres/{self})
-  const DO_MESTRE = new Set(['conteudo', 'locais', 'npcs', 'pistas', 'missoes', 'reputacao', 'membros']);
+  const DO_MESTRE = new Set(['conteudo', 'locais', 'npcs', 'pistas', 'missoes', 'reputacao', 'membros', 'livros', 'livrosPartes']);
   function baseDe(nomeCol) {
     if (nomeCol === 'perfis') return '';
     if (DO_MESTRE.has(nomeCol)) return `mestres/${S.sess.gm}/sessoes/${S.sess.id}/`;
@@ -4415,6 +4418,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     sub(col('mural').orderBy('ts', 'desc').limit(150), (s) => { S.d.mural = lista(s); }, 'mural');
     sub(col('comentarios').orderBy('ts', 'desc').limit(400), (s) => { S.d.coment = lista(s); }, 'coment');
     sub(col('descobertas').orderBy('ts', 'desc').limit(400), (s) => { S.d.desc = lista(s); }, 'desc');
+    if (FB) sub(col('livros'), (s) => { S.d.livrosMesa = lista(s); avisarLivros(); }, 'livros');
     if (S.mestre) {
       sub(col('rascunhos'), (s) => { S.d.rasc = lista(s); }, 'rasc');
       sub(col('conversas'), (s) => { S.d.conversas = lista(s); }, 'conversas');
@@ -4426,6 +4430,44 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     // respostas já acertadas neste aparelho abrem sozinhas
     setTimeout(async () => { const rs = respSalvas(); for (const p of S.d.pistas) if (p.cifra && rs[p.id] && decifradas[p.id] == null) { try { decifradas[p.id] = await decifrar(p, rs[p.id]); } catch { /* resposta mudou */ } } mudou(); }, 2500);
   }
+  // ---------- livros da mesa: o mestre envia o PDF pra sessão; só quem está nela consegue baixar ----------
+  const PARTE = 600000; // bytes por pedaço (cada documento do banco aceita até 1 MB)
+  const paraB64 = (u8) => { let t = ''; for (let i = 0; i < u8.length; i += 0x8000) t += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000)); return btoa(t); };
+  function avisarLivros() {
+    if (!FB) return;
+    window.__cmLivrosLista = S.sess ? (S.d.livrosMesa || []).map((l) => ({ ...l, gm: S.sess.gm, sid: S.sess.id })) : (window.__cmLivrosLista || []);
+    dispatchEvent(new Event('livros-mesa'));
+  }
+  if (FB) window.__cmLivros = {
+    sala: () => (S.sess ? { gm: S.sess.gm, sid: S.sess.id, mestre: S.mestre, nome: S.sess.nome || 'Sessão' } : null),
+    async enviar(meta, bytes, prog) {
+      if (!S.sess || !S.mestre) throw { code: 'invalid_argument' };
+      const u8 = new Uint8Array(bytes), n = Math.ceil(u8.length / PARTE);
+      for (let i = 0; i < n; i++) {
+        await dok('livrosPartes', `${meta.id}~${i}`).set({ livro: meta.id, i, d: paraB64(u8.subarray(i * PARTE, (i + 1) * PARTE)) });
+        if (prog) prog((i + 1) / n);
+      }
+      await dok('livros', meta.id).set({ nome: meta.nome, paginas: meta.paginas, dim: meta.dim, partes: n, tamanho: u8.length, autor: S.me, ts: agora() });
+    },
+    async baixar(m, prog) {
+      const base = `mestres/${m.gm}/sessoes/${m.sid}/livrosPartes/`;
+      const out = new Uint8Array(m.tamanho);
+      let pos = 0;
+      for (let i = 0; i < m.partes; i++) {
+        const s = await S.db.doc(base + `${m.id}~${i}`).get();
+        if (!s.exists) throw new Error('parte faltando');
+        const u = deB64(s.data().d); out.set(u, pos); pos += u.length;
+        if (prog) prog((i + 1) / m.partes);
+      }
+      return out.buffer;
+    },
+    async tirar(id) {
+      if (!S.sess || !S.mestre) throw { code: 'invalid_argument' };
+      const l = (S.d.livrosMesa || []).find((x) => x.id === id);
+      await dok('livros', id).delete();
+      for (let i = 0; i < ((l && l.partes) || 0); i++) await dok('livrosPartes', `${id}~${i}`).delete();
+    },
+  };
   const SALA_KEY = 'cpr-com-sala', PAPEL_KEY = 'cpr-com-papel';
   function entrarSala(gm, sid, dados) {
     limparSala();
@@ -4440,6 +4482,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   function sairSala() {
     limparSala();
     S.sess = null; S.mestre = false;
+    avisarLivros();
     try { localStorage.removeItem(SALA_KEY); } catch { /* ok */ }
   }
   function irLobby() { sairSala(); S.aberto = true; painel.hidden = false; document.body.classList.add('comu-on'); montar(); }

@@ -96,7 +96,7 @@ try {
     const v = sel.value;
     sel.replaceChildren(...Object.entries(LIVROS).map(([id, l]) => {
       const o = document.createElement('option');
-      o.value = id; o.textContent = l.local ? l.nome : `${l.nome} (adicionar PDF)`;
+      o.value = id; o.textContent = l.local ? l.nome : l.mesa ? `${l.nome} (baixar da mesa)` : `${l.nome} (adicionar PDF)`;
       return o;
     }));
     sel.value = LIVROS[v] ? v : Object.keys(LIVROS)[0];
@@ -109,33 +109,37 @@ try {
   const arquivo = Object.assign(document.createElement('input'), { type: 'file', accept: 'application/pdf,.pdf', multiple: true, hidden: true });
   document.body.append(arquivo);
   const hash = (t) => { let x = 0; for (const c of t) x = (x * 31 + c.charCodeAt(0)) >>> 0; return x.toString(36); };
+  async function guardar(bytes, nomeArq, forca) {
+    const doc = await pdfjsLib.getDocument({ data: new Uint8Array(bytes.slice(0)), isEvalSupported: false }).promise;
+    const n = doc.numPages;
+    const v = (await doc.getPage(1)).getViewport({ scale: 1 });
+    const id = (forca && forca.id) || CONHECIDOS[n] || `pdf-${n}-${hash(nomeArq)}`;
+    const nome = (forca && forca.nome) || ((LIVROS[id] && CONHECIDOS[n]) ? LIVROS[id].nome : nomeArq.replace(/\.pdf$/i, '').slice(0, 60));
+    const meta = { id, nome, paginas: n, dim: [Math.round(v.width), Math.round(v.height)] };
+    await op('pdfs', 'readwrite', (s) => s.put({ id, bytes }));
+    await op('meta', 'readwrite', (s) => s.put(meta));
+    await op('idx', 'readwrite', (s) => s.delete(id)).catch(() => {});
+    for (const k in prontas) if (k.startsWith(id + ':')) delete prontas[k];
+    docs[id] = Promise.resolve(doc);
+    const mesa = LIVROS[id] && LIVROS[id].mesa;
+    registrar(meta);
+    if (mesa) LIVROS[id].mesa = mesa;
+    try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch { /* ok */ }
+    return meta;
+  }
   async function adicionar(files) {
     const feitos = [];
     for (const f of files) {
       if (!/pdf$/i.test(f.type) && !/\.pdf$/i.test(f.name)) { aviso(`“${f.name}” não é PDF.`); continue; }
       aviso(`Lendo “${f.name}”…`, true);
       try {
-        const bytes = await f.arrayBuffer();
-        const doc = await pdfjsLib.getDocument({ data: new Uint8Array(bytes.slice(0)), isEvalSupported: false }).promise;
-        const n = doc.numPages;
-        const v = (await doc.getPage(1)).getViewport({ scale: 1 });
-        const id = CONHECIDOS[n] || `pdf-${n}-${hash(f.name)}`;
-        const nome = (LIVROS[id] && CONHECIDOS[n]) ? LIVROS[id].nome : f.name.replace(/\.pdf$/i, '').slice(0, 60);
-        const meta = { id, nome, paginas: n, dim: [Math.round(v.width), Math.round(v.height)] };
-        await op('pdfs', 'readwrite', (s) => s.put({ id, bytes }));
-        await op('meta', 'readwrite', (s) => s.put(meta));
-        await op('idx', 'readwrite', (s) => s.delete(id)).catch(() => {});
-        for (const k in prontas) if (k.startsWith(id + ':')) delete prontas[k];
-        docs[id] = Promise.resolve(doc);
-        registrar(meta);
-        feitos.push(meta);
+        feitos.push(await guardar(await f.arrayBuffer(), f.name));
       } catch (e) {
         console.error(e);
         aviso(e && e.name === 'QuotaExceededError' ? 'Sem espaço no aparelho pra guardar esse PDF.' : `Não deu pra abrir “${f.name}”.`);
       }
     }
     if (!feitos.length) return;
-    try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch { /* ok */ }
     opcoes();
     dispatchEvent(new CustomEvent('livros-mudaram', { detail: { ids: feitos.map((m) => m.id), abrir: feitos[0].id } }));
     aviso(feitos.length === 1 ? `“${feitos[0].nome}” adicionado (${feitos[0].paginas} páginas).` : `${feitos.length} livros adicionados.`);
@@ -146,7 +150,7 @@ try {
     await op('idx', 'readwrite', (s) => s.delete(id)).catch(() => {});
     delete docs[id];
     for (const k in prontas) if (k.startsWith(id + ':')) delete prontas[k];
-    if (['regras', 'jacket', 'red'].includes(id)) LIVROS[id].local = false; else delete LIVROS[id];
+    if (['regras', 'jacket', 'red'].includes(id) || LIVROS[id].mesa) LIVROS[id].local = false; else delete LIVROS[id];
     opcoes();
     dispatchEvent(new CustomEvent('livros-mudaram', { detail: { ids: [id] } }));
   };
@@ -182,15 +186,85 @@ try {
     const falta = !temLocal(b);
     if (!c) {
       c = document.createElement('div'); c.id = 'lv-falta';
-      c.innerHTML = '<b></b><p>Os livros não vêm junto com o site. Adicione o seu PDF: ele fica guardado só neste aparelho (não vai pra internet).</p><button type="button" class="btool">＋ Adicionar PDF</button>';
-      c.querySelector('button').addEventListener('click', () => window.__livroEscolher());
+      c.innerHTML = '<b></b><p></p><div class="lv-falta-bts"><button type="button" class="btool lv-baixar">⬇ Baixar da mesa</button><button type="button" class="btool lv-addpdf">＋ Adicionar PDF</button></div>';
+      c.querySelector('.lv-addpdf').addEventListener('click', () => window.__livroEscolher());
+      c.querySelector('.lv-baixar').addEventListener('click', () => baixarDaMesa(c.dataset.livro));
       v.prepend(c);
     }
-    c.querySelector('b').textContent = `📖 ${LIVROS[b] ? LIVROS[b].nome : 'Livro'}`;
+    const l = LIVROS[b], mesa = l && l.mesa;
+    c.dataset.livro = b;
+    c.querySelector('b').textContent = `📖 ${l ? l.nome : 'Livro'}`;
+    c.querySelector('p').textContent = mesa
+      ? `O mestre compartilhou este livro com a mesa (${mb(mesa.tamanho)}). Baixe uma vez: ele fica guardado neste aparelho.`
+      : 'Este livro não está neste aparelho. Adicione o seu PDF (fica guardado só aqui) ou peça pro mestre compartilhar com a mesa.';
+    c.querySelector('.lv-baixar').hidden = !mesa;
     c.hidden = !falta;
     v.classList.toggle('lv-semlivro', falta);
   };
-  opcoes();
+  // ---------- livros da mesa (Comunidade): baixar, e o mestre envia ----------
+  const mb = (n) => `${Math.max(0.1, (n || 0) / 1048576).toFixed(1).replace('.', ',')} MB`;
+  let baixando = false;
+  async function baixarDaMesa(id) {
+    const l = LIVROS[id], m = l && l.mesa;
+    if (!m || baixando || !window.__cmLivros) return;
+    baixando = true;
+    try {
+      aviso(`Baixando “${l.nome}”… 0%`, true);
+      const bytes = await window.__cmLivros.baixar(m, (f) => aviso(`Baixando “${l.nome}”… ${Math.round(f * 100)}%`, true));
+      aviso('Guardando no aparelho…', true);
+      await guardar(bytes, l.nome, { id, nome: l.nome });
+      opcoes();
+      dispatchEvent(new CustomEvent('livros-mudaram', { detail: { ids: [id] } }));
+      aviso(`“${l.nome}” pronto pra ler.`);
+    } catch (e) {
+      console.error(e);
+      aviso(e && e.code === 'invalid_argument' ? 'Sem acesso: entre na sessão do mestre pra baixar.' : 'Não deu pra baixar agora. Confira a internet e tente de novo.');
+    } finally { baixando = false; }
+  }
+  addEventListener('livros-mesa', () => {
+    for (const k in LIVROS) if (LIVROS[k].mesa && !LIVROS[k].local && !(window.__cmLivrosLista || []).some((x) => x.id === k) && !['regras', 'jacket', 'red'].includes(k)) delete LIVROS[k];
+    for (const k in LIVROS) delete LIVROS[k].mesa;
+    for (const m of window.__cmLivrosLista || []) {
+      if (!LIVROS[m.id]) LIVROS[m.id] = { nome: m.nome, paginas: m.paginas, dim: m.dim || [1000, 1400], local: false };
+      LIVROS[m.id].mesa = m;
+    }
+    opcoes(); botaoMesa();
+    if (sel && window.__livroAviso) window.__livroAviso(sel.value);
+  });
+  const bMesa = document.getElementById('lv-mesa');
+  function botaoMesa() {
+    if (!bMesa) return;
+    const sala = window.__cmLivros && window.__cmLivros.sala();
+    const l = sel && LIVROS[sel.value];
+    bMesa.hidden = !(sala && sala.mestre && l && (l.local || l.mesa));
+    bMesa.textContent = l && l.mesa ? '✕ Tirar da mesa' : '📤 Enviar pra mesa';
+  }
+  if (sel) sel.addEventListener('change', botaoMesa);
+  addEventListener('livros-mudaram', botaoMesa);
+  if (bMesa) bMesa.addEventListener('click', async () => {
+    const sala = window.__cmLivros && window.__cmLivros.sala();
+    const id = sel.value, l = LIVROS[id];
+    if (!sala || !sala.mestre || !l) return;
+    const conf = (t, b) => (window.confirmar ? window.confirmar(t, b) : Promise.resolve(true));
+    if (l.mesa) {
+      if (!(await conf(`Tirar “${l.nome}” da sessão “${sala.nome}”? Quem já baixou continua com ele no aparelho.`, 'Tirar'))) return;
+      try { await window.__cmLivros.tirar(id); aviso('Livro tirado da mesa.'); } catch { aviso('Não deu pra tirar agora.'); }
+      return;
+    }
+    const r = await op('pdfs', 'readonly', (s) => s.get(id)).catch(() => null);
+    if (!r) { aviso('Esse livro não está neste aparelho.'); return; }
+    if (!(await conf(`Enviar “${l.nome}” (${mb(r.bytes.byteLength)}) pra sessão “${sala.nome}”? Só quem você aprovou nela consegue baixar.`, 'Enviar'))) return;
+    bMesa.disabled = true;
+    try {
+      await window.__cmLivros.enviar({ id, nome: l.nome, paginas: l.paginas, dim: l.dim }, r.bytes, (f) => aviso(`Enviando “${l.nome}”… ${Math.round(f * 100)}%`, true));
+      aviso(`“${l.nome}” está na mesa. Os jogadores já podem baixar.`);
+    } catch (e) {
+      console.error(e);
+      aviso(e && e.code === 'quota_exceeded' ? 'O espaço gratuito do banco encheu.' : 'Não deu pra enviar agora. Tente de novo.');
+    } finally { bMesa.disabled = false; }
+  });
+  if (window.__cmLivrosLista) dispatchEvent(new Event('livros-mesa'));
+  opcoes(); botaoMesa();
   dispatchEvent(new CustomEvent('livros-mudaram', { detail: { ids: Object.keys(LIVROS), inicio: true } }));
 } catch (e) {
   console.error('leitor de PDF não carregou', e);
