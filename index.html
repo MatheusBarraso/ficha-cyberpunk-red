@@ -13,6 +13,29 @@ window.claude = { use: (n) => window.__fbPronto.then((a) => (a ? a[n] || null : 
 </script>
 <script src="firebase-config.js"></script>
 <script type="module" src="fb.js"></script>
+<meta name="cpr-build" content="4320de3b3b95">
+<script>
+// avisa quando sai uma versão nova do site (o navegador pode ficar horas com a antiga aberta)
+(function () {
+  var atual = '4320de3b3b95', avisou = false;
+  function mostrar() {
+    if (avisou || !document.body) return; avisou = true;
+    var b = document.createElement('div'); b.id = 'cpr-nova'; b.setAttribute('role', 'alert');
+    b.innerHTML = '<span>Saiu uma versão nova do site.</span><button type="button">Atualizar agora</button>';
+    b.querySelector('button').onclick = function () { location.reload(); };
+    document.body.appendChild(b);
+  }
+  function checar() {
+    if (avisou || !window.fetch) return;
+    fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (t) {
+      var m = t.match(/<meta name="cpr-build" content="([^"]+)"/);
+      if (m && m[1] !== atual) mostrar();
+    }).catch(function () {});
+  }
+  setTimeout(checar, 20000); setInterval(checar, 120000);
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') checar(); });
+})();
+</script>
 
 <link rel="icon" href="./icon-192.png">
 <title>Ficha Cyberpunk RED</title>
@@ -607,7 +630,7 @@ body.mob .mpage{display:none!important}
 #lv-mesa{width:100%;margin-top:6px}#lv-mesa[hidden]{display:none!important}
 .lv-falta-bts{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}.lv-falta-bts [hidden]{display:none!important}
 .lv-semlivro .lv-stack,.lv-semlivro #lv-frame{display:none!important}
-</style>
+#cpr-nova{position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:600;display:flex;align-items:center;gap:12px;background:#0d0d0d;color:#fff;border:2px solid var(--red);padding:8px 10px 8px 14px;font:600 14px var(--font,sans-serif);box-shadow:0 8px 20px rgba(0,0,0,.45);max-width:calc(100vw - 20px)}#cpr-nova button{background:var(--red);color:#fff;border:0;font:700 13px var(--font,sans-serif);letter-spacing:1px;text-transform:uppercase;padding:7px 12px;cursor:pointer;white-space:nowrap}</style>
 <style>
 .cfm-bg{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:16px}
 .cfm{background:#fff;border:3px solid var(--red);max-width:420px;width:100%;padding:18px;font-family:var(--font);box-shadow:0 6px 24px rgba(0,0,0,.5)}
@@ -967,7 +990,7 @@ body.comu-on #backdrop{z-index:275}
 .cm-entra .cm-sessao-nome{font-size:22px}
 
 /* portão: nada da ficha aparece antes da escolha */
-html.cm-gate body > :not(#comu):not(.cm-toasts):not(.jn-bg):not(.cfm-bg){visibility:hidden!important}
+html.cm-gate body > :not(#comu):not(.cm-toasts):not(.jn-bg):not(.cfm-bg):not(#cpr-nova):not(.cm-modal-fundo){visibility:hidden!important}
 html.cm-gate body{background:var(--bg)}
 html.cm-gate .cm-tabs{display:none}
 
@@ -4882,9 +4905,12 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     mudou();
   }
   let tMudou = 0;
+  let tSinc = 0;
   function mudou() {
+    // a ficha sincroniza mesmo com a aba em segundo plano (lá o requestAnimationFrame não roda)
+    clearTimeout(tSinc); tSinc = setTimeout(sincFichas, 30);
     if (tMudou) return;
-    tMudou = requestAnimationFrame(() => { tMudou = 0; preNomes(); verificarLobby(); badges(); atualizar(); pintarTopo(); pintarSino(); sincFichas(); if (S.mestre) pintarFerr(); });
+    tMudou = requestAnimationFrame(() => { tMudou = 0; preNomes(); verificarLobby(); badges(); atualizar(); pintarTopo(); pintarSino(); if (S.mestre) pintarFerr(); });
   }
   function pintarTopo() {
     avisoLento.hidden = !(S.lento && S.aberto);
@@ -5102,7 +5128,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     rc(L, S.lob.papel === 'mestre' ? (S.lob.chave !== true ? telaSenha() : S.lob.ger ? painelSessao() : telaMestre()) : telaPlayer());
     resolverNomes();
   }
-  function trocarPapel(p) { sairRemota(true); if (p) liberarFicha(); if (p === 'mestre' && S.lob.chave === undefined) conferirChave(); if (S.aberto && !S.db && !S.erro && p) { /* ainda conectando: monta de novo quando chegar */ } S.lob.papel = p; S.lob.ger = null; S.lob.busca = null; try { p ? localStorage.setItem(PAPEL_KEY, p) : localStorage.removeItem(PAPEL_KEY); } catch { /* ok */ } dispatchEvent(new Event('cm-papel')); estadoFicha(); pintarTopo(); montar(); corpo.scrollTop = 0; }
+  function trocarPapel(p) { sairRemota(true); if (p) liberarFicha(); if (p === 'mestre' && S.lob.chave === undefined) conferirChave(); if (S.aberto && !S.db && !S.erro && p) { /* ainda conectando: monta de novo quando chegar */ } S.lob.papel = p; S.lob.ger = null; S.lob.busca = null; try { p ? localStorage.setItem(PAPEL_KEY, p) : localStorage.removeItem(PAPEL_KEY); } catch { /* ok */ } dispatchEvent(new Event('cm-papel')); estadoFicha(); pintarTopo(); montar(); corpo.scrollTop = 0; mudou(); }
   function telaEscolha() {
     const cartao = (cls, tit, txt, p) => h('button', { type: 'button', class: `cm-escolha ${cls}`, onclick: () => trocarPapel(p) },
       h('span', { class: 'cm-esc-tit', text: tit }), h('span', { class: 'cm-esc-txt', text: txt }),
@@ -5464,8 +5490,13 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const st = PS[sid]; if (!st) return;
     if (!forca && st.base && !difere(st.base, dados).length) return;
     guardarBase(sid, dados);
-    st.ref.set({ dados, ts: agora(), por: S.me, nome: dados.NOME || '' }).catch((e) => { st.base = null; console.warn('ficha', e && e.code); });
+    st.ref.set({ dados, ts: agora(), por: S.me, nome: dados.NOME || '' }).then(() => {
+      const k = `cpr-com-ficha-enviada-${sid}`;
+      let ja = null; try { ja = localStorage.getItem(k); localStorage.setItem(k, '1'); } catch { /* ok */ }
+      if (!ja) toast('Ficha', 'Sua ficha agora aparece pro mestre da sessão. O que ele mudar chega aqui na hora.');
+    }).catch((e) => { st.base = null; console.warn('ficha', e && e.code); if (!st.avisouErro) { st.avisouErro = true; toast('Ficha', 'Não consegui mandar sua ficha pro mestre. Confira a internet e recarregue a página.'); } });
   }
+  window.__cmFichasSync = () => Object.fromEntries(Object.entries(PS).map(([k, v]) => [k, !!v.base]));
   window.__fichaSalvouLocal = () => {
     if (!Object.keys(PS).length) return;
     clearTimeout(tPush);
@@ -6050,7 +6081,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
         h('div', { class: 'cm-fb-txt' }, h('b', { text: tit }), linhas.map((l) => h('small', { text: l })))),
       h('div', { class: 'cm-fb-pe' },
         pv ? h('span', { class: 'cm-fb-pv', text: `PV ${pv}` }) : null,
-        h('span', { text: !f ? 'ainda não abriu a ficha na sessão' : (f.por === S.me ? 'você mexeu ' : 'atualizada ') + quando(f.ts) }))));
+        h('span', { text: !f ? 'a ficha ainda não chegou: peça pro player abrir o site de novo' : (f.por === S.me ? 'você mexeu ' : 'atualizada ') + quando(f.ts) }))));
   }
   const blocoNovo = (tipo) => h('button', { type: 'button', class: 'cm-fb cm-fb-novo', onclick: () => novaFicha(tipo) },
     h('b', { text: '+' }), h('span', { text: tipo === 'npc' ? 'Nova ficha de NPC' : 'Nova ficha de monstro' }));
