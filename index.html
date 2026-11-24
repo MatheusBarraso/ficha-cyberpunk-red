@@ -1768,7 +1768,10 @@ function applyScale() {
   const land = document.body.classList.contains('land');
   const vw = document.documentElement.clientWidth - (land ? 56 : 16);
   let s;
-  if (zoomMode === 'fit') s = Math.min(vw, 1920) / 1920; // deitado também ocupa a largura toda (rola pra baixo)
+  if (zoomMode === 'fit') {
+    s = Math.min(vw, 1920) / 1920; // deitado ocupa a largura toda (rola pra baixo)
+    if (!land) { const tb = document.querySelector('.toolbar'); const vh = window.innerHeight - (tb ? tb.offsetHeight : 0) - 60; s = Math.min(s, Math.max(0.2, vh / 1080)); }
+  }
   else s = Math.min(ZMAX, Math.max(ZMIN, zoomVal));
   const fluid = document.body.classList.contains('mob');
   for (const sc of document.querySelectorAll('.scaler')) {
