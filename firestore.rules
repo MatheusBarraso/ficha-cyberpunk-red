@@ -140,6 +140,21 @@ service cloud.firestore {
         allow write: if logado() && request.resource.data.por == eu()
           && ((uid == eu() && membroSala(sid)) || gmSala(sid));
       }
+      // alerta do mestre: aparece na tela de todos da mesa
+      match /alertas/{id} {
+        allow read: if membroSala(sid);
+        allow create: if gmSala(sid) && request.resource.data.autor == eu();
+        allow delete: if gmSala(sid);
+      }
+      // ataque do mestre: o player atacado vê e só pode responder aceitar ou contestar
+      match /ataques/{id} {
+        allow get: if logado() && ((resource.data.alvo == eu() && membroSala(sid)) || gmSala(sid));
+        allow list: if logado() && (gmSala(sid) || (resource.data.alvo == eu() && membroSala(sid)));
+        allow create, delete: if gmSala(sid);
+        allow update: if gmSala(sid) || (logado() && resource.data.alvo == eu() && membroSala(sid)
+          && resource.data.estado == 'pendente' && request.resource.data.estado in ['aceito', 'contestado']
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['estado', 'respTs']));
+      }
       // denúncias: o player escreve a dele, só o mestre lê todas
       match /denuncias/{uid} {
         allow get: if logado() && (uid == eu() || gmSala(sid));
