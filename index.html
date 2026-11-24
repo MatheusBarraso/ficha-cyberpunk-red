@@ -13,11 +13,11 @@ window.claude = { use: (n) => window.__fbPronto.then((a) => (a ? a[n] || null : 
 </script>
 <script src="firebase-config.js"></script>
 <script type="module" src="fb.js"></script>
-<meta name="cpr-build" content="4320de3b3b95">
+<meta name="cpr-build" content="4f983479f42c">
 <script>
 // avisa quando sai uma versão nova do site (o navegador pode ficar horas com a antiga aberta)
 (function () {
-  var atual = '4320de3b3b95', avisou = false;
+  var atual = '4f983479f42c', avisou = false;
   function mostrar() {
     if (avisou || !document.body) return; avisou = true;
     var b = document.createElement('div'); b.id = 'cpr-nova'; b.setAttribute('role', 'alert');
@@ -1249,6 +1249,33 @@ body.cm-vez-ficha .scaler{animation:cmVezBrilho 1.4s ease-in-out infinite}
 .cm-fb-lado:hover{background:rgba(255,255,255,.2)}
 .cm-fb-w.cm-fb-fora{opacity:.5}
 .cm-fb-w.cm-fb-fora:hover{opacity:.85}
+
+/* ---------- combate: só quem o mestre escolhe; fichas ocultas ---------- */
+.cm-fb-add{min-height:142px}
+.cm-fb-olho{background:transparent;border:0;color:#fff;width:26px;height:22px;padding:2px;cursor:pointer;margin-left:4px;flex:0 0 auto}
+.cm-fb-olho svg{width:18px;height:18px}
+.cm-fb-olho:hover{background:rgba(255,255,255,.2)}
+.cm-fb-w.cm-fb-oculta{opacity:.38}
+.cm-fb-w.cm-fb-oculta .cm-fb{border-style:dashed}
+.cm-fb-w.cm-fb-oculta:hover{opacity:.7}
+.cm-ml-item.cm-ml-oculta{opacity:.45}
+.cm-modal-add .cm-modal{width:min(720px,100%)}
+.cm-add-filtros{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.cm-add-filtros .cm-lbl{gap:3px}
+.cm-add-nivel{display:flex;align-items:center;gap:6px}
+.cm-add-nivel .cm-in{width:100%;min-width:0}
+.cm-add-lista{display:flex;flex-direction:column;gap:4px;max-height:min(46vh,420px);overflow-y:auto;border-top:1px solid var(--red);padding-top:8px}
+.cm-add-item{display:flex;align-items:center;gap:8px;border:1px solid var(--red);padding:7px 9px;cursor:pointer;text-transform:none;letter-spacing:0;font-weight:400}
+.cm-add-item:hover{background:var(--tint)}
+.cm-add-item input{width:18px;height:18px;accent-color:var(--red);flex:0 0 auto}
+.cm-add-item .cm-ml-tag{background:#000;color:#fff}
+.cm-add-item .cm-ml-npc{background:#777}
+.cm-add-item .cm-ml-monstro{background:var(--red)}
+.cm-add-txt{display:flex;flex-direction:column;min-width:0}
+.cm-add-txt b{font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cm-add-txt small{font-size:12px;color:#666}
+.cm-add-item.cm-add-oculta{opacity:.5;border-style:dashed}
+.cm-modal-add .cm-modal-pe{align-items:center}
 /* ================= MENU PRINCIPAL no visual da ficha =================
    folha branca, cabeçalhos pretos com canto cortado, itens em linhas finas vermelhas */
 #menu{background:var(--paper);color:var(--ink);border-right:2px solid var(--red)}
@@ -4973,6 +5000,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
       sub(col('fichasMestre'), (s) => { S.d.fichasM = lista(s); if (R.id) pintarRemota(); }, 'fichasM');
       sub(col('ataques'), (s) => { S.d.ataques = lista(s).sort((a, b) => (b.ts || 0) - (a.ts || 0)); checarContestados(); if (R.id) pintarRemota(); }, 'ataques');
       sub(dok('mestreEstado', 'ordem'), (s) => { S.d.ordem = s.exists ? s.data() : null; if (R.id) pintarRemota(); }, 'ordem');
+      sub(dok('mestreEstado', 'ocultas'), (s) => { S.d.ocultas = s.exists ? s.data() : {}; }, 'ocultas');
       sub(col('conversas'), (s) => { S.d.conversas = lista(s); }, 'conversas');
       sub(col('denuncias'), (s) => { S.d.den = lista(s); }, 'den');
     } else {
@@ -5637,7 +5665,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   function itemFicha(x, fechaAntes) {
     const reg = registroDe(x.tipo, x.id), d = (reg && reg.dados) || {};
     const atual = x.tipo === R.tipo && x.id === R.id;
-    return h('button', { type: 'button', class: 'cm-ml-item' + (atual ? ' on' : '') + (naVez(x.tipo, x.id) ? ' cm-vez' : ''), disabled: !reg && !atual,
+    return h('button', { type: 'button', class: 'cm-ml-item' + (atual ? ' on' : '') + (naVez(x.tipo, x.id) ? ' cm-vez' : '') + (oculta(x.tipo, x.id) ? ' cm-ml-oculta' : ''), disabled: !reg && !atual,
       onclick: () => { if (fechaAntes) fechaAntes(); if (window.innerWidth < 1000) S.ladoFechado = true; abrirFicha(x.tipo, x.id); } },
       h('span', { class: `cm-ml-tag cm-ml-${x.tipo}`, text: SIGLA[x.tipo] }),
       h('span', { class: 'cm-ml-nome', text: tituloFicha(x.tipo, x.id) }),
@@ -5645,11 +5673,12 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   }
   function blocoVez(fechaAntes) {
     const o = ordem();
-    if (!o) return h('div', { class: 'cm-ml-vez' }, btn('Montar ordem de jogada', () => { if (fechaAntes) fechaAntes(); abrirOrdem(); }, 'cm-mini'));
+    if (!o) return h('div', { class: 'cm-ml-vez' }, h('div', { class: 'cm-ml-vez-tit' }, h('small', { text: 'Ninguém no combate' })), h('div', { class: 'cm-row' }, btn('+ Aliado', () => { if (fechaAntes) fechaAntes(); abrirAddCombate('aliado'); }, 'cm-mini'), btn('+ Inimigo', () => { if (fechaAntes) fechaAntes(); abrirAddCombate('inimigo'); }, 'cm-mini cm-pri')));
     const v = o.lista[o.vez];
     return h('div', { class: 'cm-ml-vez' },
       h('div', { class: 'cm-ml-vez-tit' }, h('small', { text: `Rodada ${o.rodada || 1} · ${o.vez + 1} de ${o.lista.length}` }), h('b', { text: v ? 'Vez de ' + tituloFicha(v.tipo, v.id) : '' })),
-      h('div', { class: 'cm-row' }, btn('‹', () => passarVez(-1), 'cm-mini'), btn('Próxima vez ›', () => passarVez(1), 'cm-mini cm-pri'), btn('Ordem', () => { if (fechaAntes) fechaAntes(); abrirOrdem(); }, 'cm-mini')));
+      h('div', { class: 'cm-row' }, btn('‹', () => passarVez(-1), 'cm-mini'), btn('Próxima vez ›', () => passarVez(1), 'cm-mini cm-pri'), btn('Ordem', () => { if (fechaAntes) fechaAntes(); abrirOrdem(); }, 'cm-mini')),
+      h('div', { class: 'cm-row' }, btn('+ Aliado', () => { if (fechaAntes) fechaAntes(); abrirAddCombate('aliado'); }, 'cm-mini'), btn('+ Inimigo', () => { if (fechaAntes) fechaAntes(); abrirAddCombate('inimigo'); }, 'cm-mini')));
   }
   function blocoContestados(fechaAntes) {
     const cont = (S.d.ataques || []).filter((a) => a.estado === 'contestado');
@@ -5806,7 +5835,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
           btn('↓', () => { [lista[k + 1], lista[k]] = [lista[k], lista[k + 1]]; pinta(); }, 'cm-mini', k === lista.length - 1),
           btn('×', () => { lista.splice(k, 1); pinta(); }, 'cm-mini cm-perigo'))))
           : h('div', { class: 'cm-vazio', text: 'Ninguém na ordem ainda.' }),
-        h('div', { class: 'cm-row' }, sel, fora.length ? btn('Adicionar todos', () => { lista.push(...fora); pinta(); }, 'cm-mini') : null));
+        h('div', { class: 'cm-sub', text: 'Pra colocar mais fichas no combate, use “Adicionar aliado” ou “Adicionar inimigo”.' }));
     };
     pinta();
     const m = modal('Ordem de jogada', [h('div', { class: 'cm-sub', text: 'Coloque na ordem em que cada um joga. Na vez de alguém, a ficha dele brilha pra você.' }), area],
@@ -5964,17 +5993,17 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
       pericias: { percepcao: 4, idiomaRuas: 2, suaCasa: 6, armasCurtas: 2, negociacao: 4, tecBasica: 6, cibertec: 4, eletronica: 6, tecTerrestre: 6, tecArmas: 6, demolicoes: 2 },
       armas: [['Chave inglesa', '2d6', '—', '1'], ['Escopeta de cano serrado', '5d6', '2', '1']], armadura: [['Corpo — avental de couro', 4, '0']] }],
     // ----- monstros -----
-    ['monstro', 'inimigo', { nome: 'Navalha', papel: 'Ciberpsicopata', habilidade: '', nivel: '', atr: [4, 8, 8, 3, 6, 8, 3, 7, 10, 2], humanidade: 4,
+    ['monstro', 'inimigo', { nome: 'Navalha', papel: 'Ciberpsicopata', habilidade: '', nivel: 6, atr: [4, 8, 8, 3, 6, 8, 3, 7, 10, 2], humanidade: 4,
       notas: 'Perdeu o controle depois do quinto implante. Ataca qualquer coisa que se mexe.',
       pericias: { percepcao: 6, atletismo: 6, resistencia: 6, furtividade: 4, briga: 8, evasao: 6, artesMarciais: 6, armasBrancas: 8, automatica: 4 },
       armas: [['Lâminas de ciberbraço (x2)', '3d6', '—', '2', 'Ignora metade da armadura'], ['Submetralhadora', '2d6', '40', '1', 'Rajada 3d6']],
       armadura: [['Pele blindada subdérmica', 11, '0']],
       cyber: { 'CIBERBRAÇO ESQUERDO': [['Ciberbraço', 'Força bruta'], ['Lâminas retráteis', '3d6']], 'CIBERBRAÇO DIREITO': [['Ciberbraço', 'Força bruta'], ['Lâminas retráteis', '3d6']], 'CYBERWARE INTERNO': [['Reforço de reflexos', '+1 iniciativa'], ['Pele subdérmica', 'PB 11']], BORGWARE: [['Estrutura óssea reforçada', '+2 em Resistência']] } }],
-    ['monstro', 'inimigo', { nome: 'Capanga dos Ossos de Cromo', papel: 'Gangue', nivel: '', atr: [3, 6, 5, 3, 4, 4, 3, 5, 6, 3],
+    ['monstro', 'inimigo', { nome: 'Capanga dos Ossos de Cromo', papel: 'Gangue', nivel: 2, atr: [3, 6, 5, 3, 4, 4, 3, 5, 6, 3],
       notas: 'Gangue de rua do Mercado Underground. Andam em grupos de três a cinco.',
       pericias: { percepcao: 2, atletismo: 4, briga: 6, evasao: 4, armasBrancas: 4, armasCurtas: 6, automatica: 4, malandragem: 4 },
       armas: [['Pistola média', '2d6', '12', '2'], ['Taco com pregos', '2d6', '—', '2']], armadura: [['Corpo — jaqueta blindada leve', 11, '0']] }],
-    ['monstro', 'inimigo', { nome: 'Drone de segurança', papel: 'Máquina', nivel: '', atr: [3, 7, 6, 0, 0, 0, 0, 8, 4, 0], pv: 25, humanidade: 0,
+    ['monstro', 'inimigo', { nome: 'Drone de segurança', papel: 'Máquina', nivel: 3, atr: [3, 7, 6, 0, 0, 0, 0, 8, 4, 0], pv: 25, humanidade: 0,
       notas: 'Patrulha os prédios do Centro Corporativo. Dispara um aviso antes de atirar.',
       pericias: { percepcao: 6, evasao: 4, automatica: 6 },
       armas: [['Submetralhadora acoplada', '2d6', '30', '1', 'Rajada 3d6']], armadura: [['Carcaça', 11, '0']], extra: { 'PONTOS DE VIDA 1': '25' } }],
@@ -6001,6 +6030,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
       if (S.ferrVer === 'combate') { pintarCombate(); return; }
       const players = membrosSala();
       const doTipo = (t) => (S.d.fichasM || []).filter((f) => f.tipo === t).sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
+      const blocos = (xs) => xs.sort((a, b) => oculta(a[0], a[1]) - oculta(b[0], b[1])).map(([t, i]) => blocoFicha(t, i, { olho: true }));
       const grupo = (tit, itens, vazio) => h('div', { class: 'cm-fb-grupo' },
         h('div', { class: 'cm-faixa', text: tit }),
         h('div', { class: 'cm-fb-grade' }, itens.length ? itens : h('div', { class: 'cm-vazio', text: vazio })));
@@ -6009,21 +6039,127 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
         h('div', { class: 'cm-row' }, (S.d.fichasM || []).some((f) => f.demo)
           ? btn('Apagar as fichas de demonstração', async () => { if (await confirmar('Apagar as 9 fichas de demonstração?', 'Apagar')) await salvar(async () => { for (const f of S.d.fichasM.filter((x) => x.demo)) { if (R.id === f.id) sairRemota(true); await dok('fichasMestre', f.id).delete(); } }); }, 'cm-mini')
           : btn('Criar fichas de demonstração', async () => { if (await salvar(() => criarDemos(baseDe('fichasMestre')))) toast('Fichas', '3 players, 3 NPCs e 3 monstros de demonstração criados.'); }, 'cm-mini cm-pri')),
-        grupo(`Players (${players.length + doTipo('demo').length})`, [...players.map((u) => blocoFicha('player', u)), ...doTipo('demo').map((f) => blocoFicha('demo', f.id))], 'Ninguém na mesa ainda.'),
-        grupo(`NPCs (${doTipo('npc').length})`, [...doTipo('npc').map((f) => blocoFicha('npc', f.id)), blocoNovo('npc')]),
-        grupo(`Monstros (${doTipo('monstro').length})`, [...doTipo('monstro').map((f) => blocoFicha('monstro', f.id)), blocoNovo('monstro')]));
+        grupo(`Players (${players.length + doTipo('demo').length})`, blocos([...players.map((u) => ['player', u]), ...doTipo('demo').map((f) => ['demo', f.id])]), 'Ninguém na mesa ainda.'),
+        grupo(`NPCs (${doTipo('npc').length})`, [...blocos(doTipo('npc').map((f) => ['npc', f.id])), blocoNovo('npc')]),
+        grupo(`Monstros (${doTipo('monstro').length})`, [...blocos(doTipo('monstro').map((f) => ['monstro', f.id])), blocoNovo('monstro')]));
     },
   };
+  // ----- fichas ocultas (o mestre esconde da lista de fichas; ficam transparentes) -----
+  const chaveF = (tipo, id) => `${tipo}:${id}`;
+  const oculta = (tipo, id) => !!(S.d.ocultas || {})[chaveF(tipo, id)];
+  async function alternarOculta(tipo, id) {
+    const o = { ...(S.d.ocultas || {}) }, k = chaveF(tipo, id);
+    if (o[k]) delete o[k]; else o[k] = true;
+    S.d.ocultas = o; mudou();
+    await salvar(() => dok('mestreEstado', 'ocultas').set(o));
+  }
+  const OLHO = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
+  const OLHO_X = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 3l18 18" stroke="currentColor" stroke-width="2"/></svg>';
+
+  // ----- quem está no combate: só o que o mestre coloca (a ordem de jogada) -----
+  async function salvarOrdem(lista, vez, rodada) {
+    if (!lista.length) { S.d.ordem = null; mudou(); await salvar(() => dok('mestreEstado', 'ordem').delete()); return; }
+    const novo = { lista, vez: Math.min(Math.max(0, vez), lista.length - 1), rodada: rodada || 1, ts: agora() };
+    S.d.ordem = novo; mudou();
+    await salvar(() => dok('mestreEstado', 'ordem').set(novo));
+  }
+  async function tirarDoCombate(x) {
+    const o = ordem(); if (!o) return;
+    const i = o.lista.findIndex((y) => y.tipo === x.tipo && y.id === x.id); if (i < 0) return;
+    const lista = o.lista.filter((_, k) => k !== i);
+    await salvarOrdem(lista, i < o.vez ? o.vez - 1 : (o.vez >= lista.length ? 0 : o.vez), o.rodada);
+  }
+  async function colocarNoCombate(itens, lado) {
+    const o = ordem();
+    const lista = [...(o ? o.lista : []), ...itens.map((x) => ({ tipo: x.tipo, id: x.id }))];
+    // NPC e monstro entram no lado de onde o mestre adicionou
+    for (const x of itens) {
+      const f = x.tipo !== 'player' && fichaM(x.id);
+      if (f && ladoDe(x.tipo, x.id) !== lado) { const { id: _i, ...resto } = f; await salvar(() => dok('fichasMestre', x.id).set({ ...resto, lado })); }
+    }
+    await salvarOrdem(lista, o ? o.vez : 0, o ? o.rodada : 1);
+  }
+  function abrirAddCombate(lado) {
+    const o = ordem();
+    const dentro = new Set((o ? o.lista : []).map((x) => chaveF(x.tipo, x.id)));
+    const { players, inimigos } = todasFichas();
+    const todos = [...players, ...inimigos].filter((x) => !dentro.has(chaveF(x.tipo, x.id)));
+    const F = { q: '', tipo: lado === 'aliado' ? 'todos' : 'inimigos', min: '', max: '', quando: 'qualquer', ordem: 'recente', ocultas: false };
+    const marcados = new Set();
+    const nivelDe = (x) => parseInt((((registroDe(x.tipo, x.id) || {}).dados) || {}).NIVEL, 10);
+    const lista = h('div', { class: 'cm-add-lista' });
+    const cont = h('span', { class: 'cm-sub' });
+    const botao = btn('Adicionar ao combate', async () => {
+      const it = todos.filter((x) => marcados.has(chaveF(x.tipo, x.id)));
+      if (!it.length) { toast('Combate', 'Marque pelo menos uma ficha.'); return; }
+      m.fechar(); await colocarNoCombate(it, lado);
+      toast('Combate', it.length === 1 ? `${tituloFicha(it[0].tipo, it[0].id)} entrou no combate.` : `${it.length} fichas entraram no combate.`);
+    }, 'cm-mini cm-pri');
+    const pinta = () => {
+      let it = todos.filter((x) => {
+        const reg = registroDe(x.tipo, x.id);
+        if (!F.ocultas && oculta(x.tipo, x.id)) return false;
+        const pj = x.tipo === 'player' || x.tipo === 'demo';
+        if (F.tipo === 'player' && !pj) return false;
+        if (F.tipo === 'inimigos' && pj) return false;
+        if ((F.tipo === 'npc' || F.tipo === 'monstro') && x.tipo !== F.tipo) return false;
+        if (F.q && !norm(tituloFicha(x.tipo, x.id)).includes(norm(F.q))) return false;
+        const n = nivelDe(x);
+        if (F.min !== '' && !(n >= +F.min)) return false;
+        if (F.max !== '' && !(n <= +F.max)) return false;
+        const ts = (reg && reg.ts) || 0;
+        if (F.quando === 'dia' && ts < agora() - 864e5) return false;
+        if (F.quando === 'semana' && ts < agora() - 7 * 864e5) return false;
+        return true;
+      });
+      const ts = (x) => ((registroDe(x.tipo, x.id) || {}).ts || 0);
+      it.sort(F.ordem === 'nome' ? (a, b) => tituloFicha(a.tipo, a.id).localeCompare(tituloFicha(b.tipo, b.id))
+        : F.ordem === 'nivel' ? (a, b) => (nivelDe(b) || 0) - (nivelDe(a) || 0) : (a, b) => ts(b) - ts(a));
+      rc(lista, it.length ? it.map((x) => {
+        const reg = registroDe(x.tipo, x.id), d = (reg && reg.dados) || {}, k = chaveF(x.tipo, x.id);
+        const cb = h('input', { type: 'checkbox' }); cb.checked = marcados.has(k);
+        cb.addEventListener('change', () => { if (cb.checked) marcados.add(k); else marcados.delete(k); conta(); });
+        return h('label', { class: 'cm-add-item' + (oculta(x.tipo, x.id) ? ' cm-add-oculta' : '') }, cb,
+          h('span', { class: `cm-ml-tag cm-ml-${x.tipo}`, text: SIGLA[x.tipo] }),
+          h('span', { class: 'cm-add-txt' }, h('b', { text: tituloFicha(x.tipo, x.id) }),
+            h('small', { text: [d.PAPEL, d.NIVEL ? `nível ${d.NIVEL}` : null, d[PV] ? `PV ${d[PV]}` : null, reg ? `alterada ${quando(reg.ts)}` : 'ficha ainda não chegou'].filter(Boolean).join(' · ') })));
+      }) : h('div', { class: 'cm-vazio', text: todos.length ? 'Nenhuma ficha com esses filtros.' : 'Todas as fichas já estão no combate.' }));
+      conta();
+    };
+    const conta = () => { cont.textContent = marcados.size ? `${marcados.size} marcada${marcados.size === 1 ? '' : 's'}` : ''; botao.textContent = marcados.size ? `Adicionar ao combate (${marcados.size})` : 'Adicionar ao combate'; };
+    const campo = (rot, el, chave, ev = 'input') => { el.addEventListener(ev, () => { F[chave] = el.type === 'checkbox' ? el.checked : el.value; pinta(); }); return h('label', { class: 'cm-lbl' }, rot, el); };
+    const sel = (ops, v) => { const s = h('select', { class: 'cm-in' }, ops.map(([val, txt]) => h('option', { value: val, text: txt, selected: val === v }))); return s; };
+    const busca = h('input', { class: 'cm-in', type: 'search', placeholder: 'Nome da ficha' });
+    const minI = h('input', { class: 'cm-in', type: 'number', min: '0', inputmode: 'numeric', placeholder: 'de' });
+    const maxI = h('input', { class: 'cm-in', type: 'number', min: '0', inputmode: 'numeric', placeholder: 'até' });
+    const ocI = h('input', { type: 'checkbox' });
+    const m = modal(lado === 'aliado' ? 'Adicionar aliado ao combate' : 'Adicionar inimigo ao combate', [
+      h('div', { class: 'cm-add-filtros' },
+        campo('Buscar', busca, 'q'),
+        campo('Tipo', sel([['todos', 'Todos'], ['player', 'Players'], ['inimigos', 'NPCs e monstros'], ['npc', 'Só NPCs'], ['monstro', 'Só monstros']], F.tipo), 'tipo', 'change'),
+        h('div', { class: 'cm-lbl' }, 'Nível', h('div', { class: 'cm-add-nivel' }, minI, h('span', { text: 'a' }), maxI)),
+        campo('Alteração', sel([['qualquer', 'Qualquer data'], ['dia', 'Últimas 24 horas'], ['semana', 'Últimos 7 dias']], F.quando), 'quando', 'change'),
+        campo('Ordenar', sel([['recente', 'Mais recente'], ['nome', 'Nome'], ['nivel', 'Nível']], F.ordem), 'ordem', 'change')),
+      h('label', { class: 'cm-row cm-check' }, ocI, 'Mostrar fichas ocultas'),
+      lista],
+    [cont, h('span', { style: 'flex:1' }), btn('Cancelar', () => m.fechar(), 'cm-mini'), botao], 'cm-modal-add');
+    minI.addEventListener('input', () => { F.min = minI.value; pinta(); });
+    maxI.addEventListener('input', () => { F.max = maxI.value; pinta(); });
+    ocI.addEventListener('change', () => { F.ocultas = ocI.checked; pinta(); });
+    pinta();
+    setTimeout(() => busca.focus(), 50);
+  }
+
   // ----- menu de combate -----
   // blocos de um lado: quem está na ordem vem primeiro, com o número; quem não está fica apagado no fim
-  function grupoCombate(tit, lado, itens, o) {
-    const pos = (x) => (o ? o.lista.findIndex((y) => y.tipo === x.tipo && y.id === x.id) : -1);
-    const lista = itens.map((x) => ({ x, n: pos(x) })).sort((a, b) => (a.n < 0) - (b.n < 0) || a.n - b.n);
+  function grupoCombate(tit, lado, o) {
+    const dentro = (o ? o.lista.map((x, n) => ({ x, n })) : []).filter(({ x }) => ladoDe(x.tipo, x.id) === lado);
     return h('div', { class: 'cm-fb-grupo cm-lado-' + lado },
-      h('div', { class: 'cm-faixa cm-faixa-' + lado, text: `${tit} (${itens.length})` }),
-      h('div', { class: 'cm-fb-grade' }, lista.length
-        ? lista.map(({ x, n }) => blocoFicha(x.tipo, x.id, { num: n >= 0 ? n + 1 : null, fora: !!o && n < 0, lado: true }))
-        : h('div', { class: 'cm-vazio', text: lado === 'aliado' ? 'Os players aparecem aqui quando entram na sessão.' : 'Crie fichas de NPC ou monstro no menu de Fichas.' })));
+      h('div', { class: 'cm-faixa cm-faixa-' + lado, text: `${tit} (${dentro.length})` }),
+      h('div', { class: 'cm-fb-grade' },
+        dentro.map(({ x, n }) => blocoFicha(x.tipo, x.id, { num: n + 1, lado: true, tirar: true })),
+        h('button', { type: 'button', class: 'cm-fb cm-fb-novo cm-fb-add', onclick: () => abrirAddCombate(lado) },
+          h('b', { text: '+' }), h('span', { text: lado === 'aliado' ? 'Adicionar aliado' : 'Adicionar inimigo' }))));
   }
   const ESTADO_AT = { pendente: 'esperando resposta', aceito: 'aceitou o dano', contestado: 'contestou', defendeu: 'se defendeu', falhou: 'não se defendeu' };
   function pintarCombate() {
@@ -6044,7 +6180,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
       h('div', { class: 'cm-cb-acoes' },
         btn('Atacar / aplicar dano', () => abrirAtaque(), 'cm-pri'),
         btn('Alertar players', abrirAlerta),
-        btn(o ? 'Editar ordem' : 'Montar ordem de jogada', abrirOrdem)),
+        o ? btn('Editar ordem', abrirOrdem) : null),
       cont.length ? h('div', { class: 'cm-fb-grupo' }, h('div', { class: 'cm-faixa', text: `Contestaram (${cont.length})` }),
         h('div', { class: 'cm-lista' }, cont.map((a) => h('div', { class: 'cm-linha cm-linha-fixa' },
           h('span', { class: 'cm-rot', text: `${a.dano} dano` }),
@@ -6054,9 +6190,9 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
         h('div', { class: 'cm-ml-vez-tit' }, h('small', { text: `Rodada ${o.rodada || 1} · ${o.vez + 1} de ${o.lista.length}` }), h('b', { text: o.lista[o.vez] ? 'Vez de ' + tituloFicha(o.lista[o.vez].tipo, o.lista[o.vez].id) : '' })),
         h('div', { class: 'cm-row' }, btn('‹ Anterior', () => passarVez(-1), 'cm-mini'), btn('Próxima vez ›', () => passarVez(1), 'cm-pri'),
           btn('Encerrar combate', async () => { if (await confirmar('Encerrar o combate e apagar a ordem de jogada?', 'Encerrar')) await salvar(() => dok('mestreEstado', 'ordem').delete()); }, 'cm-mini cm-perigo')))
-        : h('div', { class: 'cm-sub', text: 'Monte a ordem de jogada pra numerar as fichas. A ficha da vez brilha pra você.' }),
-      grupoCombate('Aliados', 'aliado', lados.aliados, o),
-      grupoCombate('Inimigos', 'inimigo', lados.inimigos, o),
+        : h('div', { class: 'cm-sub', text: 'Ninguém no combate ainda. Toque em “Adicionar aliado” ou “Adicionar inimigo” pra escolher as fichas que entram.' }),
+      grupoCombate('Aliados', 'aliado', o),
+      grupoCombate('Inimigos', 'inimigo', o),
       h('div', { class: 'cm-fb-grupo' }, h('div', { class: 'cm-faixa', text: 'Últimos ataques' }),
         ult.length ? h('div', { class: 'cm-lista' }, ult.map((a) => h('div', { class: 'cm-linha cm-linha-fixa cm-at-' + a.estado },
           h('span', { class: 'cm-rot', text: a.estado === 'falhou' ? `−${a.danoFinal} PV` : a.estado === 'aceito' ? `−${a.dano} PV` : `${a.dano} dano` }),
@@ -6071,10 +6207,12 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const linhas = [tipo === 'player' && d.NOME ? nome(id) : null, d.PAPEL || null].filter(Boolean);
     const pv = d['PONTOS DE VIDA'];
     const abrirEste = () => { if (f) abrirFicha(tipo, id); };
-    return h('div', { class: 'cm-fb-w' + (naVez(tipo, id) ? ' cm-vez' : '') + (op.fora ? ' cm-fb-fora' : '') }, h('div', { class: `cm-fb cm-fb-${tipo}` + (f ? '' : ' cm-fb-off'), role: 'button', tabindex: f ? '0' : '-1', 'aria-disabled': f ? null : 'true',
+    return h('div', { class: 'cm-fb-w' + (naVez(tipo, id) ? ' cm-vez' : '') + (op.fora ? ' cm-fb-fora' : '') + (op.olho && oculta(tipo, id) ? ' cm-fb-oculta' : '') }, h('div', { class: `cm-fb cm-fb-${tipo}` + (f ? '' : ' cm-fb-off'), role: 'button', tabindex: f ? '0' : '-1', 'aria-disabled': f ? null : 'true',
       onclick: abrirEste, onkeydown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrirEste(); } } },
       h('div', { class: 'cm-fb-topo' }, op.num ? h('span', { class: 'cm-fb-num', text: op.num + 'º' }) : null, h('span', { text: TIPOS_FICHA[tipo] }),
         op.lado && tipo !== 'player' && tipo !== 'demo' ? h('button', { type: 'button', class: 'cm-fb-lado', title: 'Trocar de lado', text: ladoDe(tipo, id) === 'aliado' ? '→ inimigo' : '→ aliado', onclick: (e) => { e.stopPropagation(); trocarLado(id); } }) : null,
+        op.olho ? (() => { const b = h('button', { type: 'button', class: 'cm-fb-olho', title: oculta(tipo, id) ? 'Mostrar ficha' : 'Ocultar ficha', 'aria-label': oculta(tipo, id) ? 'Mostrar ficha' : 'Ocultar ficha', onclick: (e) => { e.stopPropagation(); alternarOculta(tipo, id); } }); b.innerHTML = oculta(tipo, id) ? OLHO_X : OLHO; return b; })() : null,
+        op.tirar ? h('button', { type: 'button', class: 'cm-fb-x', title: 'Tirar do combate', 'aria-label': 'Tirar do combate', text: '×', onclick: (e) => { e.stopPropagation(); tirarDoCombate({ tipo, id }); } }) : null,
         !op.lado && tipo !== 'player' ? h('button', { type: 'button', class: 'cm-fb-x', title: 'Apagar ficha', 'aria-label': 'Apagar ficha', text: '×', onclick: (e) => { e.stopPropagation(); apagarFicha(tipo, id); } }) : null),
       h('div', { class: 'cm-fb-corpo' },
         h('div', { class: 'cm-fb-foto' }, d.__img ? h('img', { src: d.__img, alt: '' }) : iniciais(tit)),
