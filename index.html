@@ -13,11 +13,11 @@ window.claude = { use: (n) => window.__fbPronto.then((a) => (a ? a[n] || null : 
 </script>
 <script src="firebase-config.js"></script>
 <script type="module" src="fb.js"></script>
-<meta name="cpr-build" content="855164fe32a6">
+<meta name="cpr-build" content="d4fb9af891c6">
 <script>
 // avisa quando sai uma versão nova do site (o navegador pode ficar horas com a antiga aberta)
 (function () {
-  var atual = '855164fe32a6', avisou = false;
+  var atual = 'd4fb9af891c6', avisou = false;
   function mostrar() {
     if (avisou || !document.body) return; avisou = true;
     var b = document.createElement('div'); b.id = 'cpr-nova'; b.setAttribute('role', 'alert');
@@ -1330,6 +1330,81 @@ body.cm-vez-ficha .scaler{animation:cmVezBrilho 1.4s ease-in-out infinite}
 .cm-dano-alvo small{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#aaa}
 .cm-dano-alvo b{font-size:17px}
 .cm-dano-in{font:700 34px var(--font)!important;height:60px;text-align:center;max-width:180px}
+
+/* =================================================================
+   ESTILO DO LIVRO
+   Detalhes tirados da diagramação do livro de regras do Cyberpunk RED:
+   título de página largo com a régua vermelha que dá um degrau e desce
+   no canto, etiquetas vermelhas de margem, caixas de nota em papel
+   rasgado, tabelas com linhas salmão, caixa de fórmula, linha de
+   atributos no formato dos blocos de NPC e o pé de página com o número
+   grande e a régua cheia de estática.
+   ================================================================= */
+:root{--salmao:#fde1d7;--salmao2:#fbcfc1}
+.cm-principal{overflow-x:clip}
+
+/* título da página */
+.cm-h h2{background:none;border:0;color:var(--ink);padding:0;font:800 25px/1.1 var(--font);letter-spacing:.2em;display:flex;align-items:center;gap:14px;flex:1 1 260px;min-width:0;clip-path:none}
+.cm-h h2::before{content:'';flex:0 0 auto;width:10px;height:10px;background:var(--red);transform:rotate(45deg);margin-right:2px}
+.cm-h h2::after{content:'';position:static;right:auto;bottom:auto;width:auto;transform:none;border:0;flex:1 1 40px;min-width:40px;height:16px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 46 16'%3E%3Cpath d='M0 10.5h14l6-7h18q6 0 6 6v6.5' fill='none' stroke='%23cf2b21' stroke-width='3'/%3E%3C/svg%3E") right top/46px 16px no-repeat,linear-gradient(var(--red),var(--red)) left 9px/calc(100% - 44px) 3px no-repeat}
+.cm-h h2 .cm-n{margin-left:0}
+
+/* etiquetas de margem (STREET / EDGE / DATA do livro), com a régua fina que segue até a borda */
+.cm-faixa{position:relative;background:var(--red);color:#fff;font:800 12.5px var(--font);letter-spacing:.18em;padding:4px 14px 4px 10px;clip-path:none;overflow:visible}
+.cm-faixa::after{content:'';position:absolute;left:100%;bottom:0;width:2400px;height:2px;background:var(--red);pointer-events:none}
+.cm-faixa.cm-faixa-aliado{background:#000}
+.cm-faixa.cm-faixa-mortos{background:#2b2b2b}
+.cm-faixa.cm-faixa-mortos::after{background:#2b2b2b}
+.cm-lado .cm-faixa::after,.cm-faixa-link::after,#cm-remota .cm-faixa::after,.cm-ferr-painel .cm-faixa::after{display:none}
+.cm-lado{overflow-x:clip}
+
+/* nota de canto: papel cinza rasgado, como as caixas "… em Ação" do livro */
+.cm-nota{position:relative;background:#d9d9d6;color:#2a2a2a;padding:16px 18px 18px;max-width:640px;
+  background-image:repeating-linear-gradient(115deg,rgba(255,255,255,.18) 0 2px,transparent 2px 7px),repeating-linear-gradient(25deg,rgba(0,0,0,.035) 0 1px,transparent 1px 5px);
+  clip-path:polygon(0 6px,4% 1px,9% 5px,15% 0,22% 4px,29% 1px,36% 6px,44% 2px,51% 5px,58% 0,66% 4px,73% 1px,80% 5px,87% 2px,93% 6px,100% 1px,100% calc(100% - 5px),95% 100%,88% calc(100% - 4px),81% calc(100% - 1px),74% calc(100% - 6px),66% 100%,58% calc(100% - 3px),50% calc(100% - 6px),42% calc(100% - 1px),34% calc(100% - 5px),26% 100%,18% calc(100% - 4px),10% calc(100% - 1px),4% calc(100% - 6px),0 100%)}
+.cm-nota b{display:block;font:800 italic 15px var(--font);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;color:#111}
+.cm-nota p{margin:0;font:italic 15px/1.45 var(--font)}
+
+/* tabelas do livro: linhas salmão alternadas e divisórias vermelhas */
+.cm-lista>.cm-linha:nth-child(even),.cm-lista>.cm-linha:nth-child(even):not(:hover){background:var(--salmao)}
+.cm-lista>.cm-linha:hover{background:var(--salmao2)}
+.cm-rot{background:var(--red)}
+
+/* blocos de ficha: linha de atributos e cabeçalho com régua */
+.cm-fb-stats{display:block;margin-top:4px;font-size:12px;line-height:1.35;color:#222}
+.cm-fb-stats>span{white-space:nowrap}
+.cm-fb-stats em{font-style:normal;font-weight:800;letter-spacing:.04em}
+.cm-fb-stats i{font-style:normal;color:var(--red)}
+.cm-fb-pe{background:linear-gradient(90deg,var(--salmao),#fff 70%)}
+
+/* pé de página: número grande + régua vermelha com estática */
+.cm-rodape{display:flex;align-items:center;gap:12px;margin-top:10px;grid-column:1 / -1}
+.cm-rodape b{font:900 34px/1 var(--font);letter-spacing:.06em;color:#111}
+.cm-rodape small{font:700 11px var(--font);letter-spacing:.24em;text-transform:uppercase;color:var(--red);white-space:nowrap;max-width:40%;overflow:hidden;text-overflow:ellipsis}
+.cm-estatica{flex:1;height:12px;background:repeating-linear-gradient(90deg,transparent 0 23px,#fff 23px 25px,transparent 25px 31px,#fff 31px 32px,transparent 32px 57px) left top/100% 100%,repeating-linear-gradient(90deg,transparent 0 41px,#fff 41px 44px,transparent 44px 89px) left 3px/100% 6px repeat-x,linear-gradient(var(--red),var(--red)) left top/min(90px,14%) 100% no-repeat,linear-gradient(var(--red),var(--red)) left center/100% 4px no-repeat}
+
+/* janelas: título largo com a mesma régua, barra de baixo com estática */
+.cm-modal-tit{background:#fff;color:var(--ink);font:800 18px/1.1 var(--font);letter-spacing:.2em;padding:14px 16px 6px;display:flex;align-items:center;gap:12px}
+.cm-modal-tit::after{content:'';flex:1;min-width:30px;height:14px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 46 16'%3E%3Cpath d='M0 10.5h14l6-7h18q6 0 6 6v6.5' fill='none' stroke='%23cf2b21' stroke-width='3'/%3E%3C/svg%3E") right top/40px 14px no-repeat,linear-gradient(var(--red),var(--red)) left 8px/calc(100% - 38px) 3px no-repeat}
+.cm-modal-alerta .cm-modal-tit,.cm-modal-ataque .cm-modal-tit{background:var(--red);color:#fff;padding:12px 16px}
+.cm-modal-alerta .cm-modal-tit::after,.cm-modal-ataque .cm-modal-tit::after{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 46 16'%3E%3Cpath d='M0 10.5h14l6-7h18q6 0 6 6v6.5' fill='none' stroke='%23fff' stroke-width='3'/%3E%3C/svg%3E") right top/40px 14px no-repeat,linear-gradient(#fff,#fff) left 8px/calc(100% - 38px) 3px no-repeat}
+.cm-modal::before{content:'';position:absolute;left:0;right:0;bottom:0;height:6px;background-color:var(--red);
+  background-image:repeating-linear-gradient(90deg,transparent 0 19px,#fff 19px 21px,transparent 21px 47px,#fff 47px 48px,transparent 48px 71px);pointer-events:none}
+.cm-modal-pe{padding-bottom:20px}
+
+/* caixa de fórmula (o livro usa pra "STAT + Habilidade + 1d10 vs. DV") */
+.cm-formula{background:var(--salmao);border:2px solid var(--red);padding:8px 12px;text-align:center;font:600 15px/1.5 var(--font);color:#222}
+.cm-formula b{font-size:18px;color:var(--red)}
+
+/* subtítulos com os triângulos ▶ ◀ do livro */
+.cm-ml-vez-tit b::before,.cm-cb-vezbar .cm-ml-vez-tit b::before{content:'▶ ';color:var(--red);font-size:.8em}
+.cm-ml-vez-tit b::after,.cm-cb-vezbar .cm-ml-vez-tit b::after{content:' ◀';color:var(--red);font-size:.8em}
+
+@media (max-width:640px){
+  .cm-h h2{font-size:20px;letter-spacing:.14em}
+  .cm-rodape b{font-size:26px}
+  .cm-nota{max-width:none}
+}
 /* ================= MENU PRINCIPAL no visual da ficha =================
    folha branca, cabeçalhos pretos com canto cortado, itens em linhas finas vermelhas */
 #menu{background:var(--paper);color:var(--ink);border-right:2px solid var(--red)}
@@ -4087,15 +4162,17 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     if (!S.db) { wrap.append(h('div', { class: 'cm-vazio', text: 'Conectando…' })); return; }
     if (!S.escreve && !FB) wrap.append(h('div', { class: 'cm-aviso', text: 'Você está só como leitor desta ficha. Pra criar ou entrar em sessões, peça a quem compartilhou a ficha acesso de Colaborador.' }));
     pintarTopo();
-    if (!S.sess) { montarLobby(wrap); return; }
+    if (!S.sess) { montarLobby(wrap); wrap.append(rodape('00', 'Comunidade')); return; }
     // sala: conteúdo da seção + coluna de resumo ao lado (no PC)
     const principal = h('div', { class: 'cm-principal' });
     S.ui.lado = h('aside', { class: 'cm-lado', 'aria-label': 'Resumo da sessão' });
     wrap.classList.add('cm-com-lado');
     wrap.append(principal, S.ui.lado);
     SECOES[S.sec].montar(principal);
+    wrap.append(rodape(String(SECS.findIndex(([k]) => k === S.sec) + 1).padStart(2, '0'), S.sess.nome || 'Sessão'));
     atualizar();
   }
+  const rodape = (n, txt) => h('footer', { class: 'cm-rodape', 'aria-hidden': 'true' }, h('b', { text: n }), h('span', { class: 'cm-estatica' }), h('small', { text: txt }));
   // coluna lateral: o que está rolando nas outras seções, pra não precisar ficar trocando de aba
   function pintarLado() {
     const L = S.ui.lado; if (!L) return;
@@ -5847,9 +5924,17 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
       if (ok) { m.fechar(); toast('Ataque', alvos.length === 1 ? `Ataque enviado pra ${nome(alvos[0])}. Agora é com o player: aceitar ou contestar.` : `Ataque enviado pra ${alvos.length} players.`); }
     };
     dano.addEventListener('keydown', (e) => { if (e.key === 'Enter') enviar(); });
+    const conta = h('div', { class: 'cm-formula' });
+    const pintaConta = () => {
+      const n = Math.max(0, parseInt(dano.value, 10) || 0);
+      rc(conta, alvos.map((u) => { const pv = parseInt(((fichaDe(u) || {}).dados || {})[PV], 10); const nome2 = tituloFicha('player', u).replace(/ \(.*\)$/, '');
+        return h('div', null, isNaN(pv) ? `${nome2}: PV em branco` : [`${nome2}: PV ${pv} − ${n} = `, h('b', { text: String(Math.max(0, pv - n)) }), pv - n <= 0 ? ' ☠' : null]); }));
+    };
+    dano.addEventListener('input', pintaConta); pintaConta();
     const m = modal('Dano', [
       h('div', { class: 'cm-dano-alvo' }, (() => { const ic = h('span', { class: 'cm-mira-ic' }); ic.innerHTML = MIRA; return ic; })(), h('span', null, h('small', { text: 'Alvo' }), h('b', { text: alvoTxt }))),
       h('label', { class: 'cm-lbl' }, 'Quanto de dano', dano),
+      conta,
       h('label', { class: 'cm-lbl' }, 'Quem ataca', quem),
       h('label', { class: 'cm-lbl' }, 'O que acontece', txt),
       h('div', { class: 'cm-sub', text: 'O player vê o ataque na tela e escolhe aceitar o dano ou contestar. Se contestar, você decide se ele conseguiu.' })],
@@ -6124,7 +6209,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
         h('div', { class: 'cm-faixa', text: tit }),
         h('div', { class: 'cm-fb-grade' }, itens.length ? itens : h('div', { class: 'cm-vazio', text: vazio })));
       rc(S.ui.area,
-        h('div', { class: 'cm-txt', text: 'Toque numa ficha pra abrir e mexer à vontade. A de player muda na ficha dele na hora; as de NPC e monstro só você vê. Por enquanto todas usam o mesmo modelo de ficha.' }),
+        nota('Fichas na mesa', 'Toque numa ficha pra abrir e mexer à vontade. A de player muda na ficha dele na hora; as de NPC e monstro só você vê. Por enquanto todas usam o mesmo modelo de ficha.'),
         h('div', { class: 'cm-row' }, (S.d.fichasM || []).some((f) => f.demo)
           ? btn('Apagar as fichas de demonstração', async () => { if (await confirmar('Apagar as 9 fichas de demonstração?', 'Apagar')) await salvar(async () => { for (const f of S.d.fichasM.filter((x) => x.demo)) { if (R.id === f.id) sairRemota(true); await dok('fichasMestre', f.id).delete(); } }); }, 'cm-mini')
           : btn('Criar fichas de demonstração', async () => { if (await salvar(() => criarDemos(baseDe('fichasMestre')))) toast('Fichas', '3 players, 3 NPCs e 3 monstros de demonstração criados.'); }, 'cm-mini cm-pri')),
@@ -6295,7 +6380,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
         h('div', { class: 'cm-ml-vez-tit' }, h('small', { text: `Rodada ${o.rodada || 1} · ${o.vez + 1} de ${o.lista.length}` }), h('b', { text: o.lista[o.vez] ? 'Vez de ' + tituloFicha(o.lista[o.vez].tipo, o.lista[o.vez].id) : '' })),
         h('div', { class: 'cm-row' }, btn('‹ Anterior', () => passarVez(-1), 'cm-mini'), btn('Próxima vez ›', () => passarVez(1), 'cm-pri'),
           btn('Encerrar combate', async () => { if (await confirmar('Encerrar o combate e apagar a ordem de jogada?', 'Encerrar')) await salvar(() => dok('mestreEstado', 'ordem').delete()); }, 'cm-mini cm-perigo')))
-        : h('div', { class: 'cm-sub', text: 'Ninguém no combate ainda. Toque em “Adicionar aliado” ou “Adicionar inimigo” pra escolher as fichas que entram.' }),
+        : nota('Tiroteio de sexta à noite', 'Ninguém no combate ainda. Toque em “Adicionar aliado” ou “Adicionar inimigo” pra escolher quem entra. A ordem em que você adiciona vira a ordem de jogada.'),
       grupoCombate('Aliados', 'aliado', o),
       grupoCombate('Inimigos', 'inimigo', o),
       h('div', { class: 'cm-fb-grupo' }, h('div', { class: 'cm-faixa', text: 'Últimos ataques' }),
@@ -6306,10 +6391,12 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
           : h('div', { class: 'cm-vazio', text: 'Nenhum ataque ainda.' }),
         resolvidos.length ? h('div', { class: 'cm-row' }, btn('Limpar os resolvidos', async () => { await salvar(async () => { for (const a of resolvidos) await dok('ataques', a.id).delete(); }); }, 'cm-mini')) : null));
   }
+  const nota = (tit, txt) => h('aside', { class: 'cm-nota' }, h('b', { text: tit }), h('p', { text: txt }));
   function blocoFicha(tipo, id, op = {}) {
     const f = registroDe(tipo, id), d = (f && f.dados) || {};
     const tit = d.NOME || (tipo === 'player' ? nome(id) : `${TIPOS_FICHA[tipo]} sem nome`);
     const linhas = [tipo === 'player' && d.NOME ? nome(id) : null, d.PAPEL || null].filter(Boolean);
+    const stats = [['REF', d.REF], ['DES', d.DES], ['TCO', d.TCO], ['PB', d['PB 1']]].filter(([, v]) => v !== undefined && v !== '');
     const pv = d['PONTOS DE VIDA'];
     const abrirEste = () => { if (f) abrirFicha(tipo, id); };
     const morreu = morta(tipo, id);
@@ -6324,7 +6411,8 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
         !op.lado && tipo !== 'player' ? h('button', { type: 'button', class: 'cm-fb-x', title: 'Apagar ficha', 'aria-label': 'Apagar ficha', text: '×', onclick: (e) => { e.stopPropagation(); apagarFicha(tipo, id); } }) : null),
       h('div', { class: 'cm-fb-corpo' },
         h('div', { class: 'cm-fb-foto' }, d.__img ? h('img', { src: d.__img, alt: '' }) : iniciais(tit), morreu ? caveira('cm-caveira cm-fb-cav') : null),
-        h('div', { class: 'cm-fb-txt' }, h('b', { text: tit }), linhas.map((l) => h('small', { text: l })))),
+        h('div', { class: 'cm-fb-txt' }, h('b', { text: tit }), linhas.map((l) => h('small', { text: l })),
+          stats.length ? h('span', { class: 'cm-fb-stats' }, stats.map(([k, v], i) => [i ? h('i', { text: ' • ' }) : null, h('span', {}, h('em', { text: k }), ' ' + v)])) : null)),
       favorita(tipo, id) ? h('span', { class: 'cm-fb-fav', title: 'Sempre na frente', text: '★' }) : null,
       h('div', { class: 'cm-fb-pe' },
         morreu ? h('span', { class: 'cm-fb-pv cm-fb-morto' }, caveira(), 'Morta') : pv ? h('span', { class: 'cm-fb-pv', text: `PV ${pv}` }) : null,
