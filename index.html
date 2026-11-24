@@ -592,6 +592,8 @@ body.mob .tem-selo .mslot>input,body.mob .tem-selo .mslot>textarea{padding-right
 body.mob .mcell.c.tem-selo .mslot>input{padding-left:4px!important}
 @media print{.lvbar,.lvdrawer{display:none!important}}
 
+body.mob .scaler.pp .sheet.active{display:block!important}
+body.mob .mpage{display:none!important}
 
 .lv-addrow{display:flex;gap:6px;margin-top:6px}
 .lv-addrow .btool{flex:1;white-space:nowrap}
@@ -768,11 +770,11 @@ body.comu-on #backdrop{z-index:275}
 .cm-lento{flex:0 0 auto;background:var(--red)!important;color:#fff;border:0!important;text-align:center;font-weight:700;padding:6px 12px!important}
 
 /* ---------- a folha ---------- */
-.cm-body{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:18px 10px 40px}
-.cm-folha{position:relative;max-width:1100px;margin:0 auto}
+.cm-body{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 10px 30px}
+.cm-folha{position:relative;max-width:1280px;margin:0 auto}
 .cm-moldura{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
 .cm-moldura path{fill:var(--paper);stroke:var(--red);stroke-width:2;stroke-linejoin:miter}
-.cm-wrap{position:relative;padding:28px 30px 32px;display:flex;flex-direction:column;gap:14px}
+.cm-wrap{position:relative;padding:22px 24px 26px;display:flex;flex-direction:column;gap:12px}
 .cm-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .cm-h h2{margin:0 auto 0 0;background:#000;color:#fff;font-size:22px;font-weight:700;letter-spacing:2px;text-transform:uppercase;position:relative;
   padding:5px 22px 5px 12px;border:var(--ln) solid var(--red);max-width:100%;--c:10px}
@@ -998,6 +1000,52 @@ body.land #fold-paginas{grid-row:2/5}
   .cm-papel{display:none}
   .cm-in-codigo{font-size:18px;letter-spacing:2px;padding:7px 6px}
 }
+/* ---------- sala: conteúdo + coluna de resumo ---------- */
+.cm-wrap.cm-com-lado{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:18px;align-items:start}
+.cm-principal{display:flex;flex-direction:column;gap:12px;min-width:0}
+.cm-lado{display:flex;flex-direction:column;gap:12px;min-width:0}
+.cm-bloco{display:flex;flex-direction:column}
+.cm-faixa-link{border:0;cursor:pointer;display:flex;align-items:center;gap:8px;align-self:stretch;font-family:var(--font);text-align:left}
+.cm-faixa-link:hover{background:var(--red)}
+.cm-bloco>.cm-faixa{align-self:stretch}
+.cm-mini-lista{border-top:0}
+.cm-mini-lista .cm-linha{grid-template-columns:minmax(0,1fr);padding:6px 10px;gap:0}
+.cm-mini-lista .cm-linha-txt b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cm-mini-lista .cm-linha-txt small{font-size:12px}
+.cm-mini-lista .cm-vazio{padding:10px;font-size:13px}
+.cm-linha-fixa{cursor:default}
+.cm-linha-fixa:hover{background:#fff}
+.cm-mini-npcs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:var(--ln) solid var(--red);border-top:0}
+.cm-mini-npc{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 4px;background:#fff;border:0;font:700 11px var(--font);text-transform:uppercase;color:var(--ink);cursor:pointer;min-width:0}
+.cm-mini-npc:hover{background:var(--tint)}
+.cm-mini-npc span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cm-mini-npc .cm-av{width:46px;height:46px;flex-basis:46px}
+@media (max-width:1000px){.cm-wrap.cm-com-lado{grid-template-columns:minmax(0,1fr)}.cm-lado{display:none}}
+
+/* ---------- sino de novidades ---------- */
+.cm-sino{position:relative;width:40px;height:36px;display:inline-flex;align-items:center;justify-content:center;background:transparent;border:var(--ln) solid var(--red);color:#fff;flex:0 0 auto}
+.cm-sino svg{width:22px;height:22px}
+.cm-sino:hover,.cm-sino.on{background:var(--red)}
+.cm-sino .cm-n{position:absolute;top:-8px;right:-8px;border:2px solid #0d0d0d}
+.cm-top{position:relative}
+.cm-sino-painel{position:absolute;right:10px;top:calc(100% - 4px);z-index:30;width:min(420px,calc(100vw - 20px));max-height:min(70vh,560px);display:flex;flex-direction:column;
+  background:#fff;color:var(--ink);border:var(--ln) solid var(--red);box-shadow:0 10px 30px rgba(0,0,0,.45);
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)}
+.cm-sino-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#000;color:#fff;padding:6px 8px 6px 12px;font-weight:700;font-size:13px;letter-spacing:1.2px;text-transform:uppercase}
+.cm-sino-hd .cm-btn{background:#fff;color:var(--ink);min-height:28px}
+.cm-sino-lista{overflow-y:auto;display:flex;flex-direction:column}
+.cm-sino-lista>.cm-linha+.cm-linha{border-top:1px solid var(--red)}
+.cm-sino-lista .cm-linha{grid-template-columns:86px minmax(0,1fr) auto;padding:8px 10px;gap:8px}
+.cm-sino-lista .cm-linha-txt{font-size:14px}
+.cm-sino-lista .cm-vazio{border:0}
+
+/* ---------- foto do NPC (mestre) ---------- */
+.cm-foto-box{flex:0 0 auto}
+.cm-foto{position:relative;display:flex;flex-direction:column;align-items:stretch;padding:0;border:0;background:none;cursor:pointer}
+.cm-foto-txt{background:#000;color:#fff;font:700 11px var(--font);letter-spacing:1px;text-transform:uppercase;padding:4px 6px;text-align:center}
+.cm-foto:hover .cm-foto-txt{background:var(--red)}
+.cm-foto:disabled{opacity:.6;cursor:default}
+
 @media print{#comu,.cm-toasts{display:none!important}}
 /* ================= MENU PRINCIPAL no visual da ficha =================
    folha branca, cabeçalhos pretos com canto cortado, itens em linhas finas vermelhas */
@@ -1671,11 +1719,12 @@ function buildMobile() {
   mobPage3($('#mpage-2'));
 }
 
+const EM_PE_CARTOES = false; // os cartões de celular em pé ficaram ruins: em pé mostra a ficha normal
 function setMob(on) {
   if (on === mobOn) return;
   mobOn = on;
   document.body.classList.toggle('mob', on);
-  for (const s of mobSlots) {
+  for (const s of (EM_PE_CARTOES ? mobSlots : [])) {
     const k = s.dataset.k;
     const node = k === '__img' ? $('#portrait') : document.querySelector(`[data-f="${CSS.escape(k)}"]`);
     if (!node) continue;
@@ -1778,7 +1827,7 @@ function applyScale() {
   else s = Math.min(ZMAX, Math.max(ZMIN, zoomVal));
   const fluid = document.body.classList.contains('mob');
   for (const sc of document.querySelectorAll('.scaler')) {
-    if ((fluid && (sc.classList.contains('pp') || sc.classList.contains('fl'))) || (land && sc.classList.contains('fl'))) {
+    if ((fluid && sc.classList.contains('fl')) || (land && sc.classList.contains('fl'))) {
       sc.style.width = ''; sc.style.height = ''; sc.querySelector('.sheet').style.transform = '';
       continue;
     }
@@ -3409,10 +3458,14 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   const vistas = new Set();
   function brilhar(i) {
     if (i === 5 || vistas.has(i)) return; // Livros abre no leitor
+    if (document.body.classList.contains('comu-on')) { // a Comunidade está cobrindo a ficha: espera ela fechar
+      addEventListener('cm-fechou', () => setTimeout(() => brilhar([...document.querySelectorAll('.sheet')].findIndex((s) => s.classList.contains('active'))), 80), { once: true });
+      return;
+    }
     vistas.add(i);
     const sheet = document.querySelectorAll('.sheet')[i];
     const mp = document.getElementById(`mpage-${i}`);
-    const emPe = document.body.classList.contains('mob') && mp;
+    const emPe = false && mp;
     const fim = [];
     // passa a luz pela borda de cada elemento, com atraso conforme a posição na tela
     const acender = (lista, fx, fy) => {
@@ -3471,7 +3524,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
    conversam com NPCs (o mestre responde), resolvem pistas e aceitam missões. */
 (function () {
   'use strict';
-  const SECS = [['novidades', 'Novidades'], ['mural', 'Mural'], ['mapa', 'Mapa'], ['npcs', 'NPCs'], ['pistas', 'Pistas'], ['missoes', 'Missões'], ['perfil', 'Perfis']];
+  const SECS = [['mural', 'Mural'], ['mapa', 'Mapa'], ['npcs', 'NPCs'], ['pistas', 'Pistas'], ['missoes', 'Missões'], ['perfil', 'Perfis']];
   const NOME_SEC = Object.fromEntries(SECS.map((s) => [s[0], s[1]]));
   const TIPOS_PISTA = { documento: 'Documento', cifrada: 'Mensagem cifrada', enigma: 'Enigma', arquivo: 'Arquivo', transmissao: 'Transmissão' };
   const TIPOS_LOCAL = { distrito: 'Distrito', local: 'Ponto de interesse', evento: 'Evento' };
@@ -3484,7 +3537,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   const S = {
     db: null, user: null, assets: null, me: null, mestre: false, escreve: true, erro: null, lento: false,
     d: { mapa: null, locais: [], npcs: [], pistas: [], rasc: [], missoes: [], aceites: [], rep: {}, perfis: {}, mural: [], coment: [], desc: [], conversas: [], minhaConv: null, msgs: [], den: [], thread: [] },
-    visto: null, nomes: {}, sec: 'novidades', aberto: false, carregou: new Set(), conhecidos: null,
+    visto: null, nomes: {}, sec: 'mural', aberto: false, carregou: new Set(), conhecidos: null,
     ui: {}, abertosCom: new Set(), abertosDesc: new Set(), rascCom: {}, rascDesc: {}, npcAberto: null, chatNpc: null, threadDe: null, subThread: null,
     sess: null, subsSala: [], lob: { pedFB: {}, papel: null, minhas: [], membrosDe: {}, pedidosTodos: {}, meusPedidos: {}, sessDe: {}, meuMembro: {}, ger: null, busca: null, criando: false, conhecidosLob: null }, subsLob: {}, 
     pistasVer: 'pub', missoesVer: 'abertas', filtroLocal: '', pondo: false, movendo: null, mz: 1, perfilAberto: null, verDen: false,
@@ -3632,19 +3685,40 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   const titulo = h('div', { class: 'cm-tit' }, h('small', { text: 'Comunidade' }), h('span', { class: 'cm-cidade', text: 'Cidade' }));
   const tabs = h('nav', { class: 'cm-tabs', role: 'tablist', 'aria-label': 'Seções da comunidade' },
     SECS.map(([k, n]) => h('button', { type: 'button', class: 'cm-tab', role: 'tab', 'data-sec': k, onclick: () => abrir(k) }, n, h('b', { class: 'cm-n', 'data-n': k }))));
+  // novidades: sino na barra, com painel suspenso
+  const sinoBtn = h('button', { type: 'button', class: 'cm-sino', 'aria-label': 'Novidades', title: 'Novidades', 'aria-expanded': 'false', onclick: (e) => { e.stopPropagation(); alternarSino(); } });
+  sinoBtn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0-6 6v4l-2 3h16l-2-3V9a6 6 0 0 0-6-6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 19a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
+  sinoBtn.append(h('b', { class: 'cm-n', 'data-n': 'novidades' }));
+  const sinoPainel = h('div', { class: 'cm-sino-painel', hidden: true, role: 'dialog', 'aria-label': 'Novidades', onclick: (e) => e.stopPropagation() });
   const corpo = h('div', { class: 'cm-body' });
   const avisoLento = h('div', { class: 'cm-aviso cm-lento', hidden: true, text: 'Sem resposta do servidor ainda. Confira a internet.' });
-  painel.append(h('header', { class: 'cm-top' }, h('div', { class: 'cm-bar' }, appBtn, titulo, h('span', { style: 'flex:1' }), fichaBtn, salaBtn, papel), tabs), avisoLento, corpo);
+  painel.append(h('header', { class: 'cm-top' }, h('div', { class: 'cm-bar' }, appBtn, titulo, h('span', { style: 'flex:1' }), sinoBtn, fichaBtn, salaBtn, papel), tabs, sinoPainel), avisoLento, corpo);
+  document.addEventListener('click', () => { if (!sinoPainel.hidden) alternarSino(false); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !sinoPainel.hidden) alternarSino(false); });
 
   function abrir(sec) {
     if (sec && sec !== S.sec) { S.npcAberto = null; S.chatNpc = null; fecharThread(); S.perfilAberto = null; S.verDen = false; }
-    S.sec = (sec && SECOES[sec]) ? sec : (S.sec || 'novidades');
+    S.sec = (sec && SECOES[sec]) ? sec : (SECOES[S.sec] ? S.sec : 'mural');
     S.aberto = true;
     painel.hidden = false;
     document.body.classList.add('comu-on');
     if (typeof openMenu === 'function') openMenu(false);
     tabs.querySelectorAll('.cm-tab').forEach((t) => { const on = t.dataset.sec === S.sec; t.classList.toggle('on', on); t.setAttribute('aria-selected', on); if (on) t.scrollIntoView({ block: 'nearest', inline: 'nearest' }); });
     montar();
+    marcarMenu();
+  }
+  // menu principal: com a Comunidade aberta, quem fica marcado é ela (e não a página da ficha que está por baixo)
+  function marcarMenu() {
+    const pags = [...document.querySelectorAll('#menu .tab')];
+    const itensC = [...document.querySelectorAll('#menu .cm-go')];
+    if (S.aberto) {
+      pags.forEach((t) => t.classList.remove('active'));
+      itensC.forEach((b) => b.classList.toggle('active', S.sess ? b.dataset.sec === S.sec : !b.dataset.sec));
+    } else {
+      itensC.forEach((b) => b.classList.remove('active'));
+      const i = [...document.querySelectorAll('.sheet')].findIndex((x) => x.classList.contains('active'));
+      pags.forEach((t, k) => t.classList.toggle('active', k === i));
+    }
   }
   // a ficha fica escondida (html.cm-gate) até a pessoa escolher Mestre ou Player
   function liberarFicha() {
@@ -3656,6 +3730,9 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     liberarFicha();
     if (!S.aberto) return;
     S.aberto = false; painel.hidden = true; document.body.classList.remove('comu-on'); fecharThread();
+    alternarSino(false);
+    marcarMenu();
+    window.dispatchEvent(new Event('cm-fechou')); // a página da ficha ficou visível agora
   }
   window.__comuAbrir = abrir;
   window.__comuEstado = S;
@@ -3696,8 +3773,34 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     if (!S.escreve && !FB) wrap.append(h('div', { class: 'cm-aviso', text: 'Você está só como leitor desta ficha. Pra criar ou entrar em sessões, peça a quem compartilhou a ficha acesso de Colaborador.' }));
     pintarTopo();
     if (!S.sess) { montarLobby(wrap); return; }
-    SECOES[S.sec].montar(wrap);
+    // sala: conteúdo da seção + coluna de resumo ao lado (no PC)
+    const principal = h('div', { class: 'cm-principal' });
+    S.ui.lado = h('aside', { class: 'cm-lado', 'aria-label': 'Resumo da sessão' });
+    wrap.classList.add('cm-com-lado');
+    wrap.append(principal, S.ui.lado);
+    SECOES[S.sec].montar(principal);
     atualizar();
+  }
+  // coluna lateral: o que está rolando nas outras seções, pra não precisar ficar trocando de aba
+  function pintarLado() {
+    const L = S.ui.lado; if (!L) return;
+    const bloco = (tit, sec, itensB, vazio) => h('div', { class: 'cm-bloco' },
+      h('button', { type: 'button', class: 'cm-faixa cm-faixa-link', onclick: () => abrir(sec) }, tit, h('b', { class: 'cm-n', 'data-n': sec })),
+      h('div', { class: 'cm-lista cm-mini-lista' }, itensB.length ? itensB : h('div', { class: 'cm-vazio', text: vazio })));
+    const lin = (txt, sub, fn) => h('button', { type: 'button', class: 'cm-linha', onclick: fn }, h('span', { class: 'cm-linha-txt' }, h('b', { text: txt }), sub ? h('small', { text: sub }) : null));
+    const out = [];
+    if (S.sec !== 'missoes') out.push(bloco('Missões abertas', 'missoes', S.d.missoes.filter((m) => m.status !== 'concluida').slice(0, 4).map((m) => lin(m.titulo, TIPOS_MISSAO[m.tipo], () => abrir('missoes'))), 'Nenhuma aberta.'));
+    if (S.sec !== 'pistas') out.push(bloco('Pistas', 'pistas', S.d.pistas.slice(0, 4).map((p) => lin(p.titulo, TIPOS_PISTA[p.tipo], () => abrir('pistas'))), 'Nenhuma ainda.'));
+    if (S.sec !== 'npcs') {
+      const vis = S.d.npcs.filter((n) => S.mestre || !n.oculto).slice(0, 6);
+      out.push(h('div', { class: 'cm-bloco' }, h('button', { type: 'button', class: 'cm-faixa cm-faixa-link', onclick: () => abrir('npcs') }, 'NPCs', h('b', { class: 'cm-n', 'data-n': 'npcs' })),
+        vis.length ? h('div', { class: 'cm-mini-npcs' }, vis.map((n) => h('button', { type: 'button', class: 'cm-mini-npc', title: n.nome, onclick: () => { abrir('npcs'); S.npcAberto = n.id; atualizar(); } }, avatar(n.nome, n.img), h('span', { text: n.nome })))) : h('div', { class: 'cm-vazio', text: 'Nenhum ainda.' })));
+    }
+    const mesa = [S.sess.gm, ...membrosSala()];
+    out.push(h('div', { class: 'cm-bloco' }, h('div', { class: 'cm-faixa' }, `Na mesa (${mesa.length})`),
+      h('div', { class: 'cm-lista cm-mini-lista' }, mesa.map((u) => h('div', { class: 'cm-linha cm-linha-fixa' }, h('span', { class: 'cm-linha-txt' }, h('b', null, spanNome(u)), u === S.sess.gm ? h('small', { text: 'mestre' }) : (S.d.perfis[u] && S.d.perfis[u].personagem ? h('small', { text: S.d.perfis[u].personagem }) : null)))))));
+    rc(L, ...out);
+    badges();
   }
   let agendado = false, pendente = false;
   function atualizar() {
@@ -3706,6 +3809,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     if (a && wrap.contains(a) && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) && a.closest('[data-vivo]')) { pendente = true; return; }
     if (!S.sess) { atualizarLobby(); return; }
     SECOES[S.sec].atualizar();
+    pintarLado();
     marcarVisto(S.sec);
     resolverNomes();
   }
@@ -3758,7 +3862,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     itens().forEach((x) => S.conhecidos.add(x.sec + x.id + x.ts));
     const mostrar = novos.filter((x) => !(S.aberto && S.sec === x.sec));
     mostrar.slice(0, 3).forEach((x) => toast(NOME_SEC[x.sec], x.txt, () => irPara(x)));
-    if (mostrar.length > 3) toast('Novidades', `Mais ${mostrar.length - 3} coisas novas`, () => abrir('novidades'));
+    if (mostrar.length > 3) toast('Novidades', `Mais ${mostrar.length - 3} coisas novas`, () => { abrir(); alternarSino(true); });
   }
   let tVisto = null;
   function marcarVisto(sec) {
@@ -3785,22 +3889,25 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   }
 
   const SECOES = {};
-  SECOES.novidades = {
-    montar(w) {
-      w.append(h('div', { class: 'cm-h' }, h('h2', { text: 'Novidades' }), btn('Marcar como visto', marcarTudo, 'cm-mini')));
-      S.ui.lista = h('div', { class: 'cm-lista' });
-      w.append(S.ui.lista);
-    },
-    atualizar() {
-      const nv = naoVistos();
-      const recentes = itens().filter((x) => !nv.includes(x)).slice(0, 15);
-      const linha = (x, velho) => h('button', { type: 'button', class: 'cm-linha' + (velho ? ' cm-velho' : ''), onclick: () => irPara(x) },
-        h('span', { class: 'cm-rot', text: NOME_SEC[x.sec] }), h('span', { class: 'cm-linha-txt', text: x.txt }), h('span', { class: 'cm-quando', text: quando(x.ts) }));
-      rc(S.ui.lista,
-        ...(nv.length ? nv.slice(0, 80).map((x) => linha(x)) : [h('div', { class: 'cm-vazio', text: 'Nada novo desde a última visita.' })]),
-        ...(recentes.length ? [h('div', { class: 'cm-divisa', text: 'Já visto' }), ...recentes.map((x) => linha(x, true))] : []));
-    },
-  };
+  function alternarSino(abre) {
+    const quer = abre === undefined ? sinoPainel.hidden : !!abre;
+    sinoPainel.hidden = !quer || !S.sess;
+    sinoBtn.setAttribute('aria-expanded', String(!sinoPainel.hidden));
+    sinoBtn.classList.toggle('on', !sinoPainel.hidden);
+    if (!sinoPainel.hidden) pintarSino();
+  }
+  function pintarSino() {
+    if (sinoPainel.hidden) return;
+    const nv = naoVistos();
+    const recentes = itens().filter((x) => !nv.includes(x)).slice(0, 12);
+    const linha = (x, velho) => h('button', { type: 'button', class: 'cm-linha' + (velho ? ' cm-velho' : ''), onclick: () => { alternarSino(false); irPara(x); } },
+      h('span', { class: 'cm-rot', text: NOME_SEC[x.sec] || '' }), h('span', { class: 'cm-linha-txt', text: x.txt }), h('span', { class: 'cm-quando', text: quando(x.ts) }));
+    rc(sinoPainel,
+      h('div', { class: 'cm-sino-hd' }, h('span', { text: 'Novidades' }), nv.length ? btn('Marcar como visto', () => { marcarTudo(); pintarSino(); }, 'cm-mini') : null),
+      h('div', { class: 'cm-sino-lista' },
+        nv.length ? nv.slice(0, 60).map((x) => linha(x)) : h('div', { class: 'cm-vazio', text: 'Nada novo.' }),
+        recentes.length ? [h('div', { class: 'cm-divisa', text: 'Já visto' }), ...recentes.map((x) => linha(x, true))] : null));
+  }
 
   // ---------- MURAL ----------
   SECOES.mural = {
@@ -4042,7 +4149,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   function viewNpc(n) {
     const box = h('div', { class: 'cm-card' },
       btn('← NPCs', () => { S.npcAberto = null; atualizar(); }, 'cm-mini cm-voltar'),
-      h('div', { class: 'cm-row', style: 'align-items:flex-start;gap:14px' }, avatar(n.nome, n.img, 'cm-npc-big'),
+      h('div', { class: 'cm-row', style: 'align-items:flex-start;gap:14px' }, S.mestre ? fotoNpc(n) : avatar(n.nome, n.img, 'cm-npc-big'),
         h('div', { style: 'display:flex;flex-direction:column;gap:6px;flex:1 1 220px;min-width:0' },
           h('div', { class: 'cm-nome', style: 'font-size:24px;letter-spacing:1px', text: n.nome }),
           n.papel ? h('span', { class: 'cm-tag cm-red', style: 'align-self:flex-start', text: n.papel }) : null,
@@ -4057,6 +4164,19 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     box.append(ac);
     return box;
   }
+  // mestre: toca no retrato pra enviar ou trocar a foto do NPC
+  function fotoNpc(n) {
+    const inp = h('input', { type: 'file', accept: 'image/*', hidden: true });
+    const st = h('span', { class: 'cm-foto-txt', text: n.img ? 'Trocar foto' : 'Enviar foto' });
+    const b = h('button', { type: 'button', class: 'cm-foto', title: 'Enviar ou trocar a foto', onclick: () => inp.click() }, avatar(n.nome, n.img, 'cm-npc-big'), st);
+    inp.addEventListener('change', async () => {
+      const f = inp.files && inp.files[0]; inp.value = ''; if (!f) return;
+      st.textContent = 'Enviando…'; b.disabled = true;
+      const ok = await salvar(async () => { const id = await enviarImagem(f, 900); await dok('npcs', n.id).update({ img: id, ts: agora() }); });
+      b.disabled = false; st.textContent = ok ? 'Trocar foto' : (n.img ? 'Trocar foto' : 'Enviar foto');
+    });
+    return h('div', { class: 'cm-foto-box' }, b, inp);
+  }
   function formNpc(n) {
     n = n || {};
     const campos = {
@@ -4068,7 +4188,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const local = h('select', { class: 'cm-sel' }, h('option', { value: '', text: 'Sem local' }), S.d.locais.map((l) => h('option', { value: l.id, text: l.nome })));
     local.value = n.local || '';
     const oculto = h('input', { type: 'checkbox' }); oculto.checked = !!n.oculto;
-    const img = campoImagem(n.img, 'Imagem do NPC');
+    const img = campoImagem(n.img, 'Foto do NPC');
     const lbl = (t, e) => h('label', { class: 'cm-lbl' }, t, e);
     
     const c = h('div', { style: 'display:flex;flex-direction:column;gap:10px;color:#111' }, lbl('Nome', campos.nome), lbl('Papel', campos.papel), lbl('Personalidade', campos.personalidade), lbl('Biografia', bio), lbl('Onde encontrar', local), img.el,
@@ -4553,7 +4673,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   let tMudou = 0;
   function mudou() {
     if (tMudou) return;
-    tMudou = requestAnimationFrame(() => { tMudou = 0; preNomes(); verificarLobby(); badges(); atualizar(); pintarTopo(); });
+    tMudou = requestAnimationFrame(() => { tMudou = 0; preNomes(); verificarLobby(); badges(); atualizar(); pintarTopo(); pintarSino(); });
   }
   function pintarTopo() {
     avisoLento.hidden = !(S.lento && S.aberto);
@@ -4562,6 +4682,8 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     painel.classList.toggle('cm-l-player', !S.sess && S.lob.papel === 'player');
     tabs.hidden = !S.sess;
     salaBtn.hidden = !S.sess;
+    sinoBtn.hidden = !S.sess;
+    if (!S.sess && !sinoPainel.hidden) alternarSino(false);
     fichaBtn.hidden = !!S.sess || !S.lob.papel;
     appBtn.hidden = !S.lob.papel && !S.sess;
     if (S.sess) {
@@ -4664,8 +4786,8 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     try { localStorage.setItem(SALA_KEY, JSON.stringify({ gm, sid })); } catch { /* ok */ }
     if (S.mestre && !S.assets) claude.use('assets').then((a) => { S.assets = a; }).catch(() => {});
     assinarSala();
-    S.sec = 'novidades';
-    abrir('novidades');
+    S.sec = 'mural';
+    abrir('mural');
   }
   function sairSala() {
     limparSala();
@@ -4673,7 +4795,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     avisarLivros();
     try { localStorage.removeItem(SALA_KEY); } catch { /* ok */ }
   }
-  function irLobby() { sairSala(); S.aberto = true; painel.hidden = false; document.body.classList.add('comu-on'); montar(); }
+  function irLobby() { sairSala(); S.aberto = true; painel.hidden = false; document.body.classList.add('comu-on'); montar(); marcarMenu(); }
   function expulsar(msg) {
     if (!S.sess) return;
     sairSala(); if (msg) toast('Sessão', msg);
