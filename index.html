@@ -13,11 +13,11 @@ window.claude = { use: (n) => window.__fbPronto.then((a) => (a ? a[n] || null : 
 </script>
 <script src="firebase-config.js"></script>
 <script type="module" src="fb.js"></script>
-<meta name="cpr-build" content="059f091d2fa5">
+<meta name="cpr-build" content="855164fe32a6">
 <script>
 // avisa quando sai uma versão nova do site (o navegador pode ficar horas com a antiga aberta)
 (function () {
-  var atual = '059f091d2fa5', avisou = false;
+  var atual = '855164fe32a6', avisou = false;
   function mostrar() {
     if (avisou || !document.body) return; avisou = true;
     var b = document.createElement('div'); b.id = 'cpr-nova'; b.setAttribute('role', 'alert');
@@ -1308,6 +1308,28 @@ body.cm-vez-ficha .scaler{animation:cmVezBrilho 1.4s ease-in-out infinite}
 .cm-ml-fav,.cm-add-fav{color:#ffd23f;font-size:14px;line-height:1}
 .cm-add-fav{color:var(--red)}
 @media (max-width:640px){.cm-fb-olho{width:22px;margin-left:2px}.cm-fb-topo>span:not(.cm-fb-num){font-size:10px;letter-spacing:1px}}
+
+/* ---------- ataque: mirar no player, depois o dano ---------- */
+.cm-mira{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.cm-mira-alvo{display:flex;align-items:center;gap:10px;background:#fff;border:2px solid var(--red);color:var(--ink);padding:10px;cursor:pointer;text-align:left;font-family:var(--font);min-height:70px}
+.cm-mira-alvo:hover,.cm-mira-alvo:focus-visible{background:var(--tint);outline:none}
+.cm-mira-alvo.on{background:var(--red);color:#fff}
+.cm-mira-alvo.on small{color:#fff}
+.cm-mira-alvo.cm-mira-morto{opacity:.55;border-style:dashed}
+.cm-mira-foto{width:46px;height:46px;flex:0 0 46px;border:2px solid var(--red);background:var(--tint);display:flex;align-items:center;justify-content:center;font:700 16px var(--font);color:var(--red);overflow:hidden}
+.cm-mira-foto img{width:100%;height:100%;object-fit:cover}
+.cm-mira-txt{display:flex;flex-direction:column;flex:1;min-width:0}
+.cm-mira-txt b{font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cm-mira-txt small{font-size:12px;color:#666}
+.cm-mira-ic{width:26px;height:26px;flex:0 0 26px;color:var(--red)}
+.cm-mira-alvo.on .cm-mira-ic{color:#fff}
+.cm-mira-ic svg{width:100%;height:100%}
+.cm-modal-mira .cm-modal{width:min(640px,100%)}
+.cm-dano-alvo{display:flex;align-items:center;gap:10px;background:#0d0d0d;color:#fff;padding:10px 12px;border-left:6px solid var(--red)}
+.cm-dano-alvo span{display:flex;flex-direction:column}
+.cm-dano-alvo small{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#aaa}
+.cm-dano-alvo b{font-size:17px}
+.cm-dano-in{font:700 34px var(--font)!important;height:60px;text-align:center;max-width:180px}
 /* ================= MENU PRINCIPAL no visual da ficha =================
    folha branca, cabeçalhos pretos com canto cortado, itens em linhas finas vermelhas */
 #menu{background:var(--paper);color:var(--ink);border-right:2px solid var(--red)}
@@ -5776,36 +5798,62 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !ferrPainel.hidden) alternarFerr(false); });
 
   // ----- ataque: o mestre manda, o player aceita ou contesta -----
+  // 1º passo: mirar no player (um toque) — ou marcar vários; 2º passo: o dano
+  const MIRA = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="2" fill="currentColor"/><path d="M12 1v5M12 18v5M1 12h5M18 12h5" stroke="currentColor" stroke-width="2"/></svg>';
+  function atacantePadrao() { return R.id && R.tipo !== 'player' ? `${R.tipo}:${R.id}` : ''; }
   function abrirAtaque(alvoFixo) {
-    const players = membrosSala().filter((u) => fichaDe(u));
-    if (!players.length) { toast('Ataque', 'Nenhum player com ficha na mesa ainda.'); return; }
-    const { inimigos } = todasFichas();
-    const quem = h('select', { class: 'cm-in' }, h('option', { value: '', text: 'Mestre (sem ficha)' }),
-      inimigos.map((x) => h('option', { value: `${x.tipo}:${x.id}`, selected: !alvoFixo && x.tipo === R.tipo && x.id === R.id, text: `${TIPOS_FICHA[x.tipo]} · ${tituloFicha(x.tipo, x.id)}` })));
-    const marcados = new Set(alvoFixo ? [alvoFixo] : []);
-    const lista = h('div', { class: 'cm-at-lista' }, players.map((u) => {
-      const d = fichaDe(u).dados || {};
-      const cb = h('input', { type: 'checkbox' }); cb.checked = marcados.has(u);
-      cb.addEventListener('change', () => { if (cb.checked) marcados.add(u); else marcados.delete(u); });
-      return h('label', { class: 'cm-at-pl' + (naVez('player', u) ? ' cm-vez' : '') }, cb, h('span', null, h('b', { text: tituloFicha('player', u) }), h('small', { text: d[PV] ? `PV ${d[PV]}` : 'PV em branco' })));
+    if (alvoFixo) { abrirDano([alvoFixo]); return; }
+    const players = membrosSala();
+    if (!players.length) { toast('Ataque', 'Nenhum player na mesa ainda. O ataque só chega em quem entrou na sessão.'); return; }
+    const o = ordem();
+    const noComb = (u) => !!o && o.lista.some((x) => x.tipo === 'player' && x.id === u);
+    players.sort((a, b) => noComb(b) - noComb(a) || morta('player', a) - morta('player', b));
+    const quem = atacantePadrao();
+    const titulo = quem ? tituloFicha(...quem.split(':')) : 'Ataque';
+    let varios = false; const marc = new Set();
+    const area = h('div', { class: 'cm-mira' });
+    const pinta = () => rc(area, players.map((u) => {
+      const f = fichaDe(u), d = (f && f.dados) || {};
+      const alvo = h('button', { type: 'button', class: 'cm-mira-alvo' + (marc.has(u) ? ' on' : '') + (morta('player', u) ? ' cm-mira-morto' : '') + (naVez('player', u) ? ' cm-vez' : ''),
+        onclick: () => { if (!varios) { m.fechar(); abrirDano([u]); } else { if (marc.has(u)) marc.delete(u); else marc.add(u); pinta(); conta(); } } },
+        h('span', { class: 'cm-mira-foto' }, d.__img ? h('img', { src: d.__img, alt: '' }) : iniciais(d.NOME || nome(u))),
+        h('span', { class: 'cm-mira-txt' }, h('b', { text: tituloFicha('player', u) }),
+          h('small', { text: [d[PV] ? `PV ${d[PV]}` : 'PV —', morta('player', u) ? 'morta' : null, noComb(u) ? 'no combate' : null, f ? null : 'ficha ainda não chegou'].filter(Boolean).join(' · ') })));
+      const ic = h('span', { class: 'cm-mira-ic' }); ic.innerHTML = MIRA; alvo.append(ic);
+      return alvo;
     }));
-    const dano = h('input', { class: 'cm-in', type: 'number', min: '0', max: '999', inputmode: 'numeric', placeholder: '0' });
+    const btCont = btn('Continuar', () => { if (!marc.size) { toast('Ataque', 'Toque nos players que vão ser atacados.'); return; } m.fechar(); abrirDano([...marc]); }, 'cm-mini cm-pri');
+    const conta = () => { btCont.textContent = marc.size ? `Continuar (${marc.size})` : 'Continuar'; };
+    const btVarios = btn('Atacar vários', () => { varios = !varios; btVarios.textContent = varios ? 'Atacar um só' : 'Atacar vários'; btCont.hidden = !varios; dica.textContent = varios ? 'Toque nos players que vão ser atacados e depois em Continuar.' : 'Toque no player que vai ser atacado.'; marc.clear(); pinta(); conta(); }, 'cm-mini');
+    btCont.hidden = true;
+    const dica = h('div', { class: 'cm-sub', text: 'Toque no player que vai ser atacado.' });
+    const m = modal(quem ? `${titulo}: escolha o alvo` : 'Escolha o alvo', [dica, area], [btVarios, h('span', { style: 'flex:1' }), btn('Cancelar', () => m.fechar(), 'cm-mini'), btCont], 'cm-modal-mira');
+    pinta();
+  }
+  function abrirDano(alvos) {
+    const { inimigos } = todasFichas();
+    const padrao = atacantePadrao();
+    const quem = h('select', { class: 'cm-in' }, h('option', { value: '', text: 'Mestre (sem ficha)' }),
+      inimigos.map((x) => h('option', { value: `${x.tipo}:${x.id}`, selected: `${x.tipo}:${x.id}` === padrao, text: `${TIPOS_FICHA[x.tipo]} · ${tituloFicha(x.tipo, x.id)}` })));
+    const dano = h('input', { class: 'cm-in cm-dano-in', type: 'number', min: '0', max: '999', inputmode: 'numeric', placeholder: '0' });
     const txt = h('textarea', { class: 'cm-ta', maxlength: 500, placeholder: 'O que o atacante faz e o que ele acha desse player. Ex.: “Esse chrome barato não vai te salvar” e dispara uma rajada.' });
-    const m = modal('Atacar', [
-      h('label', { class: 'cm-lbl' }, 'Quem ataca', quem),
-      h('div', { class: 'cm-lbl' }, 'Quem é atacado', lista),
-      h('label', { class: 'cm-lbl' }, 'Dano', dano),
-      h('label', { class: 'cm-lbl' }, 'O que acontece', txt),
-      h('div', { class: 'cm-sub', text: 'O player vê o ataque na tela e escolhe aceitar o dano ou contestar. Se contestar, você decide se ele conseguiu.' })],
-    [btn('Cancelar', () => m.fechar(), 'cm-mini'), btn('Atacar', async () => {
+    const alvoTxt = alvos.map((u) => { const d = (fichaDe(u) || {}).dados || {}; return `${tituloFicha('player', u)}${d[PV] ? ` (PV ${d[PV]})` : ''}`; }).join(', ');
+    const enviar = async () => {
       const n = parseInt(dano.value, 10);
-      if (!marcados.size) { toast('Ataque', 'Escolha pelo menos um player.'); return; }
       if (!(n >= 0)) { dano.focus(); return; }
       const [t, i] = quem.value ? quem.value.split(':') : [null, null];
       const de = t ? tituloFicha(t, i) : 'Mestre';
-      const ok = await salvar(async () => { for (const u of marcados) await col('ataques').add({ alvo: u, de, deTipo: t || 'mestre', texto: txt.value.trim(), dano: n, estado: 'pendente', ts: agora() }); });
-      if (ok) { m.fechar(); toast('Ataque', marcados.size === 1 ? `Ataque enviado pra ${nome([...marcados][0])}.` : `Ataque enviado pra ${marcados.size} players.`); }
-    }, 'cm-mini cm-pri')]);
+      const ok = await salvar(async () => { for (const u of alvos) await col('ataques').add({ alvo: u, de, deTipo: t || 'mestre', texto: txt.value.trim(), dano: n, estado: 'pendente', ts: agora() }); });
+      if (ok) { m.fechar(); toast('Ataque', alvos.length === 1 ? `Ataque enviado pra ${nome(alvos[0])}. Agora é com o player: aceitar ou contestar.` : `Ataque enviado pra ${alvos.length} players.`); }
+    };
+    dano.addEventListener('keydown', (e) => { if (e.key === 'Enter') enviar(); });
+    const m = modal('Dano', [
+      h('div', { class: 'cm-dano-alvo' }, (() => { const ic = h('span', { class: 'cm-mira-ic' }); ic.innerHTML = MIRA; return ic; })(), h('span', null, h('small', { text: 'Alvo' }), h('b', { text: alvoTxt }))),
+      h('label', { class: 'cm-lbl' }, 'Quanto de dano', dano),
+      h('label', { class: 'cm-lbl' }, 'Quem ataca', quem),
+      h('label', { class: 'cm-lbl' }, 'O que acontece', txt),
+      h('div', { class: 'cm-sub', text: 'O player vê o ataque na tela e escolhe aceitar o dano ou contestar. Se contestar, você decide se ele conseguiu.' })],
+    [btn('Voltar', () => { m.fechar(); abrirAtaque(); }, 'cm-mini'), h('span', { style: 'flex:1' }), btn('Cancelar', () => m.fechar(), 'cm-mini'), btn('Atacar', enviar, 'cm-mini cm-pri')]);
     setTimeout(() => dano.focus(), 50);
   }
   const decidindo = new Set();
