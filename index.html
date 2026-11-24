@@ -597,9 +597,9 @@ body.mob .mcell.c.tem-selo .mslot>input{padding-left:4px!important}
 .lv-addrow .btool{flex:1;white-space:nowrap}
 .lv-addrow #lv-rem{flex:0 0 auto}
 .lv-tools .lv-addrow{margin-top:0}
-#lv-falta{position:sticky;top:74px;z-index:5;margin:74px auto 14px;max-width:440px;background:#0d0d12;color:#eee;border:2px solid var(--tint,var(--red,#e0004d));box-shadow:0 0 18px color-mix(in srgb,var(--tint,#e0004d) 45%,transparent);padding:18px 16px;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center;font-size:15px;line-height:1.4}
-#lv-falta b{font-size:17px;letter-spacing:.5px;color:#fff}
-#lv-falta p{margin:0;opacity:.85}
+#lv-falta{position:sticky;top:74px;z-index:5;margin:74px auto 14px;max-width:440px;background:#fff;color:var(--ink);border:3px solid var(--red);padding:0 0 16px;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center;font-size:15px;line-height:1.4}
+#lv-falta b{align-self:stretch;background:#000;color:#fff;font-size:15px;letter-spacing:1px;text-transform:uppercase;padding:6px 12px}
+#lv-falta p{margin:0;padding:0 16px;color:#333}
 #lv-falta[hidden],#lv-msg[hidden]{display:none!important}
 #lv-msg{position:sticky;top:0;z-index:6;background:#111;color:#fff;padding:8px 12px;font-size:14px;text-align:center;border-bottom:2px solid var(--tint,#e0004d)}
 #lv-mesa{width:100%;margin-top:6px}#lv-mesa[hidden]{display:none!important}
@@ -737,167 +737,258 @@ body:not(.mob) .sheet.brilha .pdfbg > .pdfart{
 .lv-stack .textLayer .endOfContent{display:block;position:absolute;inset:100% 0 0;z-index:0;cursor:default;user-select:none}
 .lv-stack .textLayer.selecting .endOfContent{top:0}
 .lv-stack img{-webkit-user-select:none;user-select:none}
-/* ================= COMUNIDADE ================= */
-#comu{position:fixed;inset:0;z-index:200;background:#0d0d10;color:#e8e8ee;display:flex;flex-direction:column;font-family:var(--font);
-  background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:32px 32px}
+/* ================= COMUNIDADE =================
+   mesmo visual da ficha: barra escura em cima, folha branca com borda vermelha,
+   faixas pretas de título, campos com borda na cor do tema */
+#comu{position:fixed;inset:0;z-index:200;background:var(--bg);color:var(--ink);display:flex;flex-direction:column;font-family:var(--font)}
 #comu[hidden],#comu [hidden]{display:none!important}
 body.comu-on{overflow:hidden}
 body.comu-on #menu{z-index:280}
 body.comu-on #backdrop{z-index:275}
-.cm-top{flex:0 0 auto;background:#000;border-bottom:3px solid var(--red);box-shadow:0 0 18px color-mix(in srgb,var(--red) 45%,transparent)}
-.cm-bar{display:flex;align-items:center;gap:10px;padding:6px 8px}
-.cm-bar .cm-app{width:42px;height:38px;border:2px solid var(--red);background:#111;color:#fff;font-size:20px;flex:0 0 auto;position:relative}
-.cm-tit{font-weight:800;letter-spacing:3px;text-transform:uppercase;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cm-tit small{display:block;font-size:11px;letter-spacing:1.5px;color:var(--red);font-weight:700}
-.cm-papel{margin-left:auto;font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:4px 8px;border:2px solid var(--red);color:#fff;white-space:nowrap}
+
+/* ---------- barra de cima (igual à da ficha) ---------- */
+.cm-top{flex:0 0 auto;background:#0d0d0d;border-bottom:3px solid var(--red);color:#fff}
+.cm-bar{display:flex;align-items:center;gap:10px;padding:8px 14px}
+.cm-bar .cm-app{width:44px;height:40px;border:2px solid var(--red);background:transparent;color:#fff;font-size:22px;flex:0 0 auto;position:relative}
+.cm-tit{display:flex;flex-direction:column;line-height:1.05;min-width:0}
+.cm-tit small{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--dark-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cm-cidade{font-size:20px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cm-papel{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border:2px solid var(--red);color:#fff;white-space:nowrap}
 .cm-papel.mestre{background:var(--red)}
-.cm-tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;padding:0 6px}
+.cm-bar .cm-btn{background:transparent;color:#fff;border-color:var(--red)}
+.cm-bar .cm-btn:hover{background:var(--red)}
+.cm-salabtn{position:relative;display:inline-flex;align-items:center;gap:6px}
+.cm-tabs{display:flex;gap:0;overflow-x:auto;scrollbar-width:none;padding:0 14px}
 .cm-tabs::-webkit-scrollbar{display:none}
-.cm-tab{flex:0 0 auto;background:transparent;border:0;border-bottom:3px solid transparent;color:#aaa;font:700 13px var(--font);letter-spacing:1px;text-transform:uppercase;padding:9px 12px 8px;display:flex;align-items:center;gap:6px}
-.cm-tab.on{color:#fff;border-bottom-color:var(--red);text-shadow:0 0 8px color-mix(in srgb,var(--red) 70%,transparent)}
-.cm-n{display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;padding:0 5px;border-radius:10px;background:var(--red);color:#fff;font:800 11px var(--font);letter-spacing:0}
+.cm-tab{flex:0 0 auto;background:transparent;border:0;border-bottom:4px solid transparent;color:#bdbdbd;font:700 14px var(--font);letter-spacing:1px;text-transform:uppercase;padding:8px 14px 6px;display:flex;align-items:center;gap:6px}
+.cm-tab:hover{color:#fff}
+.cm-tab.on{color:#fff;border-bottom-color:var(--red)}
+.cm-n{display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;padding:0 5px;border-radius:10px;background:var(--red);color:#fff;font:700 11px var(--font);letter-spacing:0;vertical-align:middle}
 .cm-n:empty{display:none}
-.cm-body{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.cm-wrap{max-width:1100px;margin:0 auto;padding:14px 12px 40px;display:flex;flex-direction:column;gap:12px}
+.cm-lento{flex:0 0 auto;background:var(--red)!important;color:#fff;border:0!important;text-align:center;font-weight:700;padding:6px 12px!important}
+
+/* ---------- a folha ---------- */
+.cm-body{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:18px 10px 40px}
+.cm-wrap{max-width:1100px;margin:0 auto;background:var(--paper);border:5px solid var(--red);padding:16px 18px 26px;display:flex;flex-direction:column;gap:14px;
+  clip-path:polygon(24px 0,100% 0,100% calc(100% - 24px),calc(100% - 24px) 100%,0 100%,0 24px)}
 .cm-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.cm-h h2{margin:0;font-size:22px;letter-spacing:2px;text-transform:uppercase;font-weight:800;flex:1 1 auto}
-.cm-sub{color:#9a9aa8;font-size:14px;line-height:1.4}
-.cm-card{background:#17171d;border:2px solid #2a2a33;border-left:4px solid var(--red);padding:12px;display:flex;flex-direction:column;gap:8px;position:relative}
-.cm-card.cm-click{cursor:pointer}
-.cm-card.cm-click:hover{border-color:color-mix(in srgb,var(--red) 60%,#2a2a33)}
-.cm-vazio{border:2px dashed #33333d;padding:22px 14px;text-align:center;color:#9a9aa8;font-size:15px;line-height:1.45}
-.cm-aviso{border:2px solid var(--red);background:color-mix(in srgb,var(--red) 14%,#111);padding:10px 12px;font-size:14px;line-height:1.4}
-.cm-btn{background:#111;border:2px solid var(--red);color:#fff;font:800 13px var(--font);letter-spacing:1px;text-transform:uppercase;padding:8px 12px;min-height:38px;cursor:pointer}
-.cm-btn:hover{background:color-mix(in srgb,var(--red) 30%,#111)}
-.cm-btn.cm-pri{background:var(--red)}
-.cm-btn.cm-mini{padding:4px 8px;min-height:30px;font-size:11px}
-.cm-btn.cm-perigo{border-color:#777;color:#ddd}
-.cm-btn:disabled{opacity:.45;cursor:default}
+.cm-h h2{margin:0 auto 0 0;background:#000;color:#fff;font-size:22px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  padding:6px 26px 6px 12px;clip-path:polygon(0 0,100% 0,calc(100% - 14px) 100%,0 100%);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cm-faixa{background:#000;color:#fff;font-size:13px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:4px 22px 4px 10px;align-self:flex-start;
+  clip-path:polygon(0 0,100% 0,calc(100% - 10px) 100%,0 100%)}
+.cm-divisa{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#666;padding:10px 12px 4px;border-top:2px solid var(--tint3)}
+.cm-sub{color:#555;font-size:14px;line-height:1.4}
+.cm-txt{white-space:pre-wrap;word-wrap:break-word;font-size:16px;line-height:1.45;color:var(--ink)}
+.cm-meta{display:flex;align-items:center;gap:4px 10px;flex-wrap:wrap;font-size:13px;color:#555}
+.cm-nome{font-weight:700;color:var(--ink)}
+.cm-vazio{border:2px dashed var(--tint3);padding:20px 14px;text-align:center;color:#666;font-size:15px;line-height:1.45}
+.cm-aviso{border:0;border-left:6px solid var(--red);background:var(--tint2);padding:8px 12px;font-size:14px;line-height:1.4;color:var(--ink)}
+.cm-ok{color:#1d7a34;font-weight:700}
+.cm-err{color:var(--red-dark);font-weight:700}
 .cm-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.cm-in,.cm-ta,.cm-sel{background:#0d0d10;border:2px solid #3a3a46;color:#fff;font:600 15px var(--font);padding:8px 10px;min-height:40px;width:100%;box-sizing:border-box}
-.cm-ta{min-height:86px;resize:vertical;line-height:1.4}
-.cm-in:focus,.cm-ta:focus,.cm-sel:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 2px color-mix(in srgb,var(--red) 30%,transparent)}
-.cm-lbl{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#bbb}
-.cm-tag{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;padding:2px 7px;border:1px solid #444;color:#ccc;white-space:nowrap}
-.cm-tag.cm-red{border-color:var(--red);color:#fff;background:color-mix(in srgb,var(--red) 25%,transparent)}
-.cm-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:#9a9aa8}
-.cm-av{width:40px;height:40px;flex:0 0 40px;border:2px solid var(--red);background:#000;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;overflow:hidden;font-size:15px}
-.cm-av img{width:100%;height:100%;object-fit:cover}
-.cm-nome{font-weight:800;color:#fff}
-.cm-txt{white-space:pre-wrap;word-wrap:break-word;font-size:15px;line-height:1.45;color:#e8e8ee}
 .cm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
 .cm-voltar{align-self:flex-start}
-/* feed */
+
+/* caixas com borda (formulários, painéis) */
+.cm-caixa,.cm-card{border:3px solid var(--red);background:#fff;padding:0 12px 12px;display:flex;flex-direction:column;gap:10px;position:relative}
+.cm-card{padding-top:12px}
+.cm-caixa>.cm-faixa:first-child{margin:0 -12px;align-self:stretch;clip-path:none;padding:5px 12px}
+.cm-caixa.cm-postar{padding-top:12px}
+.cm-login{padding-top:16px;align-items:flex-start}
+
+/* botões (iguais aos da ficha) */
+.cm-btn{background:#fff;border:3px solid var(--red);color:var(--ink);font:700 14px var(--font);letter-spacing:.8px;text-transform:uppercase;padding:6px 14px;min-height:38px;cursor:pointer;white-space:nowrap}
+.cm-btn:hover{background:var(--tint2)}
+.cm-btn.cm-pri{background:var(--red);color:#fff}
+.cm-btn.cm-pri:hover{background:var(--red-dark);border-color:var(--red-dark)}
+.cm-btn.cm-mini{padding:3px 10px;min-height:32px;font-size:12px;border-width:2px}
+.cm-btn.cm-perigo{border-color:#000;color:#000;background:#fff}
+.cm-btn.cm-perigo:hover{background:#000;color:#fff}
+.cm-btn.cm-aba.on{background:#000;border-color:#000;color:#fff}
+.cm-btn:disabled{opacity:.4;cursor:default}
+.cm-link{background:none;border:0;color:#444;font:700 13px var(--font);cursor:pointer;padding:2px 0;text-decoration:underline;text-underline-offset:3px;text-transform:uppercase;letter-spacing:.5px}
+.cm-link:hover{color:var(--red)}
+.cm-acoes{display:flex;gap:4px 14px;flex-wrap:wrap;align-items:center}
+
+/* campos de texto */
+.cm-in,.cm-ta,.cm-sel{background:#fff;border:2px solid var(--red);color:var(--ink);font:700 15px var(--font);padding:7px 10px;min-height:40px;width:100%;box-sizing:border-box;border-radius:0}
+.cm-ta{min-height:86px;resize:vertical;line-height:1.4}
+.cm-in:focus,.cm-ta:focus,.cm-sel:focus{outline:none;background:var(--tint)}
+.cm-in::placeholder,.cm-ta::placeholder{color:#9a9a9a}
+.cm-lbl{display:flex;flex-direction:column;gap:3px;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--ink)}
+.cm-check{font-weight:700;gap:8px}
+.cm-check input{width:18px;height:18px;accent-color:var(--red)}
+.cm-tag{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:1px 6px;border:2px solid #000;color:#000;white-space:nowrap;background:#fff}
+.cm-tag.cm-red{border-color:var(--red);background:var(--red);color:#fff}
+
+/* campos estilo ficha: rótulo pequeno em cima, valor embaixo */
+.cm-campos{display:flex;flex-wrap:wrap;gap:0}
+.cm-campo{border:2px solid var(--red);margin:0 -2px -2px 0;padding:2px 10px 5px;min-width:120px;display:flex;flex-direction:column}
+.cm-campo.cm-largo{flex:1 1 200px}
+.cm-campo small{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--ink)}
+.cm-campo b{font-size:17px}
+
+/* listas em linhas (novidades, lugares, sessões, jogadores) */
+.cm-lista{border:3px solid var(--red);display:flex;flex-direction:column;background:#fff}
+.cm-lista>*+*{border-top:2px solid var(--tint3)}
+.cm-linha{display:grid;grid-template-columns:118px minmax(0,1fr) auto;align-items:center;gap:12px;background:#fff;border:0;padding:9px 12px;text-align:left;font:inherit;color:var(--ink);cursor:pointer;width:100%}
+.cm-lista>.cm-linha+.cm-linha{border-top:2px solid var(--tint3)}
+.cm-linha:hover{background:var(--tint)}
+.cm-rot{justify-self:start;background:#000;color:#fff;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:2px 7px;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.cm-lugar .cm-rot{background:var(--pc,var(--red))}
+.cm-linha-txt{font-size:15px;line-height:1.35;display:flex;flex-direction:column;gap:1px;min-width:0}
+.cm-linha-txt b{font-size:16px}
+.cm-linha-txt small{color:#555;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cm-quando{font-size:12px;color:#666;white-space:nowrap}
+.cm-velho{opacity:.55}
+
+/* mural */
+.cm-feed{gap:0}
+.cm-post{padding:12px;display:flex;flex-direction:column;gap:8px;background:#fff}
+.cm-lista .cm-post+.cm-post{border-top:2px solid var(--tint3)}
+.cm-lista>.cm-vazio{border:0}
 .cm-reacoes{display:flex;gap:4px;flex-wrap:wrap}
-.cm-reac{background:#0f0f13;border:1px solid #333;color:#ddd;padding:3px 8px;font-size:14px;cursor:pointer;min-height:30px}
-.cm-reac.on{border-color:var(--red);background:color-mix(in srgb,var(--red) 25%,#0f0f13);color:#fff}
-.cm-coms{border-top:1px solid #2a2a33;padding-top:8px;display:flex;flex-direction:column;gap:6px}
-.cm-com{background:#101015;padding:7px 9px;border-left:2px solid #444;display:flex;flex-direction:column;gap:3px}
-.cm-acoes{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-.cm-link{background:none;border:0;color:#9a9aa8;font:700 12px var(--font);cursor:pointer;padding:2px 0;text-decoration:underline;text-underline-offset:3px}
-.cm-link:hover{color:#fff}
+.cm-reac{background:#fff;border:2px solid var(--tint3);color:var(--ink);padding:2px 8px;font:700 14px var(--font);cursor:pointer;min-height:30px}
+.cm-reac.on{border-color:var(--red);background:var(--tint2)}
+.cm-coms{border-top:2px solid var(--tint3);padding-top:8px;display:flex;flex-direction:column;gap:6px}
+.cm-com{background:var(--tint);padding:6px 9px;border-left:3px solid var(--red);display:flex;flex-direction:column;gap:3px}
+.cm-av{width:40px;height:40px;flex:0 0 40px;border:2px solid var(--red);background:var(--tint);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--red);overflow:hidden;font-size:15px}
+.cm-av img{width:100%;height:100%;object-fit:cover}
+.cm-npc{display:flex;gap:10px;align-items:flex-start}
+.cm-npc .cm-av{width:64px;height:64px;flex-basis:64px}
+.cm-npc.cm-ph{align-items:center}
+.cm-npc.cm-ph .cm-av{width:42px;height:42px;flex-basis:42px}
+
+/* documentos (pistas e missões) */
+.cm-docs{display:flex;flex-direction:column;gap:14px}
+.cm-doc{border:3px solid var(--red);background:#fff;display:flex;flex-direction:column;gap:8px;padding-bottom:12px}
+.cm-doc>:not(.cm-doc-hd){margin-left:12px;margin-right:12px}
+.cm-doc-hd{display:flex;justify-content:space-between;gap:10px;background:var(--red);color:#fff;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 12px}
+.cm-doc-tit{font-size:21px;font-weight:700;line-height:1.15;text-transform:uppercase;letter-spacing:.5px}
+.cm-rascunho .cm-doc-hd{background:#555}
+.cm-rascunho{border-color:#555}
+.cm-feita{opacity:.7}
+.cm-venceu{text-decoration:line-through}
+.cm-cifra{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;line-height:1.35;color:#fff;word-break:break-all;background:#0d0d0d;padding:8px 10px;letter-spacing:1px}
+.cm-img{max-width:100%;max-height:420px;object-fit:contain;border:3px solid var(--red);align-self:flex-start;background:#fff}
+.cm-prog{height:10px;background:var(--tint3);position:relative}
+.cm-prog i{position:absolute;inset:0 auto 0 0;background:var(--red)}
+
+/* NPCs: fichinhas com retrato */
+.cm-fichas{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.cm-ficha{position:relative;display:flex;flex-direction:column;background:#fff;border:3px solid var(--red);padding:0;text-align:left;font:inherit;color:var(--ink);cursor:pointer}
+.cm-ficha:hover .cm-ficha-nome{background:var(--red)}
+.cm-retrato{width:100%;aspect-ratio:1;background:var(--tint);display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:700;color:var(--red);overflow:hidden}
+.cm-retrato img{width:100%;height:100%;object-fit:cover}
+.cm-ficha-nome{background:#000;color:#fff;font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cm-ficha-sub{font-size:12px;color:#555;padding:4px 8px 6px;min-height:24px}
+.cm-ficha.cm-oculto{border-style:dashed;opacity:.75}
+.cm-n-canto{position:absolute;top:6px;right:6px}
+.cm-npc-big{width:150px;height:150px;flex:0 0 150px;border:3px solid var(--red);background:var(--tint);color:var(--red);display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:700;overflow:hidden}
+.cm-npc-big img{width:100%;height:100%;object-fit:cover}
+.cm-rel{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px}
+.cm-relbar{display:flex;gap:2px}
+.cm-relbar i{width:16px;height:10px;background:var(--tint3)}
+.cm-relbar i.on{background:var(--red)}
+.cm-chat{display:flex;flex-direction:column;gap:8px;max-height:56vh;overflow-y:auto;padding:8px;background:var(--tint);border:2px solid var(--tint3)}
+.cm-msg{max-width:82%;padding:7px 11px;border:2px solid #c9c9c9;background:#fff;align-self:flex-start;display:flex;flex-direction:column;gap:3px}
+.cm-msg.eu{align-self:flex-end;border-color:var(--red);background:var(--tint2)}
+
 /* mapa */
-.cm-mapa{position:relative;overflow:auto;border:2px solid #2a2a33;background:#08080a;max-height:72vh;-webkit-overflow-scrolling:touch}
+.cm-mapa{position:relative;overflow:auto;border:3px solid var(--red);background:#0d0d0d;max-height:72vh;-webkit-overflow-scrolling:touch}
+.cm-mapa>.cm-vazio{color:#ccc}
 .cm-mapa-in{position:relative;width:calc(var(--mz,1) * 100%);min-width:100%}
 .cm-mapa-in > img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none}
 .cm-mapa.cm-pondo .cm-mapa-in{cursor:crosshair}
 .cm-pin{position:absolute;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:0;padding:0;cursor:pointer}
-.cm-pin i{width:18px;height:18px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--pc,var(--red));border:2px solid #fff;box-shadow:0 0 10px var(--pc,var(--red))}
-.cm-pin.distrito i{width:24px;height:24px}
-.cm-pin span{background:rgba(0,0,0,.82);color:#fff;font:800 11px var(--font);letter-spacing:.6px;padding:2px 6px;border:1px solid var(--pc,var(--red));white-space:nowrap;text-transform:uppercase;order:-1}
+.cm-pin i{width:16px;height:16px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--pc,var(--red));border:2px solid #fff}
+.cm-pin.distrito i{width:22px;height:22px}
+.cm-pin span{background:#000;color:#fff;font:700 11px var(--font);letter-spacing:.6px;padding:2px 6px;border-left:4px solid var(--pc,var(--red));white-space:nowrap;text-transform:uppercase;order:-1}
 .cm-pin.distrito span{font-size:13px}
-/* npc */
-.cm-npc{display:flex;gap:10px;align-items:flex-start}
-.cm-npc .cm-av{width:64px;height:64px;flex-basis:64px}
-.cm-npc.cm-ph .cm-av{width:44px;height:44px;flex-basis:44px}
-.cm-npc-big{width:150px;height:150px;flex:0 0 150px;border:3px solid var(--red);background:#000;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:800;overflow:hidden}
-.cm-npc-big img{width:100%;height:100%;object-fit:cover}
-.cm-rel{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.8px}
-.cm-relbar{display:flex;gap:2px}
-.cm-relbar i{width:16px;height:10px;background:#2a2a33}
-.cm-relbar i.on{background:var(--red);box-shadow:0 0 6px var(--red)}
-.cm-chat{display:flex;flex-direction:column;gap:8px;max-height:56vh;overflow-y:auto;padding:4px}
-.cm-msg{max-width:82%;padding:8px 11px;border:2px solid #2f2f3a;background:#121218;align-self:flex-start;display:flex;flex-direction:column;gap:3px}
-.cm-msg.eu{align-self:flex-end;border-color:var(--red);background:color-mix(in srgb,var(--red) 16%,#121218)}
-.cm-dot{position:absolute;top:-7px;right:-7px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:var(--red);color:#fff;font:800 11px var(--font);display:flex;align-items:center;justify-content:center;border:2px solid #000;box-shadow:0 0 8px var(--red);z-index:3;pointer-events:none}
-.cm-dot:empty{display:none}
-/* pistas */
-.cm-cifra{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;line-height:1.35;color:color-mix(in srgb,var(--red) 70%,#fff);word-break:break-all;background:#08080a;border:1px dashed #333;padding:8px;letter-spacing:1px}
-.cm-ok{color:#7ee08a;font-weight:800}
-.cm-err{color:#ff7a7a;font-weight:800}
-.cm-img{max-width:100%;max-height:420px;object-fit:contain;border:2px solid #2a2a33;align-self:flex-start;background:#000}
-.cm-prog{height:8px;background:#2a2a33;position:relative}
-.cm-prog i{position:absolute;inset:0 auto 0 0;background:var(--red);box-shadow:0 0 8px var(--red)}
+
 /* perfil */
-.cm-conq{display:inline-flex;align-items:center;gap:5px;border:2px solid var(--red);padding:4px 9px;font-weight:800;font-size:13px;background:color-mix(in srgb,var(--red) 12%,#111)}
-.cm-num{font-size:30px;font-weight:800;color:#fff;text-shadow:0 0 10px var(--red)}
-/* notificação flutuante */
+.cm-conq{display:inline-flex;align-items:center;gap:5px;border:2px solid #000;padding:3px 9px;font-weight:700;font-size:13px;background:#fff;text-transform:uppercase}
+.cm-num{font-size:30px;font-weight:700;color:var(--red)}
+
+/* contador no ☰ */
+.cm-dot{position:absolute;top:-7px;right:-7px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:var(--red);color:#fff;font:700 11px var(--font);display:flex;align-items:center;justify-content:center;border:2px solid #0d0d0d;z-index:3;pointer-events:none}
+.cm-dot:empty{display:none}
+
+/* avisos flutuantes */
 .cm-toasts{position:fixed;right:12px;bottom:12px;z-index:320;display:flex;flex-direction:column;gap:8px;max-width:min(360px,calc(100vw - 24px))}
-.cm-toast{background:#0d0d10;color:#fff;border:2px solid var(--red);box-shadow:0 0 16px color-mix(in srgb,var(--red) 55%,transparent);padding:10px 12px;font:700 14px var(--font);cursor:pointer;display:flex;gap:8px;align-items:flex-start;animation:cmEntra .25s ease-out}
-.cm-toast b{color:var(--red);text-transform:uppercase;font-size:11px;letter-spacing:1px;display:block}
-@keyframes cmEntra{from{transform:translateY(12px);opacity:0}to{transform:none;opacity:1}}
-/* menu */
+.cm-toast{background:#fff;color:var(--ink);border:3px solid var(--red);padding:0;font:700 14px var(--font);cursor:pointer;display:flex;animation:cmEntra .2s ease-out;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.cm-toast>div{display:flex;flex-direction:column;width:100%}
+.cm-toast b{background:var(--red);color:#fff;text-transform:uppercase;font-size:11px;letter-spacing:1px;padding:3px 10px}
+.cm-toast>div>span{padding:7px 10px 9px;line-height:1.35;display:block}
+@keyframes cmEntra{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
+
+/* menu principal */
 #menu .m-item .cm-n{margin-left:8px}
 .m-sec .cm-n{margin-left:6px}
 #btn-menu,#lvb-app{position:relative}
-@media (max-width:600px){
-  .cm-tit{font-size:15px;letter-spacing:2px}
-  .cm-tab{padding:8px 9px 7px;font-size:12px}
-  .cm-wrap{padding:10px 8px 40px}
-  .cm-npc-big{width:110px;height:110px;flex-basis:110px}
-  .cm-msg{max-width:92%}
-  .cm-h h2{font-size:18px}
-}
-/* ---------- sessões: escolha, mestre, player ---------- */
-#comu{--ac:#f2a900;--pl:#05d9e8}
-#comu.cm-l-mestre .cm-top{border-bottom-color:var(--ac);box-shadow:0 0 18px color-mix(in srgb,var(--ac) 40%,transparent)}
-#comu.cm-l-player .cm-top{border-bottom-color:var(--pl);box-shadow:0 0 18px color-mix(in srgb,var(--pl) 40%,transparent)}
-#comu.cm-l-mestre .cm-tit small{color:var(--ac)} #comu.cm-l-player .cm-tit small{color:var(--pl)}
-#comu.cm-l-mestre .cm-papel{background:var(--ac);border-color:var(--ac);color:#111} #comu.cm-l-player .cm-papel{border-color:var(--pl);color:var(--pl);background:transparent}
-.cm-salabtn{position:relative;display:inline-flex;align-items:center;gap:6px}
+
+/* ---------- entrada: escolha mestre / player ---------- */
+.cm-esc-logo{display:flex;align-items:baseline;gap:10px;font-weight:700;letter-spacing:2px;font-size:clamp(22px,5vw,32px);text-transform:uppercase;color:var(--ink)}
+.cm-esc-logo b{color:var(--red)}
 .cm-esc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-.cm-escolha{--c:var(--ac);text-align:left;background:linear-gradient(160deg,color-mix(in srgb,var(--c) 14%,#121218),#0d0d10 60%);border:2px solid var(--c);color:#fff;padding:20px 18px;display:flex;flex-direction:column;gap:10px;cursor:pointer;
-  box-shadow:0 0 0 transparent;transition:box-shadow .25s,transform .25s;font-family:var(--font);clip-path:polygon(0 0,calc(100% - 22px) 0,100% 22px,100% 100%,22px 100%,0 calc(100% - 22px))}
-.cm-escolha.player{--c:var(--pl)}
-.cm-escolha:hover,.cm-escolha:focus-visible{box-shadow:0 0 22px color-mix(in srgb,var(--c) 55%,transparent),inset 0 0 18px color-mix(in srgb,var(--c) 18%,transparent);transform:translateY(-2px);outline:none}
-.cm-esc-ic{font-size:34px}
-.cm-esc-tit{font-size:28px;font-weight:800;letter-spacing:5px;text-transform:uppercase;color:var(--c);text-shadow:0 0 10px color-mix(in srgb,var(--c) 70%,transparent)}
-.cm-escolha ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px;font-size:15px;color:#ddd}
-.cm-escolha li::marker{color:var(--c)}
-.cm-esc-ir{margin-top:auto;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;font-size:13px;color:var(--c)}
-.cm-sec-tit{letter-spacing:1.8px;text-transform:uppercase;font-size:13px;color:#bbb}
-.cm-btn.cm-ac{border-color:var(--ac)} .cm-btn.cm-ac.cm-pri{background:var(--ac);color:#111}
-.cm-btn.cm-pl{border-color:var(--pl)} .cm-btn.cm-pl.cm-pri{background:var(--pl);color:#111}
-.cm-card.cm-ac-card{border-left-color:var(--ac)} .cm-card.cm-pl-card{border-left-color:var(--pl)}
-.cm-tag.cm-ac-tag{border-color:var(--ac);color:var(--ac)} .cm-tag.cm-pl-tag{border-color:var(--pl);color:var(--pl)}
-#comu.cm-l-mestre .cm-card{border-left-color:var(--ac)} #comu.cm-l-player .cm-card{border-left-color:var(--pl)}
-#comu.cm-l-mestre .cm-n{background:var(--ac);color:#111}
-.cm-card.cm-off{opacity:.62}
-.cm-codigo{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.cm-codigo span{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:20px;font-weight:800;letter-spacing:4px;color:#fff;background:#08080a;border:1px dashed var(--ac);padding:6px 10px;text-shadow:0 0 8px color-mix(in srgb,var(--ac) 70%,transparent)}
-.cm-codigo.grande span{font-size:clamp(24px,6vw,36px);letter-spacing:6px}
+.cm-escolha{text-align:left;background:#fff;border:4px solid var(--red);color:var(--ink);padding:0 0 16px;display:flex;flex-direction:column;gap:12px;cursor:pointer;font-family:var(--font);
+  clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,20px 100%,0 calc(100% - 20px))}
+.cm-escolha:hover,.cm-escolha:focus-visible{background:var(--tint);outline:none}
+.cm-esc-tit{align-self:flex-start;background:#000;color:#fff;font-size:30px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:8px 34px 8px 16px;clip-path:polygon(0 0,100% 0,calc(100% - 16px) 100%,0 100%)}
+.cm-escolha.player .cm-esc-tit{background:var(--red)}
+.cm-esc-txt{font-size:17px;line-height:1.4;padding:0 16px}
+.cm-esc-ir{margin:auto 16px 0;align-self:flex-start;border:3px solid var(--red);font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 14px}
+.cm-escolha:hover .cm-esc-ir{background:var(--red);color:#fff}
+
+/* ---------- sessões ---------- */
+.cm-sessao{display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;padding:10px 12px;background:#fff}
+.cm-sessao-info{flex:1 1 220px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.cm-sessao-nome{font-size:19px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.cm-sessao.cm-off{opacity:.6}
+.cm-sessao .cm-sub .cm-n{margin-left:6px}
+.cm-codigo{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cm-codigo span{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:17px;font-weight:700;letter-spacing:3px;color:var(--ink);border:2px dashed var(--red);padding:2px 8px;background:var(--tint)}
+.cm-codigo.grande span{font-size:clamp(26px,6vw,40px);letter-spacing:6px;padding:6px 14px}
 .cm-codigo.venc span{opacity:.5;text-decoration:line-through}
 .cm-in-codigo{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:22px;letter-spacing:5px;text-transform:uppercase;text-align:center}
-.cm-in-codigo:focus{border-color:var(--pl);box-shadow:0 0 0 2px color-mix(in srgb,var(--pl) 35%,transparent)}
-.cm-jog{gap:10px;padding:6px 0;border-bottom:1px solid #24242c}
+.cm-jog{display:flex;align-items:center;flex-wrap:wrap;gap:10px;padding:8px 0;border-bottom:1px solid var(--tint3)}
 .cm-jog:last-child{border-bottom:0}
-.cm-entra{animation:cmEntra .3s ease-out}
+.cm-entra{animation:cmEntra .25s ease-out}
+.cm-entra .cm-sessao-nome{font-size:22px}
+
 /* portão: nada da ficha aparece antes da escolha */
 html.cm-gate body > :not(#comu):not(.cm-toasts):not(.jn-bg):not(.cfm-bg){visibility:hidden!important}
-html.cm-gate body{background:#0d0d10}
-.cm-esc-logo{display:flex;align-items:baseline;gap:10px;font-weight:800;letter-spacing:4px;margin:8px 0 4px;font-size:clamp(20px,5vw,30px)}
-.cm-esc-logo b{color:var(--red);text-shadow:0 0 12px color-mix(in srgb,var(--red) 70%,transparent)}
-.cm-esc-ult{align-self:flex-start;font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;border:1px solid var(--c);color:var(--c);padding:2px 7px}
-/* formulários dentro das janelas (fundo claro) */
-.jn .cm-in,.jn .cm-ta,.jn .cm-sel{background:#fff;color:#111;border-color:#bbb}
-.jn .cm-tag{color:#111;border-color:#999}
-.jn .cm-sub{color:#555}
-.jn .cm-nome{color:#111}
+html.cm-gate body{background:var(--bg)}
+html.cm-gate .cm-tabs{display:none}
+
+/* janelas (formulários do mestre) */
+.jn .cm-lbl{color:var(--ink)}
+
 /* menu deitado: a Comunidade ocupa as colunas 2 e 3, embaixo de Ficha e Configuração */
 body.land #menu [data-fold="fold-comu"]{grid-column:2/4;grid-row:3}
 body.land #fold-comu{grid-column:2/4;grid-row:4;display:grid!important;grid-template-columns:1fr 1fr;gap:5px}
 body.land #menu .m-body{grid-template-rows:auto auto auto auto}
 body.land #fold-paginas{grid-row:2/5}
+
+@media (max-width:640px){
+  .cm-bar{padding:6px 8px;gap:8px}
+  .cm-cidade{font-size:16px}
+  .cm-tabs{padding:0 6px}
+  .cm-tab{padding:8px 10px 6px;font-size:13px}
+  .cm-body{padding:10px 6px 40px}
+  .cm-wrap{padding:12px 10px 22px;border-width:4px;clip-path:polygon(16px 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%,0 16px)}
+  .cm-h h2{font-size:18px}
+  .cm-linha{grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;padding:9px 10px}
+  .cm-linha .cm-rot{grid-column:1/-1}
+  .cm-npc-big{width:110px;height:110px;flex-basis:110px}
+  .cm-msg{max-width:92%}
+  .cm-fichas{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .cm-doc-tit{font-size:18px}
+  .cm-esc-tit{font-size:24px}
+  .cm-bar .cm-btn.cm-mini{padding:3px 8px}
+  .cm-papel{display:none}
+  .cm-in-codigo{font-size:18px;letter-spacing:2px;padding:7px 6px}
+}
 @media print{#comu,.cm-toasts{display:none!important}}
 </style>
 <script>
@@ -1100,7 +1191,7 @@ window.confirmar = function (msg, sim = 'Sim', nao = 'Cancelar') {
           <option value="red">Cyberpunk RED — Livro Básico</option>
         </select>
         <div class="lv-addrow" id="lv-addrow"><button class="btool" id="lv-add" type="button">＋ Adicionar PDF</button><button class="btool" id="lv-rem" type="button" title="Tirar este livro do aparelho">Tirar</button></div>
-        <button class="btool" id="lv-mesa" type="button" hidden>📤 Enviar pra mesa</button>
+        <button class="btool" id="lv-mesa" type="button" hidden>Enviar pra mesa</button>
         <button class="btool" id="lv-prev" type="button" title="Página anterior">‹</button>
         <input class="lvpage" id="lv-page" type="number" min="1" value="1" aria-label="Página atual">
         <span class="lv-total" id="lv-total">/ 71</span>
@@ -3311,13 +3402,9 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
    conversam com NPCs (o mestre responde), resolvem pistas e aceitam missões. */
 (function () {
   'use strict';
-  const SECS = [
-    ['novidades', 'Novidades', '📡'], ['mural', 'Mural', '💬'], ['mapa', 'Mapa', '🗺️'], ['npcs', 'NPCs', '🕴️'],
-    ['pistas', 'Pistas', '🔎'], ['missoes', 'Missões', '🎯'], ['perfil', 'Perfis', '🪪'],
-  ];
+  const SECS = [['novidades', 'Novidades'], ['mural', 'Mural'], ['mapa', 'Mapa'], ['npcs', 'NPCs'], ['pistas', 'Pistas'], ['missoes', 'Missões'], ['perfil', 'Perfis']];
   const NOME_SEC = Object.fromEntries(SECS.map((s) => [s[0], s[1]]));
-  const ICO_SEC = Object.fromEntries(SECS.map((s) => [s[0], s[2]]));
-  const TIPOS_PISTA = { documento: ['📄', 'Documento'], cifrada: ['🔐', 'Mensagem cifrada'], enigma: ['🧩', 'Enigma'], arquivo: ['🗄️', 'Arquivo histórico'], transmissao: ['📡', 'Transmissão'] };
+  const TIPOS_PISTA = { documento: 'Documento', cifrada: 'Mensagem cifrada', enigma: 'Enigma', arquivo: 'Arquivo', transmissao: 'Transmissão' };
   const TIPOS_LOCAL = { distrito: 'Distrito', local: 'Ponto de interesse', evento: 'Evento' };
   const TIPOS_MISSAO = { individual: 'Individual', comunidade: 'Comunitária', evento: 'Evento temporário' };
   const REACOES = ['⚡', '🔥', '💀', '😂', '👍'];
@@ -3346,7 +3433,9 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
       else if (k === 'value') e.value = v;
       else e.setAttribute(k, v === true ? '' : v);
     }
-    for (const c of kids.flat(3)) if (c != null && c !== false) e.append(c.nodeType ? c : String(c));
+    // em linhas de detalhes, cada texto vira um item (senão os pedaços grudam)
+    const solto = !!(props && props.class && /\bcm-meta\b/.test(props.class));
+    for (const c of kids.flat(3)) if (c != null && c !== false) e.append(c.nodeType ? c : solto ? Object.assign(document.createElement('span'), { textContent: String(c) }) : String(c));
     return e;
   }
   // troca o conteúdo ignorando vazios (null/false)
@@ -3431,7 +3520,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   function campoImagem(atual, rotulo = 'Imagem') {
     let id = atual || null;
     const prev = h('div', { class: 'cm-row' });
-    const pinta = () => { rc(prev, id ? h('img', { src: imgSrc(id), alt: '', style: 'max-width:120px;max-height:90px;border:2px solid #333' }) : h('span', { class: 'cm-sub', text: 'sem imagem' }), id ? btn('Tirar', () => { id = null; pinta(); }, 'cm-mini cm-perigo') : null); };
+    const pinta = () => { rc(prev, id ? h('img', { src: imgSrc(id), alt: '', style: 'max-width:120px;max-height:90px;border:2px solid var(--red)' }) : h('span', { class: 'cm-sub', text: 'sem imagem' }), id ? btn('Tirar', () => { id = null; pinta(); }, 'cm-mini cm-perigo') : null); };
     const inp = h('input', { type: 'file', accept: 'image/*', style: 'display:none' });
     const st = h('span', { class: 'cm-sub' });
     inp.addEventListener('change', async () => {
@@ -3469,13 +3558,14 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   const painel = h('section', { id: 'comu', hidden: true, 'aria-label': 'Comunidade' });
   const appBtn = h('button', { type: 'button', class: 'cm-app', 'aria-label': 'Menu principal', title: 'Menu principal', onclick: () => openMenu(true) }, '☰', h('b', { class: 'cm-dot', 'data-total': '' }));
   const papel = h('span', { class: 'cm-papel' });
-  const fichaBtn = h('button', { type: 'button', class: 'cm-btn cm-mini', title: 'Abrir a ficha do personagem', onclick: () => fechar() }, '📄 Ficha');
-  const salaBtn = h('button', { type: 'button', class: 'cm-btn cm-mini cm-salabtn', title: 'Sessões', onclick: () => irLobby() }, '🚪 Sessões', h('b', { class: 'cm-n', 'data-lob': '' }));
+  const fichaBtn = h('button', { type: 'button', class: 'cm-btn cm-mini', title: 'Abrir a ficha do personagem', onclick: () => fechar() }, 'Ficha');
+  const salaBtn = h('button', { type: 'button', class: 'cm-btn cm-mini cm-salabtn', title: 'Sessões', onclick: () => irLobby() }, 'Sessões', h('b', { class: 'cm-n', 'data-lob': '' }));
   const titulo = h('div', { class: 'cm-tit' }, h('small', { text: 'Comunidade' }), h('span', { class: 'cm-cidade', text: 'Cidade' }));
   const tabs = h('nav', { class: 'cm-tabs', role: 'tablist', 'aria-label': 'Seções da comunidade' },
-    SECS.map(([k, n, ic]) => h('button', { type: 'button', class: 'cm-tab', role: 'tab', 'data-sec': k, onclick: () => abrir(k) }, `${ic} ${n}`, h('b', { class: 'cm-n', 'data-n': k }))));
+    SECS.map(([k, n]) => h('button', { type: 'button', class: 'cm-tab', role: 'tab', 'data-sec': k, onclick: () => abrir(k) }, n, h('b', { class: 'cm-n', 'data-n': k }))));
   const corpo = h('div', { class: 'cm-body' });
-  painel.append(h('header', { class: 'cm-top' }, h('div', { class: 'cm-bar' }, appBtn, titulo, h('span', { style: 'flex:1' }), fichaBtn, salaBtn, papel), tabs), corpo);
+  const avisoLento = h('div', { class: 'cm-aviso cm-lento', hidden: true, text: 'Sem resposta do servidor ainda. Confira a internet.' });
+  painel.append(h('header', { class: 'cm-top' }, h('div', { class: 'cm-bar' }, appBtn, titulo, h('span', { style: 'flex:1' }), fichaBtn, salaBtn, papel), tabs), avisoLento, corpo);
 
   function abrir(sec) {
     if (sec && sec !== S.sec) { S.npcAberto = null; S.chatNpc = null; fecharThread(); S.perfilAberto = null; S.verDen = false; }
@@ -3511,9 +3601,8 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     S.ui = {};
     pintarTopo();
     if (!S.sess && !S.lob.papel) { montarLobby(wrap); return; } // a escolha não depende da conexão
-    if (S.erro) { wrap.append(semAcesso(), h('div', { class: 'cm-row', style: 'justify-content:center' }, btn('📄 Abrir a ficha', fechar, 'cm-pri'))); return; }
-    if (!S.db) { wrap.append(h('div', { class: 'cm-vazio', text: 'Conectando à comunidade…' })); return; }
-    if (S.lento && !S.carregou.size) wrap.append(h('div', { class: 'cm-aviso', text: 'A comunidade ainda não respondeu. Pode ser a conexão; os dados aparecem assim que chegarem.' }));
+    if (S.erro) { wrap.append(semAcesso(), h('div', { class: 'cm-row', style: 'justify-content:center' }, btn('Abrir a ficha', fechar, 'cm-pri'))); return; }
+    if (!S.db) { wrap.append(h('div', { class: 'cm-vazio', text: 'Conectando…' })); return; }
     if (!S.escreve && !FB) wrap.append(h('div', { class: 'cm-aviso', text: 'Você está só como leitor desta ficha. Pra criar ou entrar em sessões, peça a quem compartilhou a ficha acesso de Colaborador.' }));
     pintarTopo();
     if (!S.sess) { montarLobby(wrap); return; }
@@ -3532,10 +3621,10 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   }
   painel.addEventListener('focusout', () => { if (pendente) setTimeout(() => { if (pendente && !(document.activeElement && document.activeElement.closest && document.activeElement.closest('[data-vivo]'))) { pendente = false; atualizar(); } }, 50); });
   function semAcesso() {
-    if (window.__cmSemConfig) return h('div', { class: 'cm-vazio', text: 'A Comunidade ainda não foi configurada neste site. Quem publicou precisa colar a configuração do Firebase no arquivo firebase-config.js (veja o LEIA-ME).' });
+    if (window.__cmSemConfig) return h('div', { class: 'cm-vazio', text: 'A Comunidade ainda não foi configurada neste site (falta o firebase-config.js).' });
     const txt = S.erro === 'fora'
-      ? 'A Comunidade funciona quando a ficha é aberta pelo link do Claude, com a sua conta. Aberta como arquivo, ela fica desligada.'
-      : FB ? 'Não deu pra conectar ao servidor da Comunidade. Confira a internet e recarregue a página.' : 'Não deu pra ligar a Comunidade nesta visita. Entre na sua conta do Claude e abra a ficha pelo link que o mestre compartilhou.';
+      ? 'A Comunidade só funciona com a ficha aberta pelo site, não como arquivo.'
+      : FB ? 'Sem conexão com o servidor. Confira a internet e recarregue a página.' : 'A Comunidade não conectou. Entre na sua conta do Claude e abra a ficha pelo link do mestre.';
     return h('div', { class: 'cm-vazio', text: txt });
   }
 
@@ -3551,13 +3640,13 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     S.d.npcs.filter((n) => S.mestre || !n.oculto).forEach((n) => add('npcs', 'n' + n.id, n.ts, `NPC: ${n.nome}`, n.autor, () => { S.npcAberto = n.id; }));
     if (S.mestre) S.d.conversas.forEach((c) => { if (c.ultimoDe === 'jogador') add('npcs', 'cv' + c.id + c.ultimoTs, c.ultimoTs, `${nome(c.id)} → ${npcNome(c.ultimoNpc)}: “${corte(c.ultimoTexto, 50)}”`, null, () => { abrirThread(c.id); }); });
     else S.d.msgs.forEach((m) => { if (m.de === 'npc') add('npcs', 'm' + m.id, m.ts, `${npcNome(m.npc)} respondeu: “${corte(m.texto, 50)}”`, null, () => { S.chatNpc = m.npc; S.npcAberto = m.npc; }); });
-    S.d.pistas.forEach((p) => add('pistas', 'p' + p.id, p.ts, `${(TIPOS_PISTA[p.tipo] || ['🔎'])[0]} Pista: ${p.titulo}`, p.autor));
+    S.d.pistas.forEach((p) => add('pistas', 'p' + p.id, p.ts, `Pista nova: ${p.titulo}`, p.autor));
     S.d.desc.forEach((d) => add('pistas', 'd' + d.id, d.ts, d.tipo === 'resolveu' ? `${nome(d.autor)} decifrou uma pista` : `${nome(d.autor)} compartilhou uma descoberta`, d.autor, () => { S.abertosDesc.add(d.pista); }));
     S.d.missoes.forEach((m) => add('missoes', 'ms' + m.id, m.ts, `Missão${m.status === 'concluida' ? ' concluída' : ''}: ${m.titulo}`, m.autor));
     if (S.mestre) S.d.aceites.forEach((a) => add('missoes', 'a' + a.id + a.ts, a.ts, `${nome(a.autor)} ${a.estado === 'entregue' ? 'entregou' : 'aceitou'} uma missão`, a.autor));
     const r = S.me && S.d.rep[S.me];
-    if (r && r.ts) add('perfil', 'rep' + r.ts, r.ts, 'Sua reputação, conquistas ou relações mudaram', r.autor === me ? null : r.autor);
-    if (S.mestre) S.d.den.forEach((d) => (d.itens || []).forEach((x, i) => add('mural', 'den' + d.id + x.ts, x.ts, '⚠️ Nova denúncia pra moderar', null, () => { S.verDen = true; })));
+    if (r && r.ts) add('perfil', 'rep' + r.ts, r.ts, 'O mestre mexeu na sua reputação', r.autor === me ? null : r.autor);
+    if (S.mestre) S.d.den.forEach((d) => (d.itens || []).forEach((x, i) => add('mural', 'den' + d.id + x.ts, x.ts, 'Denúncia nova no mural', null, () => { S.verDen = true; })));
     return it.sort((a, b) => b.ts - a.ts);
   }
   function irPara(x) { abrir(x.sec); if (x.abrirFn) { x.abrirFn(); atualizar(); } }
@@ -3578,8 +3667,8 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const novos = nv.filter((x) => !S.conhecidos.has(x.sec + x.id + x.ts));
     itens().forEach((x) => S.conhecidos.add(x.sec + x.id + x.ts));
     const mostrar = novos.filter((x) => !(S.aberto && S.sec === x.sec));
-    mostrar.slice(0, 3).forEach((x) => toast(`${ICO_SEC[x.sec]} ${NOME_SEC[x.sec]}`, x.txt, () => irPara(x)));
-    if (mostrar.length > 3) toast('📡 Novidades', `+${mostrar.length - 3} novidades na comunidade`, () => abrir('novidades'));
+    mostrar.slice(0, 3).forEach((x) => toast(NOME_SEC[x.sec], x.txt, () => irPara(x)));
+    if (mostrar.length > 3) toast('Novidades', `Mais ${mostrar.length - 3} coisas novas`, () => abrir('novidades'));
   }
   let tVisto = null;
   function marcarVisto(sec) {
@@ -3608,18 +3697,18 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   const SECOES = {};
   SECOES.novidades = {
     montar(w) {
-      w.append(h('div', { class: 'cm-h' }, h('h2', { text: 'Novidades' }), btn('Marcar tudo como visto', marcarTudo, 'cm-mini')));
-      S.ui.lista = h('div', { style: 'display:flex;flex-direction:column;gap:8px' });
+      w.append(h('div', { class: 'cm-h' }, h('h2', { text: 'Novidades' }), btn('Marcar como visto', marcarTudo, 'cm-mini')));
+      S.ui.lista = h('div', { class: 'cm-lista' });
       w.append(S.ui.lista);
     },
     atualizar() {
       const nv = naoVistos();
       const recentes = itens().filter((x) => !nv.includes(x)).slice(0, 15);
-      const linha = (x, velho) => h('div', { class: 'cm-card cm-click', style: velho ? 'opacity:.6;border-left-color:#444' : '', onclick: () => irPara(x) },
-        h('div', { class: 'cm-meta' }, h('span', { class: 'cm-tag' + (velho ? '' : ' cm-red'), text: `${ICO_SEC[x.sec]} ${NOME_SEC[x.sec]}` }), quando(x.ts)), h('div', { class: 'cm-txt', text: x.txt }));
-      rc(S.ui.lista, 
-        ...(nv.length ? nv.slice(0, 80).map((x) => linha(x)) : [h('div', { class: 'cm-vazio', text: 'Nada novo por aqui, choom. Quando o mestre ou alguém da mesa mexer na comunidade, aparece aqui e no ☰.' })]),
-        ...(recentes.length ? [h('div', { class: 'cm-sub', style: 'margin-top:8px', text: 'Já visto' }), ...recentes.map((x) => linha(x, true))] : []));
+      const linha = (x, velho) => h('button', { type: 'button', class: 'cm-linha' + (velho ? ' cm-velho' : ''), onclick: () => irPara(x) },
+        h('span', { class: 'cm-rot', text: NOME_SEC[x.sec] }), h('span', { class: 'cm-linha-txt', text: x.txt }), h('span', { class: 'cm-quando', text: quando(x.ts) }));
+      rc(S.ui.lista,
+        ...(nv.length ? nv.slice(0, 80).map((x) => linha(x)) : [h('div', { class: 'cm-vazio', text: 'Nada novo desde a última visita.' })]),
+        ...(recentes.length ? [h('div', { class: 'cm-divisa', text: 'Já visto' }), ...recentes.map((x) => linha(x, true))] : []));
     },
   };
 
@@ -3627,12 +3716,12 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   SECOES.mural = {
     montar(w) {
       const top = h('div', { class: 'cm-h' }, h('h2', { text: 'Mural' }));
-      if (S.mestre) top.append(S.ui.denBtn = btn('⚠️ Denúncias', () => { S.verDen = !S.verDen; atualizar(); }, 'cm-mini'));
+      if (S.mestre) top.append(S.ui.denBtn = btn('Denúncias', () => { S.verDen = !S.verDen; atualizar(); }, 'cm-mini'));
       w.append(top);
       if (S.me && S.escreve) {
-        const ta = h('textarea', { class: 'cm-ta', placeholder: 'O que está rolando nas ruas?', maxlength: 2000, 'aria-label': 'Nova publicação' });
-        const como = h('select', { class: 'cm-sel', 'aria-label': 'Postar como', style: 'width:auto' }, h('option', { value: '', text: S.mestre ? 'Postar como: Mestre' : 'Postar como: eu' }), S.mestre ? S.d.npcs.map((n) => h('option', { value: n.id, text: `Como NPC: ${n.nome}` })) : []);
-        const onde = h('select', { class: 'cm-sel', 'aria-label': 'Local', style: 'width:auto' }, h('option', { value: '', text: '📍 Sem local' }), S.d.locais.map((l) => h('option', { value: l.id, text: `📍 ${l.nome}` })));
+        const ta = h('textarea', { class: 'cm-ta', placeholder: 'Escreva no mural…', maxlength: 2000, 'aria-label': 'Nova publicação' });
+        const como = h('select', { class: 'cm-sel', 'aria-label': 'Postar como', style: 'width:auto' }, h('option', { value: '', text: S.mestre ? 'Como mestre' : 'Como eu' }), S.mestre ? S.d.npcs.map((n) => h('option', { value: n.id, text: `Como ${n.nome}` })) : []);
+        const onde = h('select', { class: 'cm-sel', 'aria-label': 'Local', style: 'width:auto' }, h('option', { value: '', text: 'Sem local' }), S.d.locais.map((l) => h('option', { value: l.id, text: l.nome })));
         const postar = btn('Postar', async () => {
           const t = ta.value.trim(); if (!t) { ta.focus(); return; }
           postar.disabled = true;
@@ -3640,15 +3729,15 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
           postar.disabled = false;
           if (ok) ta.value = '';
         }, 'cm-pri');
-        w.append(h('div', { class: 'cm-card', 'data-vivo': '' }, ta, h('div', { class: 'cm-row' }, como.options.length > 1 ? como : null, S.d.locais.length ? onde : null, h('span', { style: 'flex:1' }), postar)));
+        w.append(h('div', { class: 'cm-caixa cm-postar', 'data-vivo': '' }, ta, h('div', { class: 'cm-row' }, como.options.length > 1 ? como : null, S.d.locais.length ? onde : null, h('span', { style: 'flex:1' }), postar)));
       }
-      S.ui.lista = h('div', { style: 'display:flex;flex-direction:column;gap:10px', 'data-vivo': '' });
+      S.ui.lista = h('div', { class: 'cm-lista cm-feed', 'data-vivo': '' });
       w.append(S.ui.lista);
     },
     atualizar() {
-      if (S.ui.denBtn) { const n = S.d.den.reduce((a, d) => a + (d.itens || []).length, 0); S.ui.denBtn.textContent = `⚠️ Denúncias (${n})`; }
+      if (S.ui.denBtn) { const n = S.d.den.reduce((a, d) => a + (d.itens || []).length, 0); S.ui.denBtn.textContent = n ? `Denúncias (${n})` : 'Denúncias'; }
       if (S.verDen && S.mestre) { rc(S.ui.lista, ...listaDenuncias()); return; }
-      if (!S.d.mural.length) { rc(S.ui.lista, h('div', { class: 'cm-vazio', text: 'O mural está vazio. Seja o primeiro a postar.' })); return; }
+      if (!S.d.mural.length) { rc(S.ui.lista, h('div', { class: 'cm-vazio', text: 'Nada no mural ainda.' })); return; }
       rc(S.ui.lista, ...S.d.mural.map(cartaoPost));
     },
   };
@@ -3657,27 +3746,29 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const quem = npc ? h('span', { class: 'cm-nome', text: npc.nome }) : spanNome(p.autor);
     const head = h('div', { class: 'cm-npc cm-ph' }, npc ? avatar(npc.nome, npc.img) : avatar(nome(p.autor)),
       h('div', { style: 'display:flex;flex-direction:column;gap:3px;min-width:0' }, h('div', { class: 'cm-row', style: 'gap:6px' }, quem, npc ? h('span', { class: 'cm-tag cm-red', text: 'NPC' }) : null, !npc && p.mestre ? h('span', { class: 'cm-tag cm-red', text: 'Mestre' }) : null),
-        h('div', { class: 'cm-meta' }, quando(p.ts), p.local && localDe(p.local) ? h('span', { text: `📍 ${localDe(p.local).nome}` }) : null)));
+        h('div', { class: 'cm-meta' }, quando(p.ts), p.local && localDe(p.local) ? h('span', { text: localDe(p.local).nome }) : null)));
     const reac = p.reacoes || {};
-    const reacoes = h('div', { class: 'cm-reacoes' }, REACOES.map((e) => {
-      const n = Object.values(reac).filter((x) => x === e).length;
-      const on = S.me && reac[S.me] === e;
-      return h('button', { type: 'button', class: 'cm-reac' + (on ? ' on' : ''), 'aria-pressed': on ? 'true' : 'false', 'aria-label': `Reagir com ${e}`, disabled: !S.me || !S.escreve, onclick: () => salvar(() => dok('mural', p.id).update({ reacoes: { [S.me]: on ? null : e } })) }, `${e}${n ? ' ' + n : ''}`);
-    }));
+    const reagir = (e) => { const on = S.me && reac[S.me] === e; S.ui.reagindo = null; salvar(() => dok('mural', p.id).update({ reacoes: { [S.me]: on ? null : e } })); };
+    const usadas = REACOES.map((e) => [e, Object.values(reac).filter((x) => x === e).length]).filter(([, n]) => n);
+    const pode = S.me && S.escreve;
+    const reacoes = h('div', { class: 'cm-reacoes' },
+      usadas.map(([e, n]) => { const on = S.me && reac[S.me] === e; return h('button', { type: 'button', class: 'cm-reac' + (on ? ' on' : ''), 'aria-pressed': on ? 'true' : 'false', 'aria-label': `${e} ${n}`, disabled: !pode, onclick: () => reagir(e) }, `${e} ${n}`); }),
+      pode && S.ui.reagindo === p.id ? REACOES.filter((e) => !usadas.some(([u]) => u === e)).map((e) => h('button', { type: 'button', class: 'cm-reac', 'aria-label': `Reagir com ${e}`, onclick: () => reagir(e) }, e)) : null);
     const coms = S.d.coment.filter((c) => c.post === p.id).sort((a, b) => a.ts - b.ts);
     const aberto = S.abertosCom.has(p.id);
     const acoes = h('div', { class: 'cm-acoes' },
-      h('button', { type: 'button', class: 'cm-link', text: `💬 ${coms.length} comentário${coms.length === 1 ? '' : 's'}`, onclick: () => { aberto ? S.abertosCom.delete(p.id) : S.abertosCom.add(p.id); atualizar(); } }),
+      pode ? h('button', { type: 'button', class: 'cm-link', text: S.ui.reagindo === p.id ? 'Fechar' : 'Reagir', onclick: () => { S.ui.reagindo = S.ui.reagindo === p.id ? null : p.id; atualizar(); } }) : null,
+      h('button', { type: 'button', class: 'cm-link', text: coms.length ? `${coms.length} comentário${coms.length === 1 ? '' : 's'}` : 'Comentar', onclick: () => { aberto ? S.abertosCom.delete(p.id) : S.abertosCom.add(p.id); atualizar(); } }),
       (p.autor === S.me || S.mestre) ? h('button', { type: 'button', class: 'cm-link', text: 'Apagar', onclick: () => apagar(dok('mural', p.id), 'Apagar esta publicação?') }) : null,
       p.autor !== S.me && S.me ? h('button', { type: 'button', class: 'cm-link', text: 'Denunciar', onclick: () => denunciar('post', p.id, p.texto) }) : null);
-    const card = h('article', { class: 'cm-card' }, head, h('div', { class: 'cm-txt', text: p.texto || '' }), reacoes, acoes);
+    const card = h('article', { class: 'cm-post' }, head, h('div', { class: 'cm-txt', text: p.texto || '' }), usadas.length || S.ui.reagindo === p.id ? reacoes : null, acoes);
     if (aberto) {
       const box = h('div', { class: 'cm-coms' }, coms.map((c) => h('div', { class: 'cm-com' }, h('div', { class: 'cm-meta' }, spanNome(c.autor), quando(c.ts),
         (c.autor === S.me || S.mestre) ? h('button', { type: 'button', class: 'cm-link', text: 'Apagar', onclick: () => apagar(dok('comentarios', c.id), 'Apagar este comentário?') }) : null,
         c.autor !== S.me && S.me ? h('button', { type: 'button', class: 'cm-link', text: 'Denunciar', onclick: () => denunciar('comentario', c.id, c.texto) }) : null),
       h('div', { class: 'cm-txt', text: c.texto }))));
       if (S.me && S.escreve) {
-        const inp = h('input', { class: 'cm-in', placeholder: 'Responder…', maxlength: 800, value: S.rascCom[p.id] || '', 'aria-label': 'Comentário', oninput: () => { S.rascCom[p.id] = inp.value; } });
+        const inp = h('input', { class: 'cm-in', placeholder: 'Comentar…', maxlength: 800, value: S.rascCom[p.id] || '', 'aria-label': 'Comentário', oninput: () => { S.rascCom[p.id] = inp.value; } });
         const env = async () => { const t = inp.value.trim(); if (!t) return; inp.disabled = true; const ok = await salvar(() => col('comentarios').add({ post: p.id, autor: S.me, texto: t, ts: agora() })); inp.disabled = false; if (ok) { inp.value = ''; S.rascCom[p.id] = ''; } };
         inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') env(); });
         box.append(h('div', { class: 'cm-row', style: 'flex-wrap:nowrap' }, inp, btn('Enviar', env, 'cm-mini')));
@@ -3702,16 +3793,16 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
         const itens = (at.exists && at.data().itens) || [];
         await ref.set({ itens: [...itens.slice(-29), { tipo, alvo: id, resumo: corte(texto, 120), motivo: motivo.value, obs: obs.value.trim(), ts: agora() }], ts: agora() });
       });
-      if (ok) { j.fechar(); toast('Denúncia', 'Enviada pro mestre. Valeu.'); }
+      if (ok) { j.fechar(); toast('Denúncia', 'Enviada ao mestre.'); }
     }, 'cm-pri'));
   }
   function listaDenuncias() {
     const todas = [];
     S.d.den.forEach((d) => (d.itens || []).forEach((x, i) => todas.push({ ...x, quem: d.id, i })));
     todas.sort((a, b) => b.ts - a.ts);
-    const out = [h('div', { class: 'cm-row' }, btn('← Voltar ao mural', () => { S.verDen = false; atualizar(); }, 'cm-mini'))];
-    if (!todas.length) { out.push(h('div', { class: 'cm-vazio', text: 'Nenhuma denúncia. Tudo em paz.' })); return out; }
-    todas.forEach((x) => out.push(h('div', { class: 'cm-card' },
+    const out = [h('div', { class: 'cm-row' }, btn('← Mural', () => { S.verDen = false; atualizar(); }, 'cm-mini'))];
+    if (!todas.length) { out.push(h('div', { class: 'cm-vazio', text: 'Nenhuma denúncia.' })); return out; }
+    todas.forEach((x) => out.push(h('div', { class: 'cm-post' },
       h('div', { class: 'cm-meta' }, h('span', { class: 'cm-tag cm-red', text: x.tipo === 'post' ? 'Publicação' : 'Comentário' }), 'por ', spanNome(x.quem), quando(x.ts)),
       h('div', { class: 'cm-txt', text: `Motivo: ${x.motivo}${x.obs ? ' — ' + x.obs : ''}` }), h('div', { class: 'cm-sub', text: `“${x.resumo || ''}”` }),
       h('div', { class: 'cm-acoes' },
@@ -3742,19 +3833,19 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
       S.ui.zoom = h('div', { class: 'cm-row' }, btn('－', () => { S.mz = Math.max(1, S.mz - 0.5); atualizar(); }, 'cm-mini'), h('span', { class: 'cm-sub', text: 'zoom' }), btn('＋', () => { S.mz = Math.min(4, S.mz + 0.5); atualizar(); }, 'cm-mini'));
       S.ui.dica = h('div', { class: 'cm-aviso', hidden: true });
       S.ui.mapa = h('div', { class: 'cm-mapa' });
-      S.ui.locais = h('div', { style: 'display:flex;flex-direction:column;gap:8px' });
-      w.append(S.ui.zoom, S.ui.dica, S.ui.mapa, h('h2', { style: 'margin:6px 0 0;font-size:18px;letter-spacing:2px;text-transform:uppercase', text: 'Lugares' }), S.ui.locais);
+      S.ui.locais = h('div', { class: 'cm-lista' });
+      w.append(S.ui.zoom, S.ui.dica, S.ui.mapa, h('div', { class: 'cm-faixa', text: 'Lugares' }), S.ui.locais);
     },
     atualizar() {
       const m = S.d.mapa || {};
-      rc(S.ui.cab, h('h2', { style: 'margin:0;font-size:24px;letter-spacing:3px;text-transform:uppercase', text: m.cidade || 'Mapa da cidade' }), m.descricao ? h('div', { class: 'cm-sub cm-txt', text: m.descricao }) : null);
+      rc(S.ui.cab, h('div', { class: 'cm-h' }, h('h2', { text: m.cidade || 'Mapa' })), m.descricao ? h('div', { class: 'cm-txt', text: m.descricao }) : null);
       if (S.ui.ponto) S.ui.ponto.textContent = S.pondo ? '✕ Cancelar ponto' : '＋ Ponto no mapa';
       S.ui.dica.hidden = !(S.pondo || S.movendo);
       S.ui.dica.textContent = S.movendo ? 'Toque no mapa onde o ponto deve ficar.' : 'Toque no mapa onde quer criar o ponto.';
       S.ui.mapa.classList.toggle('cm-pondo', !!(S.pondo || S.movendo));
       S.ui.zoom.hidden = !m.img;
       if (!m.img) {
-        rc(S.ui.mapa, h('div', { class: 'cm-vazio', style: 'border:0', text: S.mestre ? 'Envie a imagem do mapa da sua cidade. Depois é só tocar nele pra marcar distritos, locais e eventos.' : 'O mestre ainda não colocou o mapa da cidade.' }));
+        rc(S.ui.mapa, h('div', { class: 'cm-vazio', style: 'border:0', text: S.mestre ? 'Sem mapa. Envie uma imagem e toque nela pra marcar os lugares.' : 'O mestre ainda não colocou o mapa.' }));
       } else {
         const inn = h('div', { class: 'cm-mapa-in', style: `--mz:${S.mz}` }, h('img', { src: imgSrc(m.img), alt: `Mapa de ${m.cidade || 'cidade'}`, draggable: 'false' }));
         inn.addEventListener('click', (e) => {
@@ -3768,10 +3859,12 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
         rc(S.ui.mapa, inn);
       }
       const ord = [...S.d.locais].sort((a, b) => (a.tipo === 'distrito' ? 0 : 1) - (b.tipo === 'distrito' ? 0 : 1) || (a.nome || '').localeCompare(b.nome || ''));
-      rc(S.ui.locais, ...(ord.length ? ord.map((l) => h('div', { class: 'cm-card cm-click', style: `border-left-color:${l.cor || 'var(--red)'}`, onclick: () => verLocal(l.id) },
-        h('div', { class: 'cm-meta' }, h('span', { class: 'cm-tag', text: TIPOS_LOCAL[l.tipo] || 'Local' }), npcsEm(l.id).length ? `🕴️ ${npcsEm(l.id).length}` : null, pistasEm(l.id).length ? `🔎 ${pistasEm(l.id).length}` : null),
-        h('div', { class: 'cm-nome', style: 'font-size:17px', text: l.nome }), l.descricao ? h('div', { class: 'cm-sub', text: corte(l.descricao, 160) }) : null))
-        : [h('div', { class: 'cm-vazio', text: S.mestre ? 'Nenhum lugar ainda. Use “＋ Ponto no mapa”.' : 'O mestre ainda não marcou lugares.' })]));
+      const conta = (n, um, varios) => (n ? `${n} ${n === 1 ? um : varios}` : null);
+      rc(S.ui.locais, ...(ord.length ? ord.map((l) => h('button', { type: 'button', class: 'cm-linha cm-lugar', style: `--pc:${l.cor || 'var(--red)'}`, onclick: () => verLocal(l.id) },
+        h('span', { class: 'cm-rot', text: TIPOS_LOCAL[l.tipo] || 'Local' }),
+        h('span', { class: 'cm-linha-txt' }, h('b', { text: l.nome }), l.descricao ? h('small', { text: corte(l.descricao, 140) }) : null),
+        h('span', { class: 'cm-quando', text: [conta(npcsEm(l.id).length, 'NPC', 'NPCs'), conta(pistasEm(l.id).length, 'pista', 'pistas')].filter(Boolean).join(' · ') })))
+        : [h('div', { class: 'cm-vazio', text: S.mestre ? 'Nenhum lugar ainda. Use “＋ Ponto no mapa”.' : 'Nenhum lugar marcado.' })]));
     },
   };
   const npcsEm = (lid) => S.d.npcs.filter((n) => n.local === lid && (S.mestre || !n.oculto));
@@ -3781,7 +3874,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const m = S.d.mapa || {};
     const nomeI = h('input', { class: 'cm-in', value: m.cidade || '', maxlength: 60, placeholder: 'Nome da cidade' });
     const desc = h('textarea', { class: 'cm-ta', maxlength: 1500, placeholder: 'Uma apresentação curta da cidade' }); desc.value = m.descricao || '';
-    const c = h('div', { style: 'display:flex;flex-direction:column;gap:10px;color:#111' }, h('label', { class: 'cm-lbl', style: 'color:#333' }, 'Cidade', nomeI), h('label', { class: 'cm-lbl', style: 'color:#333' }, 'Descrição', desc));
+    const c = h('div', { style: 'display:flex;flex-direction:column;gap:10px;color:#111' }, h('label', { class: 'cm-lbl' }, 'Cidade', nomeI), h('label', { class: 'cm-lbl' }, 'Descrição', desc));
     const j = janela('Cidade', c);
     c.append(btn('Salvar', async () => { if (await salvar(() => dok('conteudo', 'mapa').set({ ...m, cidade: nomeI.value.trim(), descricao: desc.value.trim(), autor: S.me, ts: agora() }))) j.fechar(); }, 'cm-pri'));
   }
@@ -3797,9 +3890,9 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const desc = h('textarea', { class: 'cm-ta', maxlength: 2000 }); desc.value = l.descricao || '';
     const img = campoImagem(l.img);
     const c = h('div', { style: 'display:flex;flex-direction:column;gap:10px;color:#111' },
-      h('label', { class: 'cm-lbl', style: 'color:#333' }, 'Nome', nomeI), h('label', { class: 'cm-lbl', style: 'color:#333' }, 'Tipo', tipo),
-      h('div', { class: 'cm-lbl', style: 'color:#333' }, 'Cor (identidade do lugar)', cores), h('label', { class: 'cm-lbl', style: 'color:#333' }, 'Descrição, pontos de interesse, eventos', desc), img.el);
-    img.el.style.color = '#333';
+      h('label', { class: 'cm-lbl' }, 'Nome', nomeI), h('label', { class: 'cm-lbl' }, 'Tipo', tipo),
+      h('div', { class: 'cm-lbl' }, 'Cor (identidade do lugar)', cores), h('label', { class: 'cm-lbl' }, 'Descrição, pontos de interesse, eventos', desc), img.el);
+    
     const j = janela(l.id ? 'Editar lugar' : 'Novo lugar', c);
     c.append(btn('Salvar', async () => {
       const n = nomeI.value.trim(); if (!n) { nomeI.focus(); return; }
@@ -3811,10 +3904,10 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   function verLocal(id) {
     const l = localDe(id); if (!l) return;
     const c = h('div', { style: 'display:flex;flex-direction:column;gap:10px;color:#111' },
-      h('div', { class: 'cm-meta', style: 'color:#555' }, h('span', { class: 'cm-tag', style: `border-color:${l.cor};color:#111`, text: TIPOS_LOCAL[l.tipo] || 'Local' })),
+      h('div', { class: 'cm-meta' }, h('span', { class: 'cm-tag', style: `border-color:${l.cor}`, text: TIPOS_LOCAL[l.tipo] || 'Local' })),
       l.img ? h('img', { src: imgSrc(l.img), alt: '', style: 'max-width:100%;max-height:260px;object-fit:contain' }) : null,
       l.descricao ? h('div', { style: 'white-space:pre-wrap;line-height:1.45', text: l.descricao }) : null);
-    const lista = (tit, arr, rot, fn) => { if (arr.length) c.append(h('b', { text: tit }), h('div', { class: 'cm-row' }, arr.map((x) => h('button', { type: 'button', class: 'cm-btn cm-mini', style: 'color:#fff', text: rot(x), onclick: () => { j.fechar(); fn(x); } })))); };
+    const lista = (tit, arr, rot, fn) => { if (arr.length) c.append(h('b', { text: tit }), h('div', { class: 'cm-row' }, arr.map((x) => h('button', { type: 'button', class: 'cm-btn cm-mini', text: rot(x), onclick: () => { j.fechar(); fn(x); } })))); };
     const j = janela(l.nome, c);
     lista('Quem está aqui', npcsEm(l.id), (n) => n.nome, (n) => { abrir('npcs'); S.npcAberto = n.id; atualizar(); });
     lista('Pistas daqui', pistasEm(l.id), (p) => p.titulo, () => { S.filtroLocal = l.id; abrir('pistas'); });
@@ -3834,25 +3927,25 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   SECOES.npcs = {
     montar(w) {
       const top = h('div', { class: 'cm-h' }, h('h2', { text: 'NPCs' }));
-      if (S.mestre) top.append(btn('＋ Novo NPC', () => formNpc(), 'cm-mini'), S.ui.caixa = btn('📥 Conversas', () => { S.npcAberto = null; S.chatNpc = null; S.ui.modoCaixa = !S.ui.modoCaixa; if (!S.ui.modoCaixa) fecharThread(); atualizar(); }, 'cm-mini'));
+      if (S.mestre) top.append(btn('＋ Novo NPC', () => formNpc(), 'cm-mini'), S.ui.caixa = btn('Conversas', () => { S.npcAberto = null; S.chatNpc = null; S.ui.modoCaixa = !S.ui.modoCaixa; if (!S.ui.modoCaixa) fecharThread(); atualizar(); }, 'cm-mini'));
       w.append(top);
       S.ui.area = h('div', { style: 'display:flex;flex-direction:column;gap:10px', 'data-vivo': '' });
       w.append(S.ui.area);
     },
     atualizar() {
       const a = S.ui.area;
-      if (S.ui.caixa) { const n = S.d.conversas.filter((c) => c.ultimoDe === 'jogador').length; S.ui.caixa.textContent = `📥 Conversas${n ? ` (${n})` : ''}`; }
+      if (S.ui.caixa) { const n = S.d.conversas.filter((c) => c.ultimoDe === 'jogador').length; S.ui.caixa.textContent = `Conversas${n ? ` (${n})` : ''}`; }
       if (S.mestre && (S.ui.modoCaixa || S.threadDe)) { rc(a, ...(S.threadDe ? viewThread() : caixaEntrada())); rolarChat(); return; }
       if (S.chatNpc && npcDe(S.chatNpc)) { rc(a, ...viewChat(npcDe(S.chatNpc))); rolarChat(); return; }
       if (S.npcAberto && npcDe(S.npcAberto)) { rc(a, viewNpc(npcDe(S.npcAberto))); return; }
       const vis = S.d.npcs.filter((n) => S.mestre || !n.oculto);
-      if (!vis.length) { rc(a, h('div', { class: 'cm-vazio', text: S.mestre ? 'Crie os personagens da sua cidade: comerciantes, informantes, jornalistas… Os jogadores conversam com eles e você responde.' : 'Nenhum NPC por aqui ainda.' })); return; }
-      rc(a, h('div', { class: 'cm-grid' }, vis.map((n) => {
+      if (!vis.length) { rc(a, h('div', { class: 'cm-vazio', text: S.mestre ? 'Nenhum NPC. Os jogadores conversam com eles e você responde.' : 'Nenhum NPC ainda.' })); return; }
+      rc(a, h('div', { class: 'cm-fichas' }, vis.map((n) => {
         const naoLidas = S.mestre ? 0 : S.d.msgs.filter((m) => m.npc === n.id && m.de === 'npc' && m.ts > ((S.visto && S.visto.npcs) || 0)).length;
-        return h('div', { class: 'cm-card cm-click', onclick: () => { S.npcAberto = n.id; atualizar(); corpo.scrollTop = 0; } },
-          h('div', { class: 'cm-npc' }, avatar(n.nome, n.img), h('div', { style: 'display:flex;flex-direction:column;gap:3px;min-width:0' },
-            h('div', { class: 'cm-nome', style: 'font-size:16px', text: n.nome }), n.papel ? h('div', { class: 'cm-sub', text: n.papel }) : null,
-            h('div', { class: 'cm-meta' }, n.local && localDe(n.local) ? `📍 ${localDe(n.local).nome}` : null, n.oculto ? h('span', { class: 'cm-tag', text: 'Oculto' }) : null, naoLidas ? h('span', { class: 'cm-n', text: naoLidas }) : null))));
+        return h('button', { type: 'button', class: 'cm-ficha' + (n.oculto ? ' cm-oculto' : ''), onclick: () => { S.npcAberto = n.id; atualizar(); corpo.scrollTop = 0; } },
+          avatar(n.nome, n.img, 'cm-retrato'), naoLidas ? h('span', { class: 'cm-n cm-n-canto', text: naoLidas }) : null,
+          h('span', { class: 'cm-ficha-nome', text: n.nome }),
+          h('span', { class: 'cm-ficha-sub', text: [n.papel, n.local && localDe(n.local) ? localDe(n.local).nome : null, n.oculto ? 'oculto' : null].filter(Boolean).join(' · ') }));
       })));
     },
   };
@@ -3863,12 +3956,12 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
         h('div', { style: 'display:flex;flex-direction:column;gap:6px;flex:1 1 220px;min-width:0' },
           h('div', { class: 'cm-nome', style: 'font-size:24px;letter-spacing:1px', text: n.nome }),
           n.papel ? h('span', { class: 'cm-tag cm-red', style: 'align-self:flex-start', text: n.papel }) : null,
-          n.local && localDe(n.local) ? h('div', { class: 'cm-sub', text: `📍 ${localDe(n.local).nome}` }) : null,
+          n.local && localDe(n.local) ? h('div', { class: 'cm-sub', text: localDe(n.local).nome }) : null,
           !S.mestre && S.me ? barraRel(relDe(S.me, n.id)) : null,
           n.personalidade ? h('div', null, h('b', { text: 'Personalidade: ' }), h('span', { class: 'cm-txt', text: n.personalidade })) : null)),
       n.bio ? h('div', { class: 'cm-txt', text: n.bio }) : null);
     const ac = h('div', { class: 'cm-row' });
-    if (!S.mestre && S.me) ac.append(btn('💬 Conversar', () => { S.chatNpc = n.id; atualizar(); }, 'cm-pri'));
+    if (!S.mestre && S.me) ac.append(btn('Conversar', () => { S.chatNpc = n.id; atualizar(); }, 'cm-pri'));
     if (S.mestre) ac.append(btn('Editar', () => formNpc(n), 'cm-mini'), btn(n.oculto ? 'Mostrar aos jogadores' : 'Ocultar dos jogadores', () => salvar(() => dok('npcs', n.id).update({ oculto: !n.oculto, ts: agora() })), 'cm-mini'),
       btn('Apagar', async () => { if (await confirmar(`Apagar ${n.nome}?`, 'Apagar')) { S.npcAberto = null; await salvar(() => dok('npcs', n.id).delete()); } }, 'cm-mini cm-perigo'));
     box.append(ac);
@@ -3886,8 +3979,8 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     local.value = n.local || '';
     const oculto = h('input', { type: 'checkbox' }); oculto.checked = !!n.oculto;
     const img = campoImagem(n.img, 'Imagem do NPC');
-    const lbl = (t, e) => h('label', { class: 'cm-lbl', style: 'color:#333' }, t, e);
-    img.el.style.color = '#333';
+    const lbl = (t, e) => h('label', { class: 'cm-lbl' }, t, e);
+    
     const c = h('div', { style: 'display:flex;flex-direction:column;gap:10px;color:#111' }, lbl('Nome', campos.nome), lbl('Papel', campos.papel), lbl('Personalidade', campos.personalidade), lbl('Biografia', bio), lbl('Onde encontrar', local), img.el,
       h('label', { class: 'cm-row', style: 'font-weight:700' }, oculto, 'Ocultar dos jogadores por enquanto'));
     const j = janela(n.id ? 'Editar NPC' : 'Novo NPC', c);
@@ -3905,7 +3998,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   function viewChat(n) {
     const msgs = S.d.msgs.filter((m) => m.npc === n.id).sort((a, b) => a.ts - b.ts);
     const chat = h('div', { class: 'cm-chat', 'aria-live': 'polite' }, msgs.length ? msgs.map((m) => bolha(m, m.de === 'jogador', m.de === 'jogador' ? 'Você' : h('b', { text: n.nome })))
-      : h('div', { class: 'cm-vazio', text: `Diga algo a ${n.nome}. Quem responde é o mestre, quando puder.` }));
+      : h('div', { class: 'cm-vazio', text: 'Nenhuma mensagem ainda.' }));
     const out = [h('div', { class: 'cm-card' }, h('div', { class: 'cm-row' }, btn('← Voltar', () => { S.chatNpc = null; atualizar(); }, 'cm-mini'), avatar(n.nome, n.img), h('div', { class: 'cm-nome', text: n.nome }), h('span', { style: 'flex:1' }), barraRel(relDe(S.me, n.id))), chat)];
     if (S.escreve) {
       const ta = h('textarea', { class: 'cm-ta', style: 'min-height:60px', placeholder: `Mensagem para ${n.nome}…`, maxlength: 1500, 'aria-label': 'Mensagem' });
@@ -3929,11 +4022,12 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   }
   function caixaEntrada() {
     const lst = [...S.d.conversas].sort((a, b) => (b.ultimoTs || 0) - (a.ultimoTs || 0));
-    const out = [h('div', { class: 'cm-row' }, btn('← NPCs', () => { S.ui.modoCaixa = false; atualizar(); }, 'cm-mini'), h('span', { class: 'cm-sub', text: 'Mensagens dos jogadores para os seus NPCs. Você responde como o NPC.' }))];
-    if (!lst.length) out.push(h('div', { class: 'cm-vazio', text: 'Nenhuma conversa ainda.' }));
-    lst.forEach((c) => out.push(h('div', { class: 'cm-card cm-click', onclick: () => abrirThread(c.id) },
-      h('div', { class: 'cm-meta' }, spanNome(c.id), '→', h('b', { text: npcNome(c.ultimoNpc) }), quando(c.ultimoTs), c.ultimoDe === 'jogador' ? h('span', { class: 'cm-tag cm-red', text: 'Aguardando resposta' }) : h('span', { class: 'cm-tag', text: 'Respondida' })),
-      h('div', { class: 'cm-txt', text: c.ultimoTexto || '' }))));
+    const out = [h('div', { class: 'cm-row' }, btn('← NPCs', () => { S.ui.modoCaixa = false; atualizar(); }, 'cm-mini'))];
+    if (!lst.length) { out.push(h('div', { class: 'cm-vazio', text: 'Nenhuma conversa ainda.' })); return out; }
+    out.push(h('div', { class: 'cm-lista' }, lst.map((c) => h('button', { type: 'button', class: 'cm-linha' + (c.ultimoDe === 'jogador' ? '' : ' cm-velho'), onclick: () => abrirThread(c.id) },
+      h('span', { class: 'cm-rot', text: c.ultimoDe === 'jogador' ? 'Responder' : 'Respondida' }),
+      h('span', { class: 'cm-linha-txt' }, h('b', null, spanNome(c.id), ` → ${npcNome(c.ultimoNpc)}`), h('small', { text: c.ultimoTexto || '' })),
+      h('span', { class: 'cm-quando', text: quando(c.ultimoTs) })))));
     return out;
   }
   function abrirThread(uid) {
@@ -3980,24 +4074,26 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
       w.append(top);
       S.ui.filtro = h('select', { class: 'cm-sel', style: 'width:auto', 'aria-label': 'Filtrar por lugar', onchange: (e) => { S.filtroLocal = e.target.value; atualizar(); } });
       w.append(h('div', { class: 'cm-row' }, S.ui.filtro));
-      S.ui.area = h('div', { style: 'display:flex;flex-direction:column;gap:10px', 'data-vivo': '' });
+      S.ui.area = h('div', { class: 'cm-docs', 'data-vivo': '' });
       w.append(S.ui.area);
     },
     atualizar() {
-      rc(S.ui.filtro, h('option', { value: '', text: '📍 Todos os lugares' }), S.d.locais.map((l) => h('option', { value: l.id, text: `📍 ${l.nome}` })));
+      rc(S.ui.filtro, h('option', { value: '', text: 'Todos os lugares' }), S.d.locais.map((l) => h('option', { value: l.id, text: l.nome })));
+      S.ui.filtro.hidden = !S.d.locais.length;
       S.ui.filtro.value = S.filtroLocal;
-      if (S.ui.verBtn) S.ui.verBtn.textContent = S.pistasVer === 'pub' ? '🗂️ Rascunhos (só você)' : '👁️ Ver como os jogadores';
+      if (S.ui.verBtn) S.ui.verBtn.textContent = S.pistasVer === 'pub' ? 'Rascunhos' : 'Publicadas';
       if (S.mestre && S.pistasVer === 'rasc') { rc(S.ui.area, ...listaRascunhos()); return; }
       const lst = S.d.pistas.filter((p) => !S.filtroLocal || p.local === S.filtroLocal);
-      if (!lst.length) { rc(S.ui.area, h('div', { class: 'cm-vazio', text: S.mestre ? 'Nenhuma pista publicada. Crie em “＋ Nova pista”: ela fica em rascunho (só você vê) até você publicar.' : 'Nenhuma pista encontrada ainda. Fique de olho.' })); return; }
+      if (!lst.length) { rc(S.ui.area, h('div', { class: 'cm-vazio', text: S.mestre ? 'Nenhuma pista publicada. As novas ficam em rascunho até você publicar.' : 'Nenhuma pista ainda.' })); return; }
       rc(S.ui.area, ...lst.map(cartaoPista));
     },
   };
   function cartaoPista(p) {
-    const [ic, tn] = TIPOS_PISTA[p.tipo] || ['🔎', 'Pista'];
-    const card = h('article', { class: 'cm-card' },
-      h('div', { class: 'cm-meta' }, h('span', { class: 'cm-tag cm-red', text: `${ic} ${tn}` }), p.local && localDe(p.local) ? `📍 ${localDe(p.local).nome}` : null, p.npc && npcDe(p.npc) && !npcDe(p.npc).oculto ? `🕴️ ${npcNome(p.npc)}` : null, quando(p.ts)),
-      h('div', { class: 'cm-nome', style: 'font-size:18px', text: p.titulo }));
+    const tn = TIPOS_PISTA[p.tipo] || 'Pista';
+    const card = h('article', { class: 'cm-doc' },
+      h('div', { class: 'cm-doc-hd' }, h('span', { text: tn }), h('span', { text: quando(p.ts) })),
+      h('div', { class: 'cm-doc-tit', text: p.titulo }),
+      (p.local && localDe(p.local)) || (p.npc && npcDe(p.npc) && !npcDe(p.npc).oculto) ? h('div', { class: 'cm-meta' }, p.local && localDe(p.local) ? localDe(p.local).nome : null, p.npc && npcDe(p.npc) && !npcDe(p.npc).oculto ? `NPC: ${npcNome(p.npc)}` : null) : null);
     if (p.img) card.append(h('img', { class: 'cm-img', src: imgSrc(p.img), alt: '' }));
     const resolveram = [...new Set(S.d.desc.filter((d) => d.pista === p.id && d.tipo === 'resolveu').map((d) => d.autor))];
     if (p.cifra) {
@@ -4022,18 +4118,18 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
         card.append(h('div', { class: 'cm-row', style: 'flex-wrap:nowrap' }, inp, btn('Decifrar', tentar, 'cm-mini')), st);
       }
     } else if (p.texto) card.append(h('div', { class: 'cm-txt', text: p.texto }));
-    if (resolveram.length) card.append(h('div', { class: 'cm-meta' }, '🔓 Decifrada por:', resolveram.map((u) => spanNome(u))));
+    if (resolveram.length) card.append(h('div', { class: 'cm-meta' }, 'Decifrada por', resolveram.map((u) => spanNome(u))));
     const ligadas = (p.liga || []).map((id) => byId(S.d.pistas, id)).filter(Boolean);
-    if (ligadas.length) card.append(h('div', { class: 'cm-meta' }, '🔗 Ligada a:', ligadas.map((x) => h('button', { type: 'button', class: 'cm-link', text: x.titulo, onclick: () => { S.filtroLocal = ''; atualizar(); setTimeout(() => { const alvo = [...wrap.querySelectorAll('article')].find((a) => a.querySelector('.cm-nome') && a.querySelector('.cm-nome').textContent === x.titulo); if (alvo) alvo.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 30); } }))));
+    if (ligadas.length) card.append(h('div', { class: 'cm-meta' }, 'Ligada a', ligadas.map((x) => h('button', { type: 'button', class: 'cm-link', text: x.titulo, onclick: () => { S.filtroLocal = ''; atualizar(); setTimeout(() => { const alvo = [...wrap.querySelectorAll('article')].find((a) => a.querySelector('.cm-doc-tit') && a.querySelector('.cm-doc-tit').textContent === x.titulo); if (alvo) alvo.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 30); } }))));
     // descobertas coletivas
     const notas = S.d.desc.filter((d) => d.pista === p.id && d.tipo === 'nota').sort((a, b) => a.ts - b.ts);
     const aberto = S.abertosDesc.has(p.id);
-    card.append(h('div', { class: 'cm-acoes' }, h('button', { type: 'button', class: 'cm-link', text: `🧠 ${notas.length} descoberta${notas.length === 1 ? '' : 's'} da mesa`, onclick: () => { aberto ? S.abertosDesc.delete(p.id) : S.abertosDesc.add(p.id); atualizar(); } }),
+    card.append(h('div', { class: 'cm-acoes' }, h('button', { type: 'button', class: 'cm-link', text: notas.length ? `Teorias da mesa (${notas.length})` : 'Teorias da mesa', onclick: () => { aberto ? S.abertosDesc.delete(p.id) : S.abertosDesc.add(p.id); atualizar(); } }),
       S.mestre ? h('button', { type: 'button', class: 'cm-link', text: 'Editar', onclick: () => { const r = byId(S.d.rasc, p.id); if (r) formPista(r); } }) : null));
     if (aberto) {
       const box = h('div', { class: 'cm-coms' }, notas.map((d) => h('div', { class: 'cm-com' }, h('div', { class: 'cm-meta' }, spanNome(d.autor), quando(d.ts), (d.autor === S.me || S.mestre) ? h('button', { type: 'button', class: 'cm-link', text: 'Apagar', onclick: () => apagar(dok('descobertas', d.id), 'Apagar esta descoberta?') }) : null), h('div', { class: 'cm-txt', text: d.texto }))));
       if (S.me && S.escreve) {
-        const inp = h('input', { class: 'cm-in', placeholder: 'Compartilhe uma teoria ou descoberta…', maxlength: 800, value: S.rascDesc[p.id] || '', oninput: () => { S.rascDesc[p.id] = inp.value; } });
+        const inp = h('input', { class: 'cm-in', placeholder: 'Sua teoria…', maxlength: 800, value: S.rascDesc[p.id] || '', oninput: () => { S.rascDesc[p.id] = inp.value; } });
         const env = async () => { const t = inp.value.trim(); if (!t) return; if (await salvar(() => col('descobertas').add({ pista: p.id, autor: S.me, tipo: 'nota', texto: t, ts: agora() }))) { inp.value = ''; S.rascDesc[p.id] = ''; } };
         inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') env(); });
         box.append(h('div', { class: 'cm-row', style: 'flex-wrap:nowrap' }, inp, btn('Enviar', env, 'cm-mini')));
@@ -4044,13 +4140,13 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   }
   function listaRascunhos() {
     const lst = [...S.d.rasc].sort((a, b) => (b.ts || 0) - (a.ts || 0));
-    if (!lst.length) return [h('div', { class: 'cm-vazio', text: 'Nenhuma pista criada. Use “＋ Nova pista”.' })];
+    if (!lst.length) return [h('div', { class: 'cm-vazio', text: 'Nenhuma pista criada.' })];
     return lst.map((r) => {
-      const [ic, tn] = TIPOS_PISTA[r.tipo] || ['🔎', 'Pista'];
+      const tn = TIPOS_PISTA[r.tipo] || 'Pista';
       const pub = !!byId(S.d.pistas, r.id);
-      return h('div', { class: 'cm-card', style: pub ? '' : 'border-left-color:#666' },
-        h('div', { class: 'cm-meta' }, h('span', { class: 'cm-tag', text: `${ic} ${tn}` }), h('span', { class: 'cm-tag' + (pub ? ' cm-red' : ''), text: pub ? 'Publicada' : 'Rascunho' }), quando(r.ts)),
-        h('div', { class: 'cm-nome', style: 'font-size:17px', text: r.titulo }),
+      return h('div', { class: 'cm-doc' + (pub ? '' : ' cm-rascunho') },
+        h('div', { class: 'cm-doc-hd' }, h('span', { text: `${tn} · ${pub ? 'publicada' : 'rascunho'}` }), h('span', { text: quando(r.ts) })),
+        h('div', { class: 'cm-doc-tit', text: r.titulo }),
         r.resposta ? h('div', { class: 'cm-sub', text: `Resposta: ${r.resposta}` }) : null,
         h('div', { class: 'cm-sub', text: corte(r.texto, 200) }),
         h('div', { class: 'cm-row' }, btn('Editar', () => formPista(r), 'cm-mini'), btn(pub ? 'Atualizar publicação' : 'Publicar', () => publicar(r), 'cm-mini cm-pri'),
@@ -4070,7 +4166,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   function formPista(r) {
     r = r || {};
     const tit = h('input', { class: 'cm-in', value: r.titulo || '', maxlength: 80 });
-    const tipo = h('select', { class: 'cm-sel' }, Object.entries(TIPOS_PISTA).map(([k, [ic, n]]) => h('option', { value: k, text: `${ic} ${n}` })));
+    const tipo = h('select', { class: 'cm-sel' }, Object.entries(TIPOS_PISTA).map(([k, n]) => h('option', { value: k, text: n })));
     tipo.value = r.tipo || 'documento';
     const texto = h('textarea', { class: 'cm-ta', style: 'min-height:120px', maxlength: 8000, placeholder: 'O conteúdo da pista (documento, transcrição, mensagem…)' }); texto.value = r.texto || '';
     const perg = h('input', { class: 'cm-in', value: r.pergunta || '', maxlength: 300, placeholder: 'Enigma ou dica que os jogadores veem' });
@@ -4080,13 +4176,13 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const outras = S.d.rasc.filter((x) => x.id !== r.id);
     const liga = new Set(r.liga || []);
     const ligaBox = h('div', { style: 'display:flex;flex-direction:column;gap:4px;max-height:140px;overflow:auto' }, outras.map((x) => { const c = h('input', { type: 'checkbox' }); c.checked = liga.has(x.id); c.addEventListener('change', () => { c.checked ? liga.add(x.id) : liga.delete(x.id); }); return h('label', { class: 'cm-row', style: 'font-weight:600;gap:6px' }, c, x.titulo); }));
-    const img = campoImagem(r.img); img.el.style.color = '#333';
-    const lbl = (t, e) => h('label', { class: 'cm-lbl', style: 'color:#333' }, t, e);
+    const img = campoImagem(r.img); 
+    const lbl = (t, e) => h('label', { class: 'cm-lbl' }, t, e);
     const cif = h('div', { style: 'display:flex;flex-direction:column;gap:10px' }, lbl('Pergunta / dica', perg), lbl('Resposta (os jogadores precisam acertar)', resp));
     const mostraCif = () => { cif.hidden = !(tipo.value === 'cifrada' || tipo.value === 'enigma'); };
     tipo.addEventListener('change', mostraCif); mostraCif();
-    const c = h('div', { style: 'display:flex;flex-direction:column;gap:10px;color:#111' }, lbl('Título', tit), lbl('Tipo', tipo), lbl('Conteúdo', texto), cif, lbl('Lugar', local), lbl('NPC ligado', npc), img.el, outras.length ? h('div', { class: 'cm-lbl', style: 'color:#333' }, 'Conectada a outras pistas', ligaBox) : null,
-      h('div', { class: 'cm-sub', style: 'color:#555', text: 'Fica em rascunho, só pra você, até você publicar. Em cifrada/enigma o texto vai trancado: só abre com a resposta certa.' }));
+    const c = h('div', { style: 'display:flex;flex-direction:column;gap:10px;color:#111' }, lbl('Título', tit), lbl('Tipo', tipo), lbl('Conteúdo', texto), cif, lbl('Lugar', local), lbl('NPC ligado', npc), img.el, outras.length ? h('div', { class: 'cm-lbl' }, 'Conectada a outras pistas', ligaBox) : null,
+      h('div', { class: 'cm-sub', text: 'Cifrada e enigma: o conteúdo só abre com a resposta certa.' }));
     const j = janela(r.id ? 'Editar pista' : 'Nova pista', c);
     const juntar = () => ({ titulo: tit.value.trim(), tipo: tipo.value, texto: texto.value, pergunta: perg.value.trim(), resposta: resp.value.trim(), local: local.value || null, npc: npc.value || null, img: img.valor(), liga: [...liga], autor: S.me, ts: agora() });
     const valida = (d) => { if (!d.titulo) { tit.focus(); return false; } if ((d.tipo === 'cifrada' || d.tipo === 'enigma') && !d.resposta) { resp.focus(); toast('Pistas', 'Coloque a resposta que destrava a pista.'); return false; } return true; };
@@ -4109,13 +4205,13 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
       if (S.mestre) top.append(btn('＋ Nova missão', () => formMissao(), 'cm-mini'));
       w.append(top);
       S.ui.filtro = h('div', { class: 'cm-row' });
-      S.ui.area = h('div', { style: 'display:flex;flex-direction:column;gap:10px' });
+      S.ui.area = h('div', { class: 'cm-docs' });
       w.append(S.ui.filtro, S.ui.area);
     },
     atualizar() {
-      rc(S.ui.filtro, ...[['abertas', 'Abertas'], ['concluidas', 'Concluídas']].map(([k, t]) => btn(t, () => { S.missoesVer = k; atualizar(); }, 'cm-mini' + (S.missoesVer === k ? ' cm-pri' : ''))));
+      rc(S.ui.filtro, ...[['abertas', 'Abertas'], ['concluidas', 'Concluídas']].map(([k, t]) => btn(t, () => { S.missoesVer = k; atualizar(); }, 'cm-mini cm-aba' + (S.missoesVer === k ? ' on' : ''))));
       const lst = S.d.missoes.filter((m) => (S.missoesVer === 'abertas') === (m.status !== 'concluida'));
-      if (!lst.length) { rc(S.ui.area, h('div', { class: 'cm-vazio', text: S.missoesVer === 'abertas' ? (S.mestre ? 'Crie missões individuais, comunitárias ou eventos com prazo.' : 'Nenhuma missão aberta agora.') : 'Nenhuma missão concluída ainda.' })); return; }
+      if (!lst.length) { rc(S.ui.area, h('div', { class: 'cm-vazio', text: S.missoesVer === 'abertas' ? 'Nenhuma missão aberta.' : 'Nenhuma missão concluída.' })); return; }
       rc(S.ui.area, ...lst.map(cartaoMissao));
     },
   };
@@ -4123,18 +4219,18 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const ac = S.d.aceites.filter((a) => a.missao === m.id);
     const meu = ac.find((a) => a.autor === S.me);
     const venceu = m.prazo && Date.parse(m.prazo + 'T23:59:59') < agora();
-    const card = h('article', { class: 'cm-card' },
-      h('div', { class: 'cm-meta' }, h('span', { class: 'cm-tag cm-red', text: TIPOS_MISSAO[m.tipo] || 'Missão' }), m.status === 'concluida' ? h('span', { class: 'cm-tag', text: '✔ Concluída' }) : null,
-        m.prazo ? h('span', { class: venceu ? 'cm-err' : '', text: `⏱ ${venceu ? 'Encerrou' : 'Até'} ${new Date(m.prazo + 'T12:00:00').toLocaleDateString('pt-BR')}` }) : null,
-        m.local && localDe(m.local) ? `📍 ${localDe(m.local).nome}` : null, m.npc && npcDe(m.npc) && !npcDe(m.npc).oculto ? `🕴️ ${npcNome(m.npc)}` : null),
-      h('div', { class: 'cm-nome', style: 'font-size:18px', text: m.titulo }),
+    const prazo = m.prazo ? `${venceu ? 'encerrou' : 'até'} ${new Date(m.prazo + 'T12:00:00').toLocaleDateString('pt-BR')}` : '';
+    const card = h('article', { class: 'cm-doc' + (m.status === 'concluida' ? ' cm-feita' : '') },
+      h('div', { class: 'cm-doc-hd' }, h('span', { text: `${TIPOS_MISSAO[m.tipo] || 'Missão'}${m.status === 'concluida' ? ' · concluída' : ''}` }), h('span', { class: venceu ? 'cm-venceu' : '', text: prazo })),
+      h('div', { class: 'cm-doc-tit', text: m.titulo }),
+      (m.local && localDe(m.local)) || (m.npc && npcDe(m.npc) && !npcDe(m.npc).oculto) ? h('div', { class: 'cm-meta' }, m.local && localDe(m.local) ? localDe(m.local).nome : null, m.npc && npcDe(m.npc) && !npcDe(m.npc).oculto ? `NPC: ${npcNome(m.npc)}` : null) : null,
       m.desc ? h('div', { class: 'cm-txt', text: m.desc }) : null,
-      h('div', { class: 'cm-meta' }, `🏅 Recompensa: +${m.pontos || 0} de reputação${m.premio ? ' · ' + m.premio : ''}`));
+      h('div', { class: 'cm-campos' }, h('div', { class: 'cm-campo' }, h('small', { text: 'Reputação' }), h('b', { text: `+${m.pontos || 0}` })), m.premio ? h('div', { class: 'cm-campo cm-largo' }, h('small', { text: 'Prêmio' }), h('b', { text: m.premio })) : null));
     if (m.tipo === 'comunidade' && m.meta) {
       const pct = Math.min(100, Math.round(ac.length / m.meta * 100));
-      card.append(h('div', { class: 'cm-meta' }, `Participantes: ${ac.length}/${m.meta}`), h('div', { class: 'cm-prog', role: 'progressbar', 'aria-valuenow': pct, 'aria-valuemin': 0, 'aria-valuemax': 100 }, h('i', { style: `width:${pct}%` })));
+      card.append(h('div', { class: 'cm-meta' }, `Participantes ${ac.length}/${m.meta}`), h('div', { class: 'cm-prog', role: 'progressbar', 'aria-valuenow': pct, 'aria-valuemin': 0, 'aria-valuemax': 100 }, h('i', { style: `width:${pct}%` })));
     }
-    if (ac.length) card.append(h('div', { class: 'cm-meta' }, 'Na missão:', ac.map((a) => h('span', null, spanNome(a.autor), a.estado === 'entregue' ? ' ✔' : ''))));
+    if (ac.length) card.append(h('div', { class: 'cm-meta' }, 'Na missão', ac.map((a) => h('span', null, spanNome(a.autor), a.estado === 'entregue' ? ' ✔' : ''))));
     const row = h('div', { class: 'cm-row' });
     if (!S.mestre && S.me && S.escreve && m.status !== 'concluida' && !venceu) {
       if (!meu) row.append(btn('Aceitar missão', () => salvar(() => dok('aceites', `${m.id}_${S.me}`).set({ missao: m.id, autor: S.me, estado: 'aceita', ts: agora() })), 'cm-pri'));
@@ -4163,7 +4259,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const prazo = h('input', { class: 'cm-in', type: 'date', value: m.prazo || '' });
     const local = h('select', { class: 'cm-sel' }, h('option', { value: '', text: 'Sem local' }), S.d.locais.map((l) => h('option', { value: l.id, text: l.nome }))); local.value = m.local || '';
     const npc = h('select', { class: 'cm-sel' }, h('option', { value: '', text: 'Sem NPC' }), S.d.npcs.map((n) => h('option', { value: n.id, text: n.nome }))); npc.value = m.npc || '';
-    const lbl = (t, e) => h('label', { class: 'cm-lbl', style: 'color:#333' }, t, e);
+    const lbl = (t, e) => h('label', { class: 'cm-lbl' }, t, e);
     const c = h('div', { style: 'display:flex;flex-direction:column;gap:10px;color:#111' }, lbl('Título', tit), lbl('Tipo', tipo), lbl('Descrição', desc), lbl('Reputação ao concluir', pts), lbl('Prêmio extra', premio), lbl('Meta de participantes', meta), lbl('Prazo (eventos)', prazo), lbl('Lugar', local), lbl('NPC que deu a missão', npc));
     const j = janela(m.id ? 'Editar missão' : 'Nova missão', c);
     c.append(btn('Salvar', async () => {
@@ -4178,7 +4274,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const pessoas = [...new Set([...ac.map((a) => a.autor), ...membrosSala()])];
     const pts = h('input', { class: 'cm-in', type: 'number', min: 0, max: 100, value: m.pontos || 0 });
     const lista = h('div', { style: 'display:flex;flex-direction:column;gap:6px' }, pessoas.length ? pessoas.map((u) => { const c = h('input', { type: 'checkbox' }); c.checked = marcados.has(u); c.addEventListener('change', () => { c.checked ? marcados.add(u) : marcados.delete(u); }); return h('label', { class: 'cm-row', style: 'gap:6px;font-weight:700' }, c, spanNome(u)); }) : h('div', { class: 'cm-sub', text: 'Ninguém aceitou ou tem perfil ainda.' }));
-    const c = h('div', { style: 'display:flex;flex-direction:column;gap:10px;color:#111' }, h('div', { text: 'Quem recebe a recompensa?' }), lista, h('label', { class: 'cm-lbl', style: 'color:#333' }, 'Reputação pra cada um', pts));
+    const c = h('div', { style: 'display:flex;flex-direction:column;gap:10px;color:#111' }, h('div', { text: 'Quem recebe a recompensa?' }), lista, h('label', { class: 'cm-lbl' }, 'Reputação pra cada um', pts));
     const j = janela('Concluir missão', c);
     resolverNomesEm(c);
     c.append(btn('Concluir', async () => {
@@ -4214,10 +4310,11 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
       if (S.perfilAberto) { rc(S.ui.area, btn('← Todos', () => { S.perfilAberto = null; atualizar(); }, 'cm-mini cm-voltar'), viewPerfil(S.perfilAberto)); return; }
       const ids = [...new Set([...membrosSala(), ...Object.keys(S.d.rep)])];
       ids.sort((a, b) => ((S.d.rep[b] || {}).pontos || 0) - ((S.d.rep[a] || {}).pontos || 0));
-      rc(S.ui.area, h('b', { style: 'letter-spacing:1.5px;text-transform:uppercase;font-size:13px;color:#bbb', text: 'Membros da mesa' }),
-        ids.length ? h('div', { class: 'cm-grid' }, ids.map((u) => { const r = S.d.rep[u] || {}; const p = S.d.perfis[u] || {};
-          return h('div', { class: 'cm-card cm-click', onclick: () => { S.perfilAberto = u; atualizar(); } }, h('div', { class: 'cm-npc' }, avatar(nome(u)), h('div', { style: 'display:flex;flex-direction:column;gap:2px;min-width:0' }, spanNome(u), p.personagem ? h('div', { class: 'cm-sub', text: `${p.personagem}${p.papelPj ? ' · ' + p.papelPj : ''}` }) : null, h('div', { class: 'cm-meta' }, `🏅 ${r.pontos || 0} · ${nivel(r.pontos || 0)}`)))); }))
-          : h('div', { class: 'cm-vazio', text: 'Ninguém criou perfil ainda.' }));
+      rc(S.ui.area, h('div', { class: 'cm-faixa', text: 'Jogadores' }),
+        ids.length ? h('div', { class: 'cm-lista' }, ids.map((u) => { const r = S.d.rep[u] || {}; const p = S.d.perfis[u] || {};
+          return h('button', { type: 'button', class: 'cm-linha', onclick: () => { S.perfilAberto = u; atualizar(); } }, h('span', { class: 'cm-rot', text: `${r.pontos || 0} rep` }),
+            h('span', { class: 'cm-linha-txt' }, h('b', null, spanNome(u)), p.personagem ? h('small', { text: `${p.personagem}${p.papelPj ? ' · ' + p.papelPj : ''}` }) : null), h('span', { class: 'cm-quando', text: nivel(r.pontos || 0) })); }))
+          : h('div', { class: 'cm-vazio', text: 'Ninguém na mesa ainda.' }));
     },
   };
   function formPerfil() {
@@ -4233,32 +4330,31 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
       if (!n && !r) toast('Perfil', 'Os campos Nome e Papel da ficha estão vazios.');
     }, 'cm-mini');
     const lbl = (t, e) => h('label', { class: 'cm-lbl' }, t, e);
-    return h('div', { class: 'cm-card' }, h('b', { style: 'letter-spacing:1.5px;text-transform:uppercase;font-size:13px', text: 'Meu perfil' }),
+    return h('div', { class: 'cm-caixa' }, h('div', { class: 'cm-faixa', text: 'Meu perfil' }),
       h('div', { class: 'cm-grid', style: 'grid-template-columns:repeat(auto-fill,minmax(200px,1fr))' }, lbl('Apelido', ap), lbl('Personagem', pj), lbl('Papel', pp)), lbl('Bio', bio),
-      h('div', { class: 'cm-sub', text: 'Não coloque dados pessoais (endereço, telefone, documentos): quem tem acesso à ficha vê o seu perfil.' }),
+      h('div', { class: 'cm-sub', text: 'Todo mundo da mesa vê o seu perfil.' }),
       h('div', { class: 'cm-row' }, puxar, h('span', { style: 'flex:1' }), btn('Salvar perfil', () => salvar(() => dok('perfis', S.me).set({ apelido: ap.value.trim(), personagem: pj.value.trim(), papelPj: pp.value.trim(), bio: bio.value.trim(), ts: agora() })).then((ok) => ok && toast('Perfil', 'Perfil salvo.')), 'cm-pri')));
   }
   function viewPerfil(u) {
     const p = S.d.perfis[u] || {}, r = S.d.rep[u] || {};
     const minhas = S.d.aceites.filter((a) => a.autor === u).map((a) => byId(S.d.missoes, a.missao)).filter(Boolean);
-    const card = h('div', { class: 'cm-card' },
+    const card = h('div', { class: 'cm-caixa' },
       h('div', { class: 'cm-npc' }, avatar(nome(u), null, 'cm-npc-big'), h('div', { style: 'display:flex;flex-direction:column;gap:6px;min-width:0' },
         h('div', { class: 'cm-nome', style: 'font-size:22px' }, spanNome(u)), p.personagem ? h('div', { class: 'cm-sub', text: `${p.personagem}${p.papelPj ? ' · ' + p.papelPj : ''}` }) : null,
         h('div', null, h('span', { class: 'cm-num', text: r.pontos || 0 }), h('span', { class: 'cm-sub', text: ` reputação · ${nivel(r.pontos || 0)}` })))),
       p.bio ? h('div', { class: 'cm-txt', text: p.bio }) : null);
-    if ((r.conquistas || []).length) card.append(h('b', { text: 'Conquistas' }), h('div', { class: 'cm-row' }, r.conquistas.map((c, i) => h('span', { class: 'cm-conq', title: c.desc || '' }, `${c.ic || '🏆'} ${c.nome}`, S.mestre ? h('button', { type: 'button', class: 'cm-link', 'aria-label': 'Remover conquista', text: '✕', onclick: () => salvar(() => dok('reputacao', u).set({ ...r, conquistas: r.conquistas.filter((_, k) => k !== i), ts: agora(), autor: S.me })) }) : null))));
+    if ((r.conquistas || []).length) card.append(h('b', { text: 'Conquistas' }), h('div', { class: 'cm-row' }, r.conquistas.map((c, i) => h('span', { class: 'cm-conq', title: c.desc || '' }, c.nome, S.mestre ? h('button', { type: 'button', class: 'cm-link', 'aria-label': 'Remover conquista', text: '✕', onclick: () => salvar(() => dok('reputacao', u).set({ ...r, conquistas: r.conquistas.filter((_, k) => k !== i), ts: agora(), autor: S.me })) }) : null))));
     const rels = Object.entries(r.npcs || {}).filter(([id]) => npcDe(id) && (S.mestre || !npcDe(id).oculto));
     if (rels.length) card.append(h('b', { text: 'Relações' }), ...rels.map(([id, v]) => h('div', { class: 'cm-row' }, h('span', { class: 'cm-nome', text: npcNome(id) }), barraRel(v))));
     if (minhas.length) card.append(h('b', { text: 'Missões' }), h('div', { class: 'cm-row' }, minhas.map((m) => h('span', { class: 'cm-tag', text: `${m.status === 'concluida' ? '✔ ' : ''}${m.titulo}` }))));
-    if ((r.hist || []).length) card.append(h('b', { text: 'Histórico' }), ...r.hist.slice(0, 15).map((x) => h('div', { class: 'cm-meta' }, quando(x.ts), h('span', { style: 'color:#ddd', text: x.txt }), x.pts ? h('b', { style: 'color:#fff', text: `${x.pts > 0 ? '+' : ''}${x.pts}` }) : null)));
+    if ((r.hist || []).length) card.append(h('b', { text: 'Histórico' }), ...r.hist.slice(0, 15).map((x) => h('div', { class: 'cm-meta' }, quando(x.ts), h('span', { class: 'cm-txt', text: x.txt }), x.pts ? h('b', { text: `${x.pts > 0 ? '+' : ''}${x.pts}` }) : null)));
     if (S.mestre) {
       const q = h('input', { class: 'cm-in', type: 'number', value: 1, style: 'width:90px' });
       const mot = h('input', { class: 'cm-in', placeholder: 'Motivo', maxlength: 100, style: 'flex:1 1 160px;width:auto' });
       const cn = h('input', { class: 'cm-in', placeholder: 'Nome da conquista', maxlength: 50, style: 'flex:1 1 160px;width:auto' });
-      const ci = h('input', { class: 'cm-in', placeholder: '🏆', maxlength: 4, style: 'width:70px' });
       card.append(h('div', { class: 'cm-coms', 'data-vivo': '' }, h('b', { text: 'Mestre' }),
         h('div', { class: 'cm-row' }, q, mot, btn('Dar/tirar reputação', () => { const v = +q.value || 0; if (v) darRep(u, v, mot.value.trim() || 'Ajuste do mestre'); }, 'cm-mini')),
-        h('div', { class: 'cm-row' }, ci, cn, btn('Dar conquista', () => { const n = cn.value.trim(); if (n) darRep(u, 0, `Conquista: ${n}`, { ic: ci.value.trim() || '🏆', nome: n, ts: agora() }); }, 'cm-mini'))));
+        h('div', { class: 'cm-row' }, cn, btn('Dar conquista', () => { const n = cn.value.trim(); if (n) darRep(u, 0, `Conquista: ${n}`, { nome: n, ts: agora() }); }, 'cm-mini'))));
     }
     return card;
   }
@@ -4323,22 +4419,22 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   }
   const expiraEm = (dias) => (dias ? agora() + dias * 86400000 : null);
   async function copiar(t, rot = 'Copiado!') {
-    try { await navigator.clipboard.writeText(t); toast('📋', rot); return; } catch { /* tenta o jeito antigo */ }
+    try { await navigator.clipboard.writeText(t); toast('Copiado', rot); return; } catch { /* tenta o jeito antigo */ }
     const i = h('textarea', { style: 'position:fixed;left:-9999px;opacity:0' }); i.value = t; document.body.append(i); i.select();
     let ok = false; try { ok = document.execCommand('copy'); } catch { ok = false; }
     i.remove();
-    toast('📋', ok ? rot : `Não deu pra copiar sozinho. Copie: ${t}`);
+    toast('Copiar', ok ? rot : `Copie à mão: ${t}`);
   }
   async function compartilhar(sess) {
-    const txt = `Entra na minha sessão “${sess.nome}” na Ficha Cyberpunk RED: abra a ficha, vá em Comunidade → Player e use o código ${sess.codigo}`;
+    const txt = `Sessão “${sess.nome}” na Ficha Cyberpunk RED. Abra a ficha, escolha Player e use o código ${sess.codigo}${FB ? ` — ${location.origin}${location.pathname}` : ''}`;
     if (navigator.share) { try { await navigator.share({ title: sess.nome, text: txt }); return; } catch (e) { if (e && e.name === 'AbortError') return; } }
-    copiar(txt, 'Convite copiado, é só colar pros jogadores.');
+    copiar(txt, 'Convite copiado.');
   }
 
   // ---------- assinaturas ----------
   const lista = (snap) => snap.docs.map((d) => ({ id: d.id, ...d.data() }));
   function sub(q, fn, chave, guarda = S.subsSala) {
-    const t = setTimeout(() => { S.lento = true; if (S.aberto) montar(); }, 10000);
+    const t = setTimeout(() => { S.lento = true; mudou(); }, 10000);
     const un = q.onSnapshot((snap) => {
       // qualquer resposta (do servidor ou da memória do aparelho) já conta como carregado
       clearTimeout(t); S.carregou.add(chave); S.lento = false;
@@ -4370,6 +4466,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     tMudou = requestAnimationFrame(() => { tMudou = 0; preNomes(); verificarLobby(); badges(); atualizar(); pintarTopo(); });
   }
   function pintarTopo() {
+    avisoLento.hidden = !(S.lento && S.aberto);
     const c = painel.querySelector('.cm-cidade'), sm = painel.querySelector('.cm-tit small');
     painel.classList.toggle('cm-l-mestre', !S.sess && S.lob.papel === 'mestre');
     painel.classList.toggle('cm-l-player', !S.sess && S.lob.papel === 'player');
@@ -4383,7 +4480,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
       papel.textContent = S.mestre ? 'Mestre' : (S.escreve ? 'Player' : 'Leitor');
     } else {
       sm.textContent = 'Comunidade';
-      c.textContent = S.lob.papel === 'mestre' ? 'Painel do mestre' : S.lob.papel === 'player' ? 'Acesso do player' : 'Escolha seu perfil';
+      c.textContent = S.lob.papel ? 'Sessões' : 'Entrar';
       papel.textContent = S.lob.papel === 'mestre' ? 'Mestre' : S.lob.papel === 'player' ? 'Player' : '';
     }
     papel.hidden = !papel.textContent;
@@ -4489,7 +4586,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   function irLobby() { sairSala(); S.aberto = true; painel.hidden = false; document.body.classList.add('comu-on'); montar(); }
   function expulsar(msg) {
     if (!S.sess) return;
-    sairSala(); if (msg) toast('🚪 Sessão', msg);
+    sairSala(); if (msg) toast('Sessão', msg);
     if (S.aberto) montar();
   }
 
@@ -4544,7 +4641,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     if (!S.me) return;
     const chaves = new Map();
     S.lob.minhas.filter((s) => !s.encerrada).forEach((s) => pendentesDe(s).forEach((x) => {
-      if (x.estado === 'pendente') chaves.set(`p|${s.id}|${x.uid}`, () => toast('🚪 Pedido de entrada', h('span', null, spanNome(x.uid), ` quer entrar em “${s.nome}”`), () => { S.lob.papel = 'mestre'; S.lob.ger = s.id; irLobby(); }));
+      if (x.estado === 'pendente') chaves.set(`p|${s.id}|${x.uid}`, () => toast('Pedido de entrada', h('span', null, spanNome(x.uid), ` quer entrar em “${s.nome}”`), () => { S.lob.papel = 'mestre'; S.lob.ger = s.id; irLobby(); }));
       // aprovação automática registrada pelo mestre quando ele está online
       if (s.aprovacao === 'automatica' && x.estado === 'ok' && !x.membro && !S.lob.gravando) {
         S.lob.gravando = true;
@@ -4554,7 +4651,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     for (const [sid, it] of Object.entries(S.lob.meusPedidos)) {
       if (!it || it.cancelado) continue;
       const st = acesso(S.lob.sessDe[sid], S.lob.meuMembro[sid], it);
-      if (S.lob.sessDe[sid] !== undefined && st !== 'pendente') chaves.set(`e|${sid}|${st}`, () => toast('🚪 ' + (it.nome || 'Sessão'), st === 'ok' ? 'Entrada liberada! Toque pra entrar na sala.' : ESTADO_TXT[st] + '.', st === 'ok' ? () => entrarSala(it.gm, sid, S.lob.sessDe[sid]) : () => { S.lob.papel = 'player'; irLobby(); }));
+      if (S.lob.sessDe[sid] !== undefined && st !== 'pendente') chaves.set(`e|${sid}|${st}`, () => toast(it.nome || 'Sessão', st === 'ok' ? 'Entrada liberada. Toque pra entrar.' : ESTADO_TXT[st] + '.', st === 'ok' ? () => entrarSala(it.gm, sid, S.lob.sessDe[sid]) : () => { S.lob.papel = 'player'; irLobby(); }));
     }
     if (!S.lob.conhecidosLob) { if (S.carregou.has('lob:minhas') && S.carregou.has('lob:meus') && S.carregou.has('lob:pedidos')) S.lob.conhecidosLob = new Set(chaves.keys()); return; }
     for (const [k, f] of chaves) if (!S.lob.conhecidosLob.has(k)) { S.lob.conhecidosLob.add(k); f(); }
@@ -4569,7 +4666,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const L = S.ui.lob; if (!L) return;
     if (!S.lob.papel) { rc(L, telaEscolha()); return; }
     if (!S.me) {
-      if (window.__cmLogin && (S.db || S.erro)) { rc(L, h('div', { class: 'cm-card', style: 'align-items:center;text-align:center;gap:12px;padding:22px' }, h('div', { class: 'cm-txt', text: 'Entre com a sua conta Google pra criar ou entrar em sessões.' }), btn('Entrar com Google', () => { try { sessionStorage.setItem('cpr-com-poslogin', S.lob.papel || ''); } catch { /* ok */ } window.__cmLogin(); }, 'cm-pri'), btn('⇄ Trocar perfil', () => trocarPapel(null), 'cm-mini'))); return; }
+      if (window.__cmLogin && (S.db || S.erro)) { rc(L, h('div', { class: 'cm-h' }, h('h2', { text: S.lob.papel === 'mestre' ? 'Mestre' : 'Player' }), btn('Trocar', () => trocarPapel(null), 'cm-mini')), h('div', { class: 'cm-caixa cm-login' }, h('div', { class: 'cm-txt', text: 'Entre com a conta Google pra ' + (S.lob.papel === 'mestre' ? 'criar sessões.' : 'entrar numa sessão.') }), btn('Entrar com Google', () => { try { sessionStorage.setItem('cpr-com-poslogin', S.lob.papel || ''); } catch { /* ok */ } window.__cmLogin(); }, 'cm-pri'))); return; }
       rc(L, h('div', { class: 'cm-vazio', text: S.db ? 'Entre com a sua conta do Claude pra usar a Comunidade.' : 'Conectando…' })); return;
     }
     rc(L, S.lob.papel === 'mestre' ? (S.lob.ger ? painelSessao() : telaMestre()) : telaPlayer());
@@ -4577,29 +4674,24 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   }
   function trocarPapel(p) { if (p) liberarFicha(); if (S.aberto && !S.db && !S.erro && p) { /* ainda conectando: monta de novo quando chegar */ } S.lob.papel = p; S.lob.ger = null; S.lob.busca = null; try { p ? localStorage.setItem(PAPEL_KEY, p) : localStorage.removeItem(PAPEL_KEY); } catch { /* ok */ } pintarTopo(); montar(); corpo.scrollTop = 0; }
   function telaEscolha() {
-    const cartao = (cls, ic, tit, itens, txt, p) => h('button', { type: 'button', class: `cm-escolha ${cls}`, onclick: () => trocarPapel(p) },
-      S.lob.ultimo === p ? h('span', { class: 'cm-esc-ult', text: 'Última escolha' }) : null,
-      h('span', { class: 'cm-esc-ic', text: ic }), h('span', { class: 'cm-esc-tit', text: tit }),
-      h('ul', null, itens.map((t) => h('li', { text: t }))), h('span', { class: 'cm-esc-ir', text: txt }));
+    const cartao = (cls, tit, txt, p) => h('button', { type: 'button', class: `cm-escolha ${cls}`, onclick: () => trocarPapel(p) },
+      h('span', { class: 'cm-esc-tit', text: tit }), h('span', { class: 'cm-esc-txt', text: txt }),
+      h('span', { class: 'cm-esc-ir', text: S.lob.ultimo === p ? 'Entrar · última vez' : 'Entrar' }));
     return [h('div', { class: 'cm-esc-logo' }, h('span', { text: 'FICHA' }), h('b', { text: 'CYBERPUNK RED' })),
-      h('div', { class: 'cm-h' }, h('h2', { text: 'Como você vai entrar?' })),
-      h('div', { class: 'cm-sub', text: 'Escolha o seu perfil pra começar. Dá pra trocar depois em ☰ → Comunidade.' }),
       h('div', { class: 'cm-esc-grid' },
-        cartao('mestre', '🎲', 'Mestre', ['Criar sessões', 'Gerenciar campanhas', 'Convidar jogadores', 'Administrar o ambiente'], 'Abrir painel do mestre →', 'mestre'),
-        cartao('player', '🕶️', 'Player', ['Entrar em sessões existentes', 'Usar códigos de convite', 'Participar de campanhas'], 'Entrar com código →', 'player'))];
+        cartao('mestre', 'Mestre', 'Cria a sessão, convida a mesa e cuida da cidade.', 'mestre'),
+        cartao('player', 'Player', 'Entra na sessão com o código do mestre.', 'player'))];
   }
 
   // ----- MESTRE -----
   function telaMestre() {
-    const out = [h('div', { class: 'cm-h' }, h('h2', { text: 'Painel do mestre' }), btn('⇄ Trocar perfil', () => trocarPapel(null), 'cm-mini'), window.__cmLogout ? btn('Sair da conta', () => window.__cmLogout(), 'cm-mini cm-perigo') : null)];
-    if (!S.escreve) { out.push(h('div', { class: 'cm-aviso', text: 'Pra criar sessões você precisa de acesso de Colaborador (ou mais) nesta ficha.' })); }
+    const out = [h('div', { class: 'cm-h' }, h('h2', { text: 'Suas sessões' }), !S.lob.criando && S.escreve ? btn('＋ Nova sessão', () => { S.lob.criando = true; atualizarLobby(); }, 'cm-mini cm-pri') : null, btn('Trocar perfil', () => trocarPapel(null), 'cm-mini'), window.__cmLogout ? btn('Sair', () => window.__cmLogout(), 'cm-mini cm-perigo') : null)];
+    if (!S.escreve) { out.push(h('div', { class: 'cm-aviso', text: 'Pra criar sessões você precisa de acesso de Colaborador nesta ficha.' })); }
     else if (S.lob.criando) out.push(formSessao());
-    else out.push(h('div', { class: 'cm-row' }, btn('＋ Nova sessão', () => { S.lob.criando = true; atualizarLobby(); }, 'cm-pri cm-ac')));
     const ss = S.lob.minhas;
-    out.push(h('b', { class: 'cm-sec-tit', text: 'Suas sessões' }));
-    if (!S.carregou.has('lob:minhas')) out.push(h('div', { class: 'cm-vazio', text: 'Carregando suas sessões…' }));
-    else if (!ss.length) out.push(h('div', { class: 'cm-vazio', text: 'Você ainda não criou nenhuma sessão.' }));
-    else out.push(h('div', { class: 'cm-grid', style: 'grid-template-columns:repeat(auto-fill,minmax(280px,1fr))' }, ss.map(cartaoSessaoMestre)));
+    if (!S.carregou.has('lob:minhas')) out.push(h('div', { class: 'cm-vazio', text: 'Carregando…' }));
+    else if (!ss.length) { if (!S.lob.criando) out.push(h('div', { class: 'cm-vazio', text: 'Nenhuma sessão ainda.' })); }
+    else out.push(h('div', { class: 'cm-lista' }, ss.map(cartaoSessaoMestre)));
     return out;
   }
   function cartaoSessaoMestre(s) {
@@ -4607,13 +4699,12 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const pend = ps.filter((x) => x.estado === 'pendente').length;
     const ocup = ocupadas(s, S.lob.membrosDe[s.id], S.lob.pedidosTodos);
     const venc = s.codigoExpira && s.codigoExpira < agora();
-    return h('div', { class: 'cm-card cm-sess' + (s.encerrada ? ' cm-off' : '') },
-      h('div', { class: 'cm-meta' }, h('span', { class: 'cm-tag ' + (s.encerrada ? '' : 'cm-ac-tag'), text: s.encerrada ? 'Encerrada' : 'Ativa' }), h('span', { text: `👥 ${ocup}/${s.limite}` }), pend ? h('span', { class: 'cm-n', text: pend }) : null, pend ? h('span', { text: 'pedido(s)' }) : null),
-      h('div', { class: 'cm-nome', style: 'font-size:19px', text: s.nome }),
-      s.descricao ? h('div', { class: 'cm-sub', text: corte(s.descricao, 140) }) : null,
-      !s.encerrada ? h('div', { class: 'cm-codigo' + (venc ? ' venc' : '') }, h('span', { text: s.codigo }), btn('Copiar', () => copiar(s.codigo, 'Código copiado.'), 'cm-mini')) : null,
-      !s.encerrada && venc ? h('div', { class: 'cm-err', text: 'Código expirado: renove pra aceitar novos jogadores.' }) : null,
-      h('div', { class: 'cm-row' }, btn('Gerenciar', () => { S.lob.ger = s.id; atualizarLobby(); corpo.scrollTop = 0; }, 'cm-mini cm-ac'), !s.encerrada ? btn('Entrar na sala', () => entrarSala(s.gm, s.id, s), 'cm-mini') : null));
+    return h('div', { class: 'cm-sessao' + (s.encerrada ? ' cm-off' : '') },
+      h('div', { class: 'cm-sessao-info' },
+        h('b', { class: 'cm-sessao-nome', text: s.nome }),
+        h('span', { class: 'cm-sub' }, s.encerrada ? 'Encerrada' : `${ocup}/${s.limite} jogadores`, pend ? h('span', { class: 'cm-n', text: pend }) : null, pend ? ` pedido${pend === 1 ? '' : 's'}` : null, !s.encerrada && venc ? h('span', { class: 'cm-err', text: ' · código vencido' }) : null)),
+      !s.encerrada ? h('span', { class: 'cm-codigo' + (venc ? ' venc' : '') }, h('span', { text: s.codigo })) : null,
+      h('div', { class: 'cm-row' }, btn('Gerenciar', () => { S.lob.ger = s.id; atualizarLobby(); corpo.scrollTop = 0; }, 'cm-mini'), !s.encerrada ? btn('Abrir sala', () => entrarSala(s.gm, s.id, s), 'cm-mini cm-pri') : null));
   }
   function formSessao(s) {
     s = s || {};
@@ -4625,7 +4716,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const ex = h('input', { type: 'checkbox' });
     const lbl = (t, e) => h('label', { class: 'cm-lbl' }, t, e);
     const st = h('span', { class: 'cm-sub' });
-    const salvarB = btn(s.id ? 'Salvar campanha' : 'Criar sessão', async () => {
+    const salvarB = btn(s.id ? 'Salvar' : 'Criar sessão', async () => {
       const nm = nomeI.value.trim(); if (!nm) { nomeI.focus(); return; }
       const limite = Math.max(1, Math.min(20, +lim.value || 5));
       salvarB.disabled = true; st.textContent = 'Salvando…';
@@ -4643,12 +4734,12 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
         S.lob.ger = ref.id;
       });
       salvarB.disabled = false; st.textContent = '';
-      if (ok) { S.lob.criando = false; toast('🎲 Sessão', s.id ? 'Campanha atualizada.' : 'Sessão criada! Copie o código e mande pros jogadores.'); atualizarLobby(); }
-    }, 'cm-pri cm-ac');
-    return h('div', { class: 'cm-card cm-ac-card' }, h('b', { class: 'cm-sec-tit', text: s.id ? 'Editar campanha' : 'Nova sessão' }),
+      if (ok) { S.lob.criando = false; S.lob.editando = false; toast('Sessão', s.id ? 'Salvo.' : 'Sessão criada.'); atualizarLobby(); }
+    }, 'cm-pri');
+    return h('div', { class: 'cm-caixa' }, h('div', { class: 'cm-faixa', text: s.id ? 'Editar sessão' : 'Nova sessão' }),
       lbl('Nome da campanha', nomeI), lbl('Descrição', desc),
       h('div', { class: 'cm-grid', style: 'grid-template-columns:repeat(auto-fill,minmax(180px,1fr))' }, lbl('Limite de jogadores', lim), lbl('Entrada', apr), lbl('Validade do código', val)),
-      !s.id ? h('label', { class: 'cm-row', style: 'font-weight:700;gap:6px' }, ex, 'Começar com a cidade de exemplo (mapa, NPC, pistas e missões pra você editar)') : null,
+      !s.id ? h('label', { class: 'cm-row cm-check' }, ex, 'Incluir cidade de exemplo') : null,
       h('div', { class: 'cm-row' }, salvarB, st, h('span', { style: 'flex:1' }), btn('Cancelar', () => { S.lob.criando = false; S.lob.editando = false; atualizarLobby(); }, 'cm-mini')));
   }
   function painelSessao() {
@@ -4659,13 +4750,13 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const lotada = ocup >= s.limite;
     const venc = s.codigoExpira && s.codigoExpira < agora();
     const out = [h('div', { class: 'cm-row' }, btn('← Suas sessões', () => { S.lob.ger = null; S.lob.editando = false; atualizarLobby(); }, 'cm-mini')),
-      h('div', { class: 'cm-h' }, h('h2', { text: s.nome }), h('span', { class: 'cm-tag ' + (s.encerrada ? '' : 'cm-ac-tag'), text: s.encerrada ? 'Encerrada' : 'Ativa' }))];
-    if (s.descricao) out.push(h('div', { class: 'cm-sub cm-txt', text: s.descricao }));
+      h('div', { class: 'cm-h' }, h('h2', { text: s.nome }), s.encerrada ? h('span', { class: 'cm-tag', text: 'Encerrada' }) : null, !s.encerrada ? btn('Abrir sala', () => entrarSala(S.me, s.id, s), 'cm-mini cm-pri') : null)];
+    if (s.descricao) out.push(h('div', { class: 'cm-txt', text: s.descricao }));
     // convite
-    if (!s.encerrada) out.push(h('div', { class: 'cm-card cm-ac-card' }, h('b', { class: 'cm-sec-tit', text: 'Convite' }),
+    if (!s.encerrada) out.push(h('div', { class: 'cm-caixa' }, h('div', { class: 'cm-faixa', text: 'Código de convite' }),
       h('div', { class: 'cm-codigo grande' + (venc ? ' venc' : '') }, h('span', { text: s.codigo })),
-      h('div', { class: 'cm-meta' }, s.codigoExpira ? (venc ? h('span', { class: 'cm-err', text: 'Expirado' }) : h('span', { text: `Vale até ${new Date(s.codigoExpira).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}` })) : h('span', { text: 'Sem validade' }), h('span', { text: '·' }), h('span', { text: s.aprovacao === 'automatica' ? 'Entra direto com o código' : 'Você aprova cada pedido' })),
-      h('div', { class: 'cm-row' }, btn('Copiar código', () => copiar(s.codigo, 'Código copiado.'), 'cm-mini cm-ac'), btn('Compartilhar convite', () => compartilhar(s), 'cm-mini'),
+      h('div', { class: 'cm-meta' }, s.codigoExpira ? (venc ? h('span', { class: 'cm-err', text: 'Vencido' }) : h('span', { text: `Vale até ${new Date(s.codigoExpira).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}` })) : h('span', { text: 'Sem validade' }), h('span', { text: '·' }), h('span', { text: s.aprovacao === 'automatica' ? 'Entra direto' : 'Você aprova cada pedido' })),
+      h('div', { class: 'cm-row' }, btn('Copiar código', () => copiar(s.codigo, 'Código copiado.'), 'cm-mini cm-pri'), btn('Compartilhar', () => compartilhar(s), 'cm-mini'),
         btn('Renovar código', async () => {
           if (!(await confirmar('Gerar um código novo? O atual para de valer pra novas entradas (quem já está na sessão continua).', 'Renovar'))) return;
           await salvar(async () => {
@@ -4673,28 +4764,28 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
             await S.db.doc('convites/' + c).set({ gm: S.me, sid: s.id, ts: agora() });
             await sessRef(S.me, s.id).update({ codigo: c, codigoExpira: expiraEm(s.validadeDias), codigosAceitos: [...(s.codigosAceitos || []), c].slice(-20), ts: agora() });
             try { await S.db.doc('convites/' + s.codigo).delete(); } catch { /* ok */ }
-            toast('🎲 Convite', `Código novo: ${c}`);
+            toast('Convite', `Código novo: ${c}`);
           });
         }, 'cm-mini'))));
     // jogadores
     const pend = ps.filter((x) => x.estado === 'pendente');
     const dentro = ps.filter((x) => x.estado === 'ok');
     const fora = ps.filter((x) => x.estado === 'removido' || x.estado === 'recusado');
-    const linha = (x, ...acoes) => h('div', { class: 'cm-row cm-jog' }, avatar(nome(x.uid)), h('div', { style: 'flex:1;min-width:0;display:flex;flex-direction:column' }, spanNome(x.uid), h('span', { class: 'cm-sub', text: (S.d.perfis[x.uid] && S.d.perfis[x.uid].personagem) || (x.it ? `pediu ${quando(x.it.ts)}` : '') })), ...acoes);
+    const linha = (x, ...acoes) => h('div', { class: 'cm-jog' }, avatar(nome(x.uid)), h('div', { style: 'flex:1;min-width:0;display:flex;flex-direction:column' }, spanNome(x.uid), h('span', { class: 'cm-sub', text: (S.d.perfis[x.uid] && S.d.perfis[x.uid].personagem) || (x.it ? `pediu ${quando(x.it.ts)}` : '') })), ...acoes);
     const marca = (x, estado) => salvar(() => membroRef(S.me, s.id, x.uid).set({ estado, ts: agora() }));
-    out.push(h('div', { class: 'cm-card' }, h('b', { class: 'cm-sec-tit', text: `Pedidos de entrada (${pend.length})` }),
-      lotada && pend.length ? h('div', { class: 'cm-err', text: `Sessão lotada (${ocup}/${s.limite}). Aumente o limite ou remova alguém pra aprovar.` }) : null,
-      pend.length ? pend.map((x) => linha(x, btn('Aprovar', () => marca(x, 'aprovado'), 'cm-mini cm-ac', lotada), btn('Recusar', () => marca(x, 'recusado'), 'cm-mini cm-perigo'))) : h('div', { class: 'cm-sub', text: 'Nenhum pedido esperando.' })));
-    out.push(h('div', { class: 'cm-card' }, h('b', { class: 'cm-sec-tit', text: `Jogadores (${ocup}/${s.limite})` }),
-      dentro.length ? dentro.map((x) => linha(x, btn('Remover', async () => { if (await confirmar(`Remover ${nome(x.uid)} da sessão?`, 'Remover')) marca(x, 'removido'); }, 'cm-mini cm-perigo'))) : h('div', { class: 'cm-sub', text: 'Ninguém entrou ainda. Mande o código pros jogadores.' }),
-      fora.length ? [h('div', { class: 'cm-sub', style: 'margin-top:6px', text: 'Removidos / recusados' }), ...fora.map((x) => linha(x, h('span', { class: 'cm-tag', text: x.estado === 'removido' ? 'Removido' : 'Recusado' }), btn('Readmitir', () => marca(x, 'aprovado'), 'cm-mini', lotada)))] : null));
-    // campanha e conteúdo
-    out.push(S.lob.editando ? formSessao(s) : h('div', { class: 'cm-card' }, h('b', { class: 'cm-sec-tit', text: 'Campanha' }),
-      h('div', { class: 'cm-meta' }, h('span', { text: `Limite: ${s.limite} jogador${s.limite === 1 ? '' : 'es'}` }), h('span', { text: '·' }), h('span', { text: `Código vale: ${s.validadeDias ? s.validadeDias + ' dia(s)' : 'sem validade'}` })),
-      h('div', { class: 'cm-row' }, btn('Editar informações', () => { S.lob.editando = true; atualizarLobby(); }, 'cm-mini'))));
-    out.push(h('div', { class: 'cm-card cm-ac-card' }, h('b', { class: 'cm-sec-tit', text: 'Conteúdo da sessão' }),
-      h('div', { class: 'cm-sub', text: 'Mapa, lugares, NPCs (e as conversas dos jogadores com eles), pistas, missões, mural e reputação ficam dentro da sala.' }),
-      h('div', { class: 'cm-row' }, btn('Abrir a sala como mestre', () => entrarSala(S.me, s.id, s), 'cm-pri cm-ac'))));
+    if (pend.length) out.push(h('div', { class: 'cm-caixa' }, h('div', { class: 'cm-faixa', text: `Pedidos de entrada (${pend.length})` }),
+      lotada ? h('div', { class: 'cm-err', text: `Lotada (${ocup}/${s.limite}). Aumente o limite ou remova alguém.` }) : null,
+      pend.map((x) => linha(x, btn('Aprovar', () => marca(x, 'aprovado'), 'cm-mini cm-pri', lotada), btn('Recusar', () => marca(x, 'recusado'), 'cm-mini cm-perigo')))));
+    out.push(h('div', { class: 'cm-caixa' }, h('div', { class: 'cm-faixa', text: `Jogadores ${ocup}/${s.limite}` }),
+      dentro.length ? dentro.map((x) => linha(x, btn('Remover', async () => { if (await confirmar(`Remover ${nome(x.uid)} da sessão?`, 'Remover')) marca(x, 'removido'); }, 'cm-mini cm-perigo'))) : h('div', { class: 'cm-sub', text: 'Ninguém entrou ainda.' }),
+      fora.length ? [h('div', { class: 'cm-divisa', text: 'Removidos e recusados' }), ...fora.map((x) => linha(x, h('span', { class: 'cm-tag', text: x.estado === 'removido' ? 'Removido' : 'Recusado' }), btn('Readmitir', () => marca(x, 'aprovado'), 'cm-mini', lotada)))] : null));
+    // dados da sessão
+    out.push(S.lob.editando ? formSessao(s) : h('div', { class: 'cm-caixa' }, h('div', { class: 'cm-faixa', text: 'Configuração' }),
+      h('div', { class: 'cm-campos' },
+        h('div', { class: 'cm-campo' }, h('small', { text: 'Limite' }), h('b', { text: `${s.limite} jogador${s.limite === 1 ? '' : 'es'}` })),
+        h('div', { class: 'cm-campo' }, h('small', { text: 'Entrada' }), h('b', { text: s.aprovacao === 'automatica' ? 'Direta' : 'Com aprovação' })),
+        h('div', { class: 'cm-campo' }, h('small', { text: 'Código vale' }), h('b', { text: s.validadeDias ? `${s.validadeDias} dia${s.validadeDias === 1 ? '' : 's'}` : 'Sempre' }))),
+      h('div', { class: 'cm-row' }, btn('Editar', () => { S.lob.editando = true; atualizarLobby(); }, 'cm-mini'))));
     out.push(h('div', { class: 'cm-row', style: 'justify-content:flex-end' }, s.encerrada
       ? btn('Reabrir sessão', () => salvar(async () => { const c = await novoCodigo(); await S.db.doc('convites/' + c).set({ gm: S.me, sid: s.id, ts: agora() }); await sessRef(S.me, s.id).update({ encerrada: false, codigo: c, codigoExpira: expiraEm(s.validadeDias), codigosAceitos: [...(s.codigosAceitos || []), c].slice(-20), ts: agora() }); }), 'cm-mini')
       : btn('Encerrar sessão', async () => {
@@ -4706,27 +4797,24 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
 
   // ----- PLAYER -----
   function telaPlayer() {
-    const out = [h('div', { class: 'cm-h' }, h('h2', { text: 'Entrar numa sessão' }), btn('⇄ Trocar perfil', () => trocarPapel(null), 'cm-mini'), window.__cmLogout ? btn('Sair da conta', () => window.__cmLogout(), 'cm-mini cm-perigo') : null)];
+    const out = [h('div', { class: 'cm-h' }, h('h2', { text: 'Entrar numa sessão' }), btn('Trocar perfil', () => trocarPapel(null), 'cm-mini'), window.__cmLogout ? btn('Sair', () => window.__cmLogout(), 'cm-mini cm-perigo') : null)];
     const inp = h('input', { class: 'cm-in cm-in-codigo', placeholder: 'XXXX-XXXX', maxlength: 12, autocomplete: 'off', autocapitalize: 'characters', spellcheck: 'false', 'aria-label': 'Código da sessão', value: (S.lob.busca && S.lob.busca.codigo) || '' });
     inp.addEventListener('input', () => { const p = inp.selectionStart; inp.value = inp.value.toUpperCase(); inp.setSelectionRange(p, p); });
-    const ir = btn('Buscar sessão', () => buscarCodigo(inp.value), 'cm-pri cm-pl');
+    const ir = btn('Buscar sessão', () => buscarCodigo(inp.value), 'cm-pri');
     inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') ir.click(); });
-    out.push(h('div', { class: 'cm-card cm-pl-card' }, h('b', { class: 'cm-sec-tit', text: 'Código da sessão' }), h('div', { class: 'cm-sub', text: 'Peça o código ao mestre da mesa (8 letras e números).' }),
+    out.push(h('div', { class: 'cm-caixa' }, h('div', { class: 'cm-faixa', text: 'Código do mestre' }),
       h('div', { class: 'cm-row', style: 'flex-wrap:nowrap' }, inp, ir), S.lob.busca && S.lob.busca.msg ? h('div', { class: S.lob.busca.erro ? 'cm-err' : 'cm-sub', role: 'status', text: S.lob.busca.msg }) : null));
     if (S.lob.busca && S.lob.busca.sess) out.push(cartaoEncontrada(S.lob.busca));
     const minhas = Object.entries(S.lob.meusPedidos).filter(([, it]) => it && !it.cancelado);
-    out.push(h('b', { class: 'cm-sec-tit', text: 'Minhas sessões' }));
     if (!S.carregou.has('lob:meus')) out.push(h('div', { class: 'cm-vazio', text: 'Carregando…' }));
-    else if (!minhas.length) out.push(h('div', { class: 'cm-vazio', text: 'Você ainda não entrou em nenhuma sessão. Use o código que o mestre te passou.' }));
-    else out.push(h('div', { class: 'cm-grid', style: 'grid-template-columns:repeat(auto-fill,minmax(280px,1fr))' }, minhas.map(([sid, it]) => {
+    else if (minhas.length) out.push(h('div', { class: 'cm-faixa', text: 'Minhas sessões' }), h('div', { class: 'cm-lista' }, minhas.map(([sid, it]) => {
       const ss = S.lob.sessDe[sid];
       const st = ss === undefined ? 'carregando' : acesso(ss, S.lob.meuMembro[sid], it);
-      return h('div', { class: 'cm-card cm-sess' + (st === 'ok' ? '' : ' cm-off') },
-        h('div', { class: 'cm-meta' }, h('span', { class: 'cm-tag' + (st === 'ok' ? ' cm-pl-tag' : ''), text: st === 'carregando' ? '…' : ESTADO_TXT[st] })),
-        h('div', { class: 'cm-nome', style: 'font-size:18px', text: (ss && ss.nome) || it.nome || 'Sessão' }),
-        h('div', { class: 'cm-meta' }, 'Mestre: ', spanNome(it.gm)),
-        h('div', { class: 'cm-row' }, st === 'ok' ? btn('Entrar na sala', () => entrarSala(it.gm, sid, ss), 'cm-pri cm-pl') : null,
-          btn(st === 'pendente' ? 'Cancelar pedido' : 'Tirar da lista', () => cancelarPedido(sid), 'cm-mini')));
+      return h('div', { class: 'cm-sessao' + (st === 'ok' ? '' : ' cm-off') },
+        h('div', { class: 'cm-sessao-info' }, h('b', { class: 'cm-sessao-nome', text: (ss && ss.nome) || it.nome || 'Sessão' }),
+          h('span', { class: 'cm-sub' }, st === 'carregando' ? '…' : ESTADO_TXT[st], ' · mestre ', spanNome(it.gm))),
+        h('div', { class: 'cm-row' }, st === 'ok' ? btn('Entrar na sala', () => entrarSala(it.gm, sid, ss), 'cm-mini cm-pri') : null,
+          btn(st === 'pendente' ? 'Cancelar pedido' : 'Tirar', () => cancelarPedido(sid), 'cm-mini')));
     })));
     return out;
   }
@@ -4758,16 +4846,15 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const s = b.sess, it = S.lob.meusPedidos[s.id];
     const st = acesso(s, S.lob.meuMembro[s.id] !== undefined ? S.lob.meuMembro[s.id] : b.meuMembro, it);
     const lotada = b.ocup >= s.limite && st !== 'ok';
-    const acao = st === 'ok' ? btn('Entrar na sala', () => entrarSala(s.gm, s.id, s), 'cm-pri cm-pl')
-      : st === 'pendente' ? h('div', { class: 'cm-sub', text: 'Pedido enviado. Você recebe um aviso quando o mestre aprovar.' })
+    const acao = st === 'ok' ? btn('Entrar na sala', () => entrarSala(s.gm, s.id, s), 'cm-pri')
+      : st === 'pendente' ? h('div', { class: 'cm-sub', text: 'Pedido enviado. Aparece um aviso quando o mestre aprovar.' })
       : st === 'removido' || st === 'recusado' ? h('div', { class: 'cm-err', text: ESTADO_TXT[st] + ' nesta sessão.' })
       : lotada ? h('div', { class: 'cm-err', text: `Sessão lotada (${b.ocup}/${s.limite}).` })
-      : btn(s.aprovacao === 'automatica' ? 'Confirmar entrada' : 'Solicitar entrada', () => pedirEntrada(s, b.codigo), 'cm-pri cm-pl');
-    return h('div', { class: 'cm-card cm-pl-card cm-entra' },
-      h('div', { class: 'cm-meta' }, h('span', { class: 'cm-tag cm-pl-tag', text: 'Sessão encontrada' }), h('span', { text: `👥 ${b.ocup}/${s.limite}` }), h('span', { text: s.aprovacao === 'automatica' ? 'entrada direta' : 'o mestre aprova' })),
-      h('div', { class: 'cm-nome', style: 'font-size:21px', text: s.nome }),
-      s.descricao ? h('div', { class: 'cm-txt', text: s.descricao }) : null,
-      h('div', { class: 'cm-meta' }, 'Mestre: ', spanNome(s.gm)), acao);
+      : btn(s.aprovacao === 'automatica' ? 'Confirmar entrada' : 'Solicitar entrada', () => pedirEntrada(s, b.codigo), 'cm-pri');
+    return h('div', { class: 'cm-caixa cm-entra' }, h('div', { class: 'cm-faixa', text: 'Sessão encontrada' }),
+      h('div', { class: 'cm-sessao-nome cm-nome', text: s.nome }),
+      h('div', { class: 'cm-meta' }, h('span', null, 'Mestre ', spanNome(s.gm)), h('span', { text: `${b.ocup}/${s.limite} jogadores` }), h('span', { text: s.aprovacao === 'automatica' ? 'entrada direta' : 'o mestre aprova' })),
+      s.descricao ? h('div', { class: 'cm-txt', text: s.descricao }) : null, acao);
   }
   async function pedirEntrada(sess, codigo) {
     const atual = { ...S.lob.meusPedidos };
@@ -4775,8 +4862,8 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const ok = await salvar(async () => { await espelhar(sess.gm, sess.id, atual[sess.id]); await S.db.doc('pedidos/' + S.me).set({ itens: atual, ts: agora() }); });
     if (!ok) return;
     S.lob.meusPedidos = atual;
-    if (sess.aprovacao === 'automatica' && (sess.codigosAceitos || []).includes(codigo)) { toast('🚪 Sessão', 'Entrada liberada!'); entrarSala(sess.gm, sess.id, sess); }
-    else { toast('🚪 Sessão', 'Pedido enviado pro mestre.'); atualizarLobby(); }
+    if (sess.aprovacao === 'automatica' && (sess.codigosAceitos || []).includes(codigo)) { toast('Sessão', 'Entrada liberada.'); entrarSala(sess.gm, sess.id, sess); }
+    else { toast('Sessão', 'Pedido enviado ao mestre.'); atualizarLobby(); }
   }
   async function cancelarPedido(sid) {
     if (!(await confirmar('Tirar essa sessão da sua lista?', 'Tirar'))) return;
@@ -4831,7 +4918,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const fichaSec = document.querySelector('#menu [data-fold="fold-ficha"]');
     if (!fichaSec) return;
     const secBtn = h('button', { class: 'm-sec fold', type: 'button', 'data-fold': 'fold-comu', 'aria-expanded': 'true' }, 'Comunidade', h('b', { class: 'cm-n', 'data-n': 'novidades' }), h('span', { class: 'chev', text: '▾' }));
-    const corpoM = h('div', { class: 'fold-body', id: 'fold-comu' }, h('button', { class: 'm-item cm-go', type: 'button', onclick: () => { if (S.sess) irLobby(); else abrir(); } }, '🚪 Sessões', h('b', { class: 'cm-n', 'data-lob': '' })), SECS.map(([k, n, ic]) => h('button', { class: 'm-item cm-go', type: 'button', 'data-sec': k, onclick: () => abrir(k) }, `${ic} ${n}`, k === 'novidades' ? null : h('b', { class: 'cm-n', 'data-n': k }))));
+    const corpoM = h('div', { class: 'fold-body', id: 'fold-comu' }, h('button', { class: 'm-item cm-go', type: 'button', onclick: () => { if (S.sess) irLobby(); else abrir(); } }, 'Sessões', h('b', { class: 'cm-n', 'data-lob': '' })), SECS.map(([k, n]) => h('button', { class: 'm-item cm-go', type: 'button', 'data-sec': k, onclick: () => abrir(k) }, n, k === 'novidades' ? null : h('b', { class: 'cm-n', 'data-n': k }))));
     fichaSec.before(secBtn, corpoM);
     secBtn.addEventListener('click', () => { const fechado = corpoM.classList.toggle('closed'); secBtn.classList.toggle('closed', fechado); secBtn.setAttribute('aria-expanded', String(!fechado)); });
     // contador no botão ☰ da ficha e no ☰ do leitor de livros

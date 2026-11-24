@@ -186,14 +186,14 @@ try {
     const falta = !temLocal(b);
     if (!c) {
       c = document.createElement('div'); c.id = 'lv-falta';
-      c.innerHTML = '<b></b><p></p><div class="lv-falta-bts"><button type="button" class="btool lv-baixar">⬇ Baixar da mesa</button><button type="button" class="btool lv-addpdf">＋ Adicionar PDF</button></div>';
+      c.innerHTML = '<b></b><p></p><div class="lv-falta-bts"><button type="button" class="btool lv-baixar">Baixar da mesa</button><button type="button" class="btool lv-addpdf">＋ Adicionar PDF</button></div>';
       c.querySelector('.lv-addpdf').addEventListener('click', () => window.__livroEscolher());
       c.querySelector('.lv-baixar').addEventListener('click', () => baixarDaMesa(c.dataset.livro));
       v.prepend(c);
     }
     const l = LIVROS[b], mesa = l && l.mesa;
     c.dataset.livro = b;
-    c.querySelector('b').textContent = `📖 ${l ? l.nome : 'Livro'}`;
+    c.querySelector('b').textContent = l ? l.nome : 'Livro';
     c.querySelector('p').textContent = mesa
       ? `O mestre compartilhou este livro com a mesa (${mb(mesa.tamanho)}). Baixe uma vez: ele fica guardado neste aparelho.`
       : 'Este livro não está neste aparelho. Adicione o seu PDF (fica guardado só aqui) ou peça pro mestre compartilhar com a mesa.';
@@ -237,7 +237,7 @@ try {
     const sala = window.__cmLivros && window.__cmLivros.sala();
     const l = sel && LIVROS[sel.value];
     bMesa.hidden = !(sala && sala.mestre && l && (l.local || l.mesa));
-    bMesa.textContent = l && l.mesa ? '✕ Tirar da mesa' : '📤 Enviar pra mesa';
+    bMesa.textContent = l && l.mesa ? 'Tirar da mesa' : 'Enviar pra mesa';
   }
   if (sel) sel.addEventListener('change', botaoMesa);
   addEventListener('livros-mudaram', botaoMesa);

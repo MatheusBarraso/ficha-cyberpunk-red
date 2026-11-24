@@ -89,7 +89,9 @@ service cloud.firestore {
       // ----- o que a mesa escreve dentro da sala -----
       match /mural/{id} {
         allow read: if membroSala(sid);
-        allow create: if membroSala(sid) && autorNovo();
+        // só o mestre posta como mestre ou como NPC
+        allow create: if membroSala(sid) && autorNovo()
+          && (gmSala(sid) || (request.resource.data.get('mestre', null) == null && request.resource.data.get('npc', null) == null));
         // reagir: só muda a própria reação
         allow update: if membroSala(sid) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reacoes'])
           && request.resource.data.reacoes.diff(resource.data.get('reacoes', {})).affectedKeys().hasOnly([eu()]);

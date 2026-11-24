@@ -158,6 +158,7 @@ function alertar(msg) {
   const d = document.createElement('div');
   d.className = 'cm-toast'; d.setAttribute('role', 'alert');
   d.style.cssText = 'position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:9999;max-width:min(92vw,460px)';
-  d.textContent = msg; d.onclick = () => d.remove();
+  const caixa = document.createElement('div'), t = document.createElement('b'), m = document.createElement('span');
+  t.textContent = 'Login'; m.textContent = msg; caixa.append(t, m); d.append(caixa); d.onclick = () => d.remove();
   document.body.append(d); setTimeout(() => d.remove(), 9000);
 }
