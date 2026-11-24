@@ -14,11 +14,11 @@ window.claude = { use: (n) => window.__fbPronto.then((a) => (a ? a[n] || null : 
 </script>
 <script src="firebase-config.js"></script>
 <script type="module" src="fb.js"></script>
-<meta name="cpr-build" content="872d0abb3a29">
+<meta name="cpr-build" content="5477c0194063">
 <script>
 // avisa quando sai uma versão nova do site (o navegador pode ficar horas com a antiga aberta)
 (function () {
-  var atual = '872d0abb3a29', avisou = false;
+  var atual = '5477c0194063', avisou = false;
   function mostrar() {
     if (avisou || !document.body) return; avisou = true;
     var b = document.createElement('div'); b.id = 'cpr-nova'; b.setAttribute('role', 'alert');
@@ -6890,6 +6890,47 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   new MutationObserver(pintar).observe(document.body, { attributes: true, attributeFilter: ['class'] });
   const mn = document.getElementById('menu'); if (mn) new MutationObserver(pintar).observe(mn, { attributes: true, attributeFilter: ['class'] });
   pintar();
+})();
+
+/* ===== zoom do navegador (Ctrl + / Ctrl −) aumenta a ficha de verdade =====
+   O encaixe automático deixava a ficha sempre do tamanho da janela, então o zoom do navegador não fazia efeito.
+   Agora o encaixe é calculado como se o zoom estivesse em 100%: com 125% a ficha fica 25% maior (e rola). */
+(() => {
+  if (typeof applyScale !== 'function') return;
+  const NIVEIS = [0.25, 0.33, 0.5, 0.67, 0.75, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5];
+  const celular = () => document.body.classList.contains('mob') || document.body.classList.contains('land')
+    || (matchMedia('(pointer: coarse)').matches && Math.min(screen.width, screen.height) <= 600);
+  function zoomNavegador() {
+    if (celular() || !window.outerWidth || !window.innerWidth) return 1;
+    const r = window.outerWidth / window.innerWidth;
+    let melhor = 1, dif = 9;
+    for (const n of NIVEIS) { const d = Math.abs(r - n * 1.008); if (d < dif) { dif = d; melhor = n; } }
+    return dif <= 0.03 * melhor ? melhor : 1; // janela com painel lateral aberto etc.: não dá pra saber, fica como estava
+  }
+  window.__zoomNavegador = zoomNavegador;
+  applyScale = function () {
+    const land = document.body.classList.contains('land');
+    const z = zoomMode === 'fit' ? zoomNavegador() : 1;
+    const vw = (document.documentElement.clientWidth - (land ? 56 : 16) - (window.__ladoW || 0)) * z;
+    let s;
+    if (zoomMode === 'fit') {
+      s = Math.min(vw, 1920 * z) / 1920;
+      if (!land) { const tb = document.querySelector('.toolbar'); const vh = (window.innerHeight - (tb ? tb.offsetHeight : 0) - 60) * z; s = Math.min(s, Math.max(0.2, vh / 1080)); }
+    } else s = Math.min(ZMAX, Math.max(ZMIN, zoomVal));
+    const fluid = document.body.classList.contains('mob');
+    for (const sc of document.querySelectorAll('.scaler')) {
+      if ((fluid && sc.classList.contains('fl')) || (land && sc.classList.contains('fl'))) {
+        const fl = sc.querySelector('.sheet'); sc.style.width = ''; sc.style.height = ''; fl.style.transform = ''; fl.style.zoom = '';
+        continue;
+      }
+      sc.style.width = `${1920 * s}px`;
+      sc.style.height = `${1080 * s}px`;
+      const sh = sc.querySelector('.sheet');
+      if (ZOOM_OK) { sh.style.transform = ''; sh.style.zoom = s; } else sh.style.transform = `scale(${s})`;
+    }
+    const pct = document.getElementById('zoom-pct'); if (pct) pct.textContent = `${Math.round(s * 100)}%`;
+  };
+  applyScale();
 })();
 
 </script>
