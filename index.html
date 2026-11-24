@@ -14,11 +14,11 @@ window.claude = { use: (n) => window.__fbPronto.then((a) => (a ? a[n] || null : 
 </script>
 <script src="firebase-config.js"></script>
 <script type="module" src="fb.js"></script>
-<meta name="cpr-build" content="1f491636ef23">
+<meta name="cpr-build" content="8fa1ef4c8c3e">
 <script>
 // avisa quando sai uma versão nova do site (o navegador pode ficar horas com a antiga aberta)
 (function () {
-  var atual = '1f491636ef23', avisou = false;
+  var atual = '8fa1ef4c8c3e', avisou = false;
   function mostrar() {
     if (avisou || !document.body) return; avisou = true;
     var b = document.createElement('div'); b.id = 'cpr-nova'; b.setAttribute('role', 'alert');
@@ -6914,6 +6914,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     return dif <= 0.03 * melhor ? melhor : 1; // janela com painel lateral aberto etc.: não dá pra saber, fica como estava
   }
   window.__zoomNavegador = zoomNavegador;
+  const MENOR = 0.2; // menor zoom da ficha (20%)
   function encaixe(z, land, vw) {
     if (z == null) { land = document.body.classList.contains('land'); z = zoomNavegador(); vw = (document.documentElement.clientWidth - (land ? 56 : 16) - (window.__ladoW || 0)) * z; }
     let s = Math.min(vw, 1920 * z) / 1920;
@@ -6926,7 +6927,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const vw = (document.documentElement.clientWidth - (land ? 56 : 16) - (window.__ladoW || 0)) * z;
     let s;
     if (zoomMode === 'fit') s = encaixe(z, land, vw);
-    else s = Math.min(ZMAX, Math.max(Math.min(ZMIN, encaixe(1, land, vw)), zoomVal));
+    else s = Math.min(ZMAX, Math.max(MENOR, zoomVal));
     const fluid = document.body.classList.contains('mob');
     for (const sc of document.querySelectorAll('.scaler')) {
       if ((fluid && sc.classList.contains('fl')) || (land && sc.classList.contains('fl'))) {
@@ -6954,7 +6955,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const r = sh.getBoundingClientRect();
     const atual = r.width / 1920;
     const fit = encaixe();
-    let novo = Math.min(ZMAX, Math.max(Math.min(ZMIN, fit), atual * fator));
+    let novo = Math.min(ZMAX, Math.max(MENOR, atual * fator));
     // ponto da ficha embaixo do mouse (em px da ficha sem escala). Durante um mesmo gesto o ponto fica guardado:
     // enquanto a ficha ainda é mais estreita que a tela ela fica centralizada e não dá pra segurar o ponto,
     // mas assim que der pra rolar ele volta pra baixo do mouse.
@@ -6962,7 +6963,8 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     if (ancora && Math.abs(ancora.cx - cx) < 4 && Math.abs(ancora.cy - cy) < 4 && Date.now() - ancora.t < 1500) { px = ancora.px; py = ancora.py; }
     else { px = Math.min(1920, Math.max(0, (cx - r.left) / atual)); py = Math.min(1080, Math.max(0, (cy - r.top) / atual)); }
     ancora = { px, py, cx, cy, t: Date.now() };
-    if (Math.abs(novo - fit) < 0.02 || novo < fit) { zoomMode = 'fit'; } else { zoomMode = 'manual'; zoomVal = novo; }
+    // passando pelo tamanho que cabe na tela, ele "gruda" ali um instante; dá pra continuar afastando até 20%
+    if (Math.abs(novo - fit) < 0.015) { zoomMode = 'fit'; } else { zoomMode = 'manual'; zoomVal = novo; }
     applyScale();
     const r2 = sh.getBoundingClientRect(), s2 = r2.width / 1920;
     const st = document.querySelector('.stage');
