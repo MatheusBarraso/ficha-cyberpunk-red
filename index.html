@@ -14,11 +14,11 @@ window.claude = { use: (n) => window.__fbPronto.then((a) => (a ? a[n] || null : 
 </script>
 <script src="firebase-config.js"></script>
 <script type="module" src="fb.js"></script>
-<meta name="cpr-build" content="3b0f3ab97fe0">
+<meta name="cpr-build" content="337df3d278de">
 <script>
 // avisa quando sai uma versão nova do site (o navegador pode ficar horas com a antiga aberta)
 (function () {
-  var atual = '3b0f3ab97fe0', avisou = false;
+  var atual = '337df3d278de', avisou = false;
   function mostrar() {
     if (avisou || !document.body) return; avisou = true;
     var b = document.createElement('div'); b.id = 'cpr-nova'; b.setAttribute('role', 'alert');
@@ -1656,8 +1656,8 @@ body.zm-ctl .cm-marca{bottom:70px}
   box-shadow:0 0 0 6000px rgba(0,0,0,.94),0 0 24px 4px var(--red),inset 0 0 16px color-mix(in srgb,var(--red) 50%,transparent);animation:cmFocoEntra .25s ease-out}
 @keyframes cmFocoEntra{from{box-shadow:0 0 0 6000px rgba(0,0,0,0),0 0 0 0 var(--red)}}
 .pdflayer.cm-foco-on .fx:not(.cm-foco-alvo){opacity:.12;transition:opacity .2s}
-.pdflayer.cm-foco-on .calc{opacity:.12}
-.pdflayer.cm-foco-on .fx.cm-foco-alvo{z-index:4}
+.pdflayer.cm-foco-on .calc:not(.cm-foco-alvo){opacity:.12}
+.pdflayer.cm-foco-on .cm-foco-alvo{z-index:4}
 .pdflayer.cm-foco-on .fx.cm-foco-alvo>input,.pdflayer.cm-foco-on .fx.cm-foco-alvo>textarea{background:color-mix(in srgb,var(--red) 10%,#fff)}
 .sheet.pdfpage:has(.cm-foco-on){overflow:hidden}
 .cm-foco-leg{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:300;background:#0d0d0d;color:#fff;border:2px solid var(--red);padding:10px 18px;
@@ -6628,21 +6628,46 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   let focoAtual = null, ajudaEnviada = null, tAjuda = 0;
   const legenda = h('div', { class: 'cm-foco-leg', hidden: true, role: 'status', 'aria-live': 'polite' });
   function focoLimpar() {
-    if (focoAtual) { focoAtual.fx.classList.remove('cm-foco-alvo'); focoAtual.luz.remove(); focoAtual.layer.classList.remove('cm-foco-on'); }
+    if (focoAtual) { focoAtual.els.forEach((e) => e.classList.remove('cm-foco-alvo')); focoAtual.luz.remove(); focoAtual.layer.classList.remove('cm-foco-on'); }
     focoAtual = null; legenda.hidden = true;
+  }
+  const caixa = (e) => ({ el: e, x: parseFloat(e.style.left) || 0, y: parseFloat(e.style.top) || 0, w: parseFloat(e.style.width) || 0, h: parseFloat(e.style.height) || 0 });
+  // a área acesa: a linha inteira (perícia com NVL, ATR e BASE; linha de arma ou armadura) e o rótulo do campo
+  function areaDoCampo(fx) {
+    const layer = fx.closest('.pdflayer'), alvo = caixa(fx);
+    const todos = [...layer.querySelectorAll(':scope > .fx, :scope > .calc')].map(caixa).filter((c) => c.w > 0);
+    const naLinha = todos.filter((c) => Math.abs(c.y - alvo.y) < 4 && Math.abs(c.h - alvo.h) < 8).sort((a, b) => a.x - b.x);
+    // junta os vizinhos colados (até a próxima coluna, que fica longe)
+    let ini = naLinha.indexOf(naLinha.find((c) => c.el === fx)), fim = ini;
+    while (ini > 0 && naLinha[ini].x - (naLinha[ini - 1].x + naLinha[ini - 1].w) < 24) ini--;
+    while (fim < naLinha.length - 1 && naLinha[fim + 1].x - (naLinha[fim].x + naLinha[fim].w) < 24) fim++;
+    const linha = naLinha.slice(ini, fim + 1);
+    let x0 = Math.min(...linha.map((c) => c.x)), x1 = Math.max(...linha.map((c) => c.x + c.w));
+    let y0 = alvo.y, y1 = alvo.y + alvo.h;
+    const antes = ini > 0 ? naLinha[ini - 1].x + naLinha[ini - 1].w : 0;
+    // textos do desenho (rótulos): à esquerda na mesma linha (nome da perícia) ou logo acima (NOME, PAPEL...)
+    const sheet = fx.closest('.sheet');
+    const textos = sheet ? [...sheet.querySelectorAll('.pdfart text')].map((t) => { try { const b = t.getBBox(); return { x: b.x, y: b.y, w: b.width, h: b.height }; } catch { return null; } }).filter(Boolean) : [];
+    const esq = textos.filter((t) => t.y + t.h > y0 + 2 && t.y < y1 - 2 && t.x + t.w <= x0 + 2 && t.x >= antes - 2);
+    if (esq.length) x0 = Math.min(x0, ...esq.map((t) => t.x));
+    else {
+      const cima = textos.filter((t) => t.y < y0 - 2 && t.y + t.h <= y0 + 12 && t.y + t.h >= y0 - 26 && t.x < x1 && t.x + t.w > x0 - 2);
+      if (cima.length) { y0 = Math.min(y0, ...cima.map((t) => t.y)); x0 = Math.min(x0, ...cima.map((t) => t.x)); }
+      const dentro = textos.filter((t) => t.y >= y0 - 2 && t.y + t.h <= y1 + 2 && t.x >= x0 - 4 && t.x < x1); // rótulo dentro da caixa (INT, REF…)
+      if (dentro.length) y0 = Math.min(y0, ...dentro.map((t) => t.y));
+    }
+    return { layer, els: linha.map((c) => c.el), x0: x0 - 6, y0: y0 - 5, x1: x1 + 6, y1: y1 + 5 };
   }
   function focoEm(campo, texto) {
     const inp = document.querySelector(`.pdflayer [data-f="${CSS.escape(campo)}"]`);
     const fx = inp && inp.closest('.fx'); if (!fx) { focoLimpar(); return null; }
     if (focoAtual && focoAtual.fx === fx) { if (texto) { legenda.textContent = texto; legenda.hidden = false; } return fx; }
     focoLimpar();
-    const layer = fx.closest('.pdflayer');
+    const a = areaDoCampo(fx);
     const luz = h('div', { class: 'cm-foco-luz', 'aria-hidden': 'true' });
-    const x = parseFloat(fx.style.left) || 0, y = parseFloat(fx.style.top) || 0, w = parseFloat(fx.style.width) || 40, hh = parseFloat(fx.style.height) || 30;
-    // a caixa acesa pega também o rótulo, que no desenho fica logo acima do campo
-    luz.style.cssText = `left:${x - 8}px;top:${y - 22}px;width:${w + 16}px;height:${hh + 30}px`;
-    layer.prepend(luz); layer.classList.add('cm-foco-on'); fx.classList.add('cm-foco-alvo');
-    focoAtual = { fx, luz, layer };
+    luz.style.cssText = `left:${a.x0}px;top:${a.y0}px;width:${a.x1 - a.x0}px;height:${a.y1 - a.y0}px`;
+    a.layer.prepend(luz); a.layer.classList.add('cm-foco-on'); a.els.forEach((e) => e.classList.add('cm-foco-alvo'));
+    focoAtual = { fx, luz, layer: a.layer, els: a.els };
     if (texto) { legenda.textContent = texto; legenda.hidden = false; }
     return fx;
   }
