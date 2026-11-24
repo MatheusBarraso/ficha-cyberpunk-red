@@ -14,11 +14,11 @@ window.claude = { use: (n) => window.__fbPronto.then((a) => (a ? a[n] || null : 
 </script>
 <script src="firebase-config.js"></script>
 <script type="module" src="fb.js"></script>
-<meta name="cpr-build" content="337df3d278de">
+<meta name="cpr-build" content="ea6141dc7883">
 <script>
 // avisa quando sai uma versão nova do site (o navegador pode ficar horas com a antiga aberta)
 (function () {
-  var atual = '337df3d278de', avisou = false;
+  var atual = 'ea6141dc7883', avisou = false;
   function mostrar() {
     if (avisou || !document.body) return; avisou = true;
     var b = document.createElement('div'); b.id = 'cpr-nova'; b.setAttribute('role', 'alert');
@@ -6648,7 +6648,9 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     // textos do desenho (rótulos): à esquerda na mesma linha (nome da perícia) ou logo acima (NOME, PAPEL...)
     const sheet = fx.closest('.sheet');
     const textos = sheet ? [...sheet.querySelectorAll('.pdfart text')].map((t) => { try { const b = t.getBBox(); return { x: b.x, y: b.y, w: b.width, h: b.height }; } catch { return null; } }).filter(Boolean) : [];
-    const esq = textos.filter((t) => t.y + t.h > y0 + 2 && t.y < y1 - 2 && t.x + t.w <= x0 + 2 && t.x >= antes - 2);
+    const fora = todos.filter((c) => !linha.includes(c));
+    const bloqueado = (t) => fora.some((c) => c.x + c.w > t.x + t.w - 2 && c.x + c.w <= x0 + 2 && c.y < y1 && c.y + c.h > y0); // outra caixa no meio (ex.: Vícios)
+    const esq = textos.filter((t) => t.y + t.h > y0 + 2 && t.y < y1 - 2 && t.x + t.w <= x0 + 2 && t.x >= antes - 2 && x0 - t.x <= 320 && !bloqueado(t));
     if (esq.length) x0 = Math.min(x0, ...esq.map((t) => t.x));
     else {
       const cima = textos.filter((t) => t.y < y0 - 2 && t.y + t.h <= y0 + 12 && t.y + t.h >= y0 - 26 && t.x < x1 && t.x + t.w > x0 - 2);
@@ -6656,7 +6658,23 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
       const dentro = textos.filter((t) => t.y >= y0 - 2 && t.y + t.h <= y1 + 2 && t.x >= x0 - 4 && t.x < x1); // rótulo dentro da caixa (INT, REF…)
       if (dentro.length) y0 = Math.min(y0, ...dentro.map((t) => t.y));
     }
-    return { layer, els: linha.map((c) => c.el), x0: x0 - 6, y0: y0 - 5, x1: x1 + 6, y1: y1 + 5 };
+    // linha sem nada escrito (sublinha de Idioma, Especialista Local, Artes Marciais, linha 2+ de arma…):
+    // sobe até a perícia mãe (ou o cabeçalho da tabela) pra dar contexto
+    const toca = (t) => t.x < x1 && t.x + t.w > x0 && t.y < y1 && t.y + t.h > y0;
+    if (!textos.some(toca)) {
+      const acima = (t) => t.y + t.h <= y0 + 2 && y0 - t.y < 260;
+      const mae = textos.filter((t) => acima(t) && t.x >= antes - 2 && t.x < x0 - 2 && t.x + t.w > x0 - 140 && !bloqueado(t));
+      const cab = textos.filter((t) => acima(t) && t.x >= x0 - 4 && t.x < x1);
+      const alvoT = (mae.length ? mae : cab).sort((a, b) => b.y - a.y)[0];
+      if (alvoT) {
+        const mesma = (mae.length ? [alvoT] : cab.filter((t) => Math.abs(t.y - alvoT.y) < 42)); // cabeçalhos lado a lado (ARMADURA… ARMA, DANO…)
+        y0 = Math.min(...mesma.map((t) => t.y)); x0 = Math.min(x0, alvoT.x);
+      }
+    }
+    // tudo que ficou dentro da área acesa não escurece
+    const els = todos.filter((c) => c.x >= x0 - 8 && c.x + c.w <= x1 + 8 && c.y >= y0 - 8 && c.y + c.h <= y1 + 8).map((c) => c.el);
+    linha.forEach((c) => { if (!els.includes(c.el)) els.push(c.el); });
+    return { layer, els, x0: x0 - 6, y0: y0 - 5, x1: x1 + 6, y1: y1 + 5 };
   }
   function focoEm(campo, texto) {
     const inp = document.querySelector(`.pdflayer [data-f="${CSS.escape(campo)}"]`);
