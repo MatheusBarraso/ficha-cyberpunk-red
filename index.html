@@ -1146,14 +1146,34 @@ body.cm-vez-ficha .scaler{animation:cmVezBrilho 1.4s ease-in-out infinite}
 
 /* menu que desce da aba Ferramentas */
 .cm-top{position:relative}
-.cm-ferr-painel{--ln:2px;position:absolute;left:0;right:0;top:100%;z-index:5;background:#0d0d0d;color:#fff;border-bottom:var(--ln) solid var(--red);
-  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;padding:12px 14px 16px;max-height:min(70vh,560px);overflow-y:auto;box-shadow:0 12px 24px rgba(0,0,0,.45)}
+.cm-ferr-painel{--ln:2px;position:absolute;left:14px;top:100%;z-index:5;width:290px;max-width:calc(100vw - 16px);background:#0d0d0d;color:#fff;border:var(--ln) solid var(--red);border-top:0;
+  display:flex;flex-direction:column;gap:6px;padding:8px;box-shadow:0 12px 24px rgba(0,0,0,.45)}
 .cm-ferr-painel[hidden]{display:none!important}
-.cm-fm-col{display:flex;flex-direction:column;gap:6px;min-width:0}
-.cm-fm-col>.cm-btn{align-self:flex-start}
-.cm-fm-mesa>.cm-btn{align-self:stretch}
-@media (max-width:900px){.cm-ferr-painel{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:560px){.cm-ferr-painel{grid-template-columns:minmax(0,1fr);max-height:75vh}}
+.cm-fm-op{display:flex;align-items:center;gap:10px;width:100%;background:#1b1b1b;border:1px solid #333;color:#fff;padding:10px 12px;cursor:pointer;text-align:left;font-family:var(--font)}
+.cm-fm-op:hover,.cm-fm-op.on{border-color:var(--red);background:#241414}
+.cm-fm-op.on{box-shadow:inset 4px 0 0 var(--red)}
+.cm-fm-op-txt{display:flex;flex-direction:column;flex:1;min-width:0}
+.cm-fm-op-txt b{font:700 17px var(--font);letter-spacing:1.5px;text-transform:uppercase}
+.cm-fm-op-txt small{font-size:12px;color:#aaa;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cm-fm-op-ir{font:700 22px/1 var(--font);color:var(--red)}
+.cm-ferr-trocas{display:flex;margin-left:auto;border:var(--ln) solid var(--red)}
+.cm-ferr-troca{background:#fff;color:var(--ink);border:0;font:700 13px var(--font);letter-spacing:1px;text-transform:uppercase;padding:6px 14px;cursor:pointer}
+.cm-ferr-troca+.cm-ferr-troca{border-left:var(--ln) solid var(--red)}
+.cm-ferr-troca.on{background:var(--red);color:#fff}
+.cm-h:has(.cm-ferr-trocas){display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.cm-cb-acoes{display:flex;flex-wrap:wrap;gap:8px}
+.cm-cb-ordem{display:flex;flex-direction:column;gap:4px}
+.cm-cb-item{display:flex;align-items:center;gap:8px;width:100%;background:#fff;border:1px solid var(--red);color:var(--ink);font:600 15px var(--font);padding:8px 10px;cursor:pointer;text-align:left}
+.cm-cb-item:hover:not(:disabled){background:var(--tint)}
+.cm-cb-item:disabled{opacity:.55;cursor:default}
+.cm-cb-item .cm-ml-tag{background:#000;color:#fff}
+.cm-cb-item .cm-ml-npc{background:#777}
+.cm-cb-item .cm-ml-monstro{background:var(--red)}
+.cm-cb-item .cm-ml-pv{background:#fff;color:var(--red);border-color:var(--red)}
+.cm-cb-item.cm-vez{background:#fff1ef;animation:cmVezItem 1.4s ease-in-out infinite}
+.cm-cb-vez{background:var(--red);color:#fff;font:700 11px var(--font);letter-spacing:1px;text-transform:uppercase;padding:2px 8px}
+.cm-at-falhou .cm-rot,.cm-at-aceito .cm-rot{background:var(--red);color:#fff}
+.cm-at-contestado .cm-linha-txt small{color:var(--red);font-weight:700}
 .cm-fb-mesa{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start}
 .cm-fb-mesa .cm-ml-vez{background:#0d0d0d;color:#fff;min-width:260px}
 .cm-fb-mesa .cm-ml-vez .cm-btn{background:transparent;color:#fff;border-color:var(--red)}
@@ -5594,7 +5614,8 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
         h('div', { class: 'cm-ml-acoes' },
           btn(inimigo ? 'Atacar' : 'Aplicar dano', () => abrirAtaque(inimigo ? null : R.id), 'cm-mini cm-pri'),
           btn('Alertar players', abrirAlerta, 'cm-mini'),
-          btn('Ferramentas', () => { sairRemota(true); abrir('ferramentas'); }, 'cm-mini')),
+          btn('Combate', () => { sairRemota(true); S.ferrVer = 'combate'; abrir('ferramentas'); }, 'cm-mini'),
+          btn('Fichas', () => { sairRemota(true); S.ferrVer = 'fichas'; abrir('ferramentas'); }, 'cm-mini')),
         h('div', { class: 'cm-sub cm-ml-dica', text: R.tipo === 'player' ? 'O que você muda vai direto pra ficha do player.' : 'Só você vê esta ficha.' }),
         blocoVez(), blocoContestados(),
         h('div', { class: 'cm-faixa', text: `Inimigos (${inimigos.length})` }),
@@ -5614,21 +5635,19 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const t = tabs.querySelector('[data-sec="ferramentas"]'); if (t) t.setAttribute('aria-expanded', String(vai));
     if (vai) { alternarSino(false); pintarFerr(); }
   }
+  // o menu que desce tem só duas saídas: o menu de fichas e o menu de combate
+  function irFerr(ver) { alternarFerr(false); S.ferrVer = ver; if (S.aberto && S.sec === 'ferramentas') montar(); else abrir('ferramentas'); }
   function pintarFerr() {
     if (ferrPainel.hidden) return;
-    const fecha = () => alternarFerr(false);
-    const { players, inimigos } = todasFichas();
-    const coluna = (tit, itens, extra) => h('div', { class: 'cm-fm-col' }, h('div', { class: 'cm-faixa', text: tit }),
-      h('div', { class: 'cm-ml-lista' }, itens.length ? itens.map((x) => itemFicha(x, fecha)) : h('div', { class: 'cm-vazio', text: 'Nenhuma ainda.' })), extra);
+    const t = tabs.querySelector('[data-sec="ferramentas"]');
+    if (t) ferrPainel.style.left = Math.max(8, Math.min(t.offsetLeft - tabs.scrollLeft + 14, window.innerWidth - 300)) + 'px';
+    const cont = (S.d.ataques || []).filter((a) => a.estado === 'contestado').length;
+    const o = ordem(), v = o && o.lista[o.vez];
+    const op = (ver, tit, sub, extra) => h('button', { type: 'button', class: 'cm-fm-op' + (S.ferrVer === ver && S.sec === 'ferramentas' ? ' on' : ''), onclick: () => irFerr(ver) },
+      h('span', { class: 'cm-fm-op-txt' }, h('b', { text: tit }), h('small', { text: sub })), extra || null, h('span', { class: 'cm-fm-op-ir', text: '›' }));
     rc(ferrPainel,
-      coluna(`Players (${players.length})`, players),
-      coluna('NPCs', inimigos.filter((x) => x.tipo === 'npc'), btn('+ Nova ficha de NPC', () => { fecha(); novaFicha('npc'); }, 'cm-mini')),
-      coluna('Monstros', inimigos.filter((x) => x.tipo === 'monstro'), btn('+ Nova ficha de monstro', () => { fecha(); novaFicha('monstro'); }, 'cm-mini')),
-      h('div', { class: 'cm-fm-col cm-fm-mesa' }, h('div', { class: 'cm-faixa', text: 'Mesa' }),
-        blocoVez(fecha), blocoContestados(fecha),
-        btn('Atacar / aplicar dano', () => { fecha(); abrirAtaque(); }, 'cm-mini cm-pri'),
-        btn('Alertar players', () => { fecha(); abrirAlerta(); }, 'cm-mini'),
-        btn('Ver todas em blocos', () => { fecha(); abrir('ferramentas'); }, 'cm-mini')));
+      op('fichas', 'Fichas', `${membrosSala().length} players · ${(S.d.fichasM || []).filter((f) => f.tipo === 'npc').length} NPCs · ${(S.d.fichasM || []).filter((f) => f.tipo === 'monstro').length} monstros`),
+      op('combate', 'Combate', v ? `Rodada ${o.rodada || 1} · vez de ${tituloFicha(v.tipo, v.id)}` : 'Ordem de jogada, ataques e alertas', cont ? h('b', { class: 'cm-n', text: cont }) : null));
   }
   document.addEventListener('click', () => { if (!ferrPainel.hidden) alternarFerr(false); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !ferrPainel.hidden) alternarFerr(false); });
@@ -5812,12 +5831,15 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
 
   SECOES.ferramentas = {
     montar(w) {
-      w.append(h('div', { class: 'cm-h' }, h('h2', { text: 'Ferramentas do mestre' })));
+      const ver = S.ferrVer === 'combate' ? 'combate' : 'fichas';
+      const troca = (v, txt) => h('button', { type: 'button', class: 'cm-ferr-troca' + (ver === v ? ' on' : ''), onclick: () => { S.ferrVer = v; montar(); } }, txt);
+      w.append(h('div', { class: 'cm-h' }, h('h2', { text: ver === 'combate' ? 'Combate' : 'Fichas' }), h('div', { class: 'cm-ferr-trocas' }, troca('fichas', 'Fichas'), troca('combate', 'Combate'))));
       S.ui.area = h('div', { class: 'cm-fb-area' });
       w.append(S.ui.area);
     },
     atualizar() {
       if (!S.mestre) { rc(S.ui.area, h('div', { class: 'cm-vazio', text: 'Só o mestre vê esta parte.' })); return; }
+      if (S.ferrVer === 'combate') { pintarCombate(); return; }
       const players = membrosSala();
       const doTipo = (t) => (S.d.fichasM || []).filter((f) => f.tipo === t).sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
       const grupo = (tit, itens, vazio) => h('div', { class: 'cm-fb-grupo' },
@@ -5825,12 +5847,49 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
         h('div', { class: 'cm-fb-grade' }, itens.length ? itens : h('div', { class: 'cm-vazio', text: vazio })));
       rc(S.ui.area,
         h('div', { class: 'cm-txt', text: 'Toque numa ficha pra abrir e mexer à vontade. A de player muda na ficha dele na hora; as de NPC e monstro só você vê. Por enquanto todas usam o mesmo modelo de ficha.' }),
-        h('div', { class: 'cm-fb-mesa' }, blocoVez(), h('div', { class: 'cm-row' }, btn('Atacar / aplicar dano', () => abrirAtaque(), 'cm-mini cm-pri'), btn('Alertar players', abrirAlerta, 'cm-mini')), blocoContestados()),
         grupo(`Players (${players.length})`, players.map((u) => blocoFicha('player', u)), 'Ninguém na mesa ainda.'),
         grupo(`NPCs (${doTipo('npc').length})`, [...doTipo('npc').map((f) => blocoFicha('npc', f.id)), blocoNovo('npc')]),
         grupo(`Monstros (${doTipo('monstro').length})`, [...doTipo('monstro').map((f) => blocoFicha('monstro', f.id)), blocoNovo('monstro')]));
     },
   };
+  // ----- menu de combate -----
+  const ESTADO_AT = { pendente: 'esperando resposta', aceito: 'aceitou o dano', contestado: 'contestou', defendeu: 'se defendeu', falhou: 'não se defendeu' };
+  function pintarCombate() {
+    const o = ordem();
+    const linhaOrdem = (x, k) => {
+      const reg = registroDe(x.tipo, x.id), d = (reg && reg.dados) || {};
+      return h('button', { type: 'button', class: 'cm-cb-item' + (o.vez === k ? ' cm-vez' : ''), disabled: !reg, onclick: () => abrirFicha(x.tipo, x.id) },
+        h('span', { class: 'cm-ordem-n', text: k + 1 }), h('span', { class: `cm-ml-tag cm-ml-${x.tipo}`, text: SIGLA[x.tipo] }),
+        h('span', { class: 'cm-ml-nome', text: tituloFicha(x.tipo, x.id) }),
+        o.vez === k ? h('span', { class: 'cm-cb-vez', text: 'Vez' }) : null,
+        h('span', { class: 'cm-ml-pv', text: d[PV] ? `PV ${d[PV]}` : 'PV —' }));
+    };
+    const cont = (S.d.ataques || []).filter((a) => a.estado === 'contestado');
+    const ult = (S.d.ataques || []).slice(0, 12);
+    const resolvidos = (S.d.ataques || []).filter((a) => a.estado !== 'pendente' && a.estado !== 'contestado');
+    rc(S.ui.area,
+      h('div', { class: 'cm-cb-acoes' },
+        btn('Atacar / aplicar dano', () => abrirAtaque(), 'cm-pri'),
+        btn('Alertar players', abrirAlerta),
+        btn(o ? 'Editar ordem' : 'Montar ordem de jogada', abrirOrdem)),
+      cont.length ? h('div', { class: 'cm-fb-grupo' }, h('div', { class: 'cm-faixa', text: `Contestaram (${cont.length})` }),
+        h('div', { class: 'cm-lista' }, cont.map((a) => h('div', { class: 'cm-linha cm-linha-fixa' },
+          h('span', { class: 'cm-rot', text: `${a.dano} dano` }),
+          h('span', { class: 'cm-linha-txt' }, h('b', { text: `${nome(a.alvo)} contestou` }), h('small', { text: `${a.de}${a.texto ? ': ' + corte(a.texto, 60) : ''}` })),
+          btn('Decidir', () => decidir(a), 'cm-mini cm-pri'))))) : null,
+      h('div', { class: 'cm-fb-grupo' }, h('div', { class: 'cm-faixa', text: o ? `Ordem de jogada · rodada ${o.rodada || 1}` : 'Ordem de jogada' }),
+        o ? [h('div', { class: 'cm-cb-ordem' }, o.lista.map(linhaOrdem)),
+          h('div', { class: 'cm-row' }, btn('‹ Anterior', () => passarVez(-1), 'cm-mini'), btn('Próxima vez ›', () => passarVez(1), 'cm-pri'),
+            h('span', { style: 'flex:1' }), btn('Encerrar combate', async () => { if (await confirmar('Encerrar o combate e apagar a ordem de jogada?', 'Encerrar')) await salvar(() => dok('mestreEstado', 'ordem').delete()); }, 'cm-mini cm-perigo'))]
+          : h('div', { class: 'cm-vazio', text: 'Monte a ordem pra saber de quem é a vez. A ficha da vez brilha pra você.' })),
+      h('div', { class: 'cm-fb-grupo' }, h('div', { class: 'cm-faixa', text: 'Últimos ataques' }),
+        ult.length ? h('div', { class: 'cm-lista' }, ult.map((a) => h('div', { class: 'cm-linha cm-linha-fixa cm-at-' + a.estado },
+          h('span', { class: 'cm-rot', text: a.estado === 'falhou' ? `−${a.danoFinal} PV` : a.estado === 'aceito' ? `−${a.dano} PV` : `${a.dano} dano` }),
+          h('span', { class: 'cm-linha-txt' }, h('b', { text: `${a.de} → ${nome(a.alvo)}` }), h('small', { text: ESTADO_AT[a.estado] || a.estado })),
+          h('span', { class: 'cm-quando', text: quando(a.fimTs || a.respTs || a.ts) }))))
+          : h('div', { class: 'cm-vazio', text: 'Nenhum ataque ainda.' }),
+        resolvidos.length ? h('div', { class: 'cm-row' }, btn('Limpar os resolvidos', async () => { await salvar(async () => { for (const a of resolvidos) await dok('ataques', a.id).delete(); }); }, 'cm-mini')) : null));
+  }
   function blocoFicha(tipo, id) {
     const f = registroDe(tipo, id), d = (f && f.dados) || {};
     const tit = d.NOME || (tipo === 'player' ? nome(id) : `${TIPOS_FICHA[tipo]} sem nome`);
