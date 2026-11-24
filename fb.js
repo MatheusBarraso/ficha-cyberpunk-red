@@ -71,11 +71,14 @@ if (!cfg || !cfg.apiKey || /COLE/i.test(cfg.apiKey)) {
       }
     };
     window.__cmLogout = async () => { try { await A.signOut(auth); } finally { location.reload(); } };
+    // trocar de conta: sai e já abre a escolha de conta do Google
+    window.__cmTrocarConta = async () => { try { await A.signOut(auth); } catch { /* ok */ } await window.__cmLogin(); location.reload(); };
     try { await A.getRedirectResult(auth); } catch { /* sem login pendente */ }
     const eu = await new Promise((res) => { const un = A.onAuthStateChanged(auth, (u) => { un(); res(u); }); });
     // voltou do login por redirecionamento sem entrar (Safari/Firefox bloqueiam esse caminho): avisa
     let voltouRedir = false; try { voltouRedir = sessionStorage.getItem('cpr-fb-redir') === '1'; sessionStorage.removeItem('cpr-fb-redir'); } catch { /* ok */ }
     if (voltouRedir && !eu) setTimeout(() => alertar('O navegador bloqueou a janela de login. Permita pop-ups para este site (ícone na barra de endereço) e toque em “Entrar com Google” de novo.'), 800);
+    window.__cmConta = eu ? { nome: eu.displayName || '', email: eu.email || '', foto: eu.photoURL || '' } : null;
     if (eu) {
       // nome que os outros veem nos avisos e listas
       F.setDoc(F.doc(fs, 'usuarios/' + eu.uid), { nome: eu.displayName || (eu.email || '').split('@')[0] || 'Jogador', ts: Date.now() }, { merge: true }).catch(() => {});
