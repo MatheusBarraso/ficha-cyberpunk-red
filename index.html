@@ -292,7 +292,7 @@ input[type=number]{-moz-appearance:textfield;appearance:textfield}
   .stage{padding:0;gap:0;display:block}
   .scaler{display:block!important;overflow:visible;max-width:none;width:auto!important;height:auto!important;page-break-after:always;margin:0}
   .scaler:last-child{page-break-after:auto}
-  .sheet{position:static;display:grid!important;transform:none!important;zoom:.54;border-width:4px}
+  .sheet{position:static;display:grid!important;transform:none!important;zoom:.54!important;border-width:4px}
   .sheet.p4,.sheet.p5,.sheet.p6{display:flex!important}
   .box input:focus,.box textarea:focus,.trow .cell input:focus{background:transparent}
 }
@@ -1816,6 +1816,7 @@ let zoomMode = 'fit';   // 'fit' | 'manual'
 let zoomVal = 1;        // escala manual
 const ZMIN = 0.3, ZMAX = 2.5;
 
+const ZOOM_OK = !!(window.CSS && CSS.supports && CSS.supports('zoom', '0.5'));
 function applyScale() {
   const land = document.body.classList.contains('land');
   const vw = document.documentElement.clientWidth - (land ? 56 : 16);
@@ -1828,12 +1829,13 @@ function applyScale() {
   const fluid = document.body.classList.contains('mob');
   for (const sc of document.querySelectorAll('.scaler')) {
     if ((fluid && sc.classList.contains('fl')) || (land && sc.classList.contains('fl'))) {
-      sc.style.width = ''; sc.style.height = ''; sc.querySelector('.sheet').style.transform = '';
+      sc.style.width = ''; sc.style.height = ''; sc.querySelector('.sheet').style.transform = ''; sc.querySelector('.sheet').style.zoom = '';
       continue;
     }
     sc.style.width = `${1920 * s}px`;
     sc.style.height = `${1080 * s}px`;
-    sc.querySelector('.sheet').style.transform = `scale(${s})`;
+    const sh = sc.querySelector('.sheet');
+    if (ZOOM_OK) { sh.style.transform = ''; sh.style.zoom = s; } else sh.style.transform = `scale(${s})`;
   }
   $('#zoom-pct').textContent = `${Math.round(s * 100)}%`;
 }
