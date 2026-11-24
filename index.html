@@ -14,11 +14,11 @@ window.claude = { use: (n) => window.__fbPronto.then((a) => (a ? a[n] || null : 
 </script>
 <script src="firebase-config.js"></script>
 <script type="module" src="fb.js"></script>
-<meta name="cpr-build" content="0db4af4f43c9">
+<meta name="cpr-build" content="092700498856">
 <script>
 // avisa quando sai uma versão nova do site (o navegador pode ficar horas com a antiga aberta)
 (function () {
-  var atual = '0db4af4f43c9', avisou = false;
+  var atual = '092700498856', avisou = false;
   function mostrar() {
     if (avisou || !document.body) return; avisou = true;
     var b = document.createElement('div'); b.id = 'cpr-nova'; b.setAttribute('role', 'alert');
@@ -6651,7 +6651,8 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const fora = todos.filter((c) => !linha.includes(c));
     const bloqueado = (t) => fora.some((c) => c.x + c.w > t.x + t.w - 2 && c.x + c.w <= x0 + 2 && c.y < y1 && c.y + c.h > y0); // outra caixa no meio (ex.: Vícios)
     const cabecalho = (t) => fora.some((c) => c.x <= t.x + 1 && c.x + c.w >= t.x + t.w - 1 && c.y >= t.y + t.h - 6 && c.y - (t.y + t.h) < 20); // título de coluna de outra tabela (PB, PENALIDADE…)
-    const esq = textos.filter((t) => t.y + t.h > y0 + 2 && t.y < y1 - 2 && t.x + t.w <= x0 + 2 && t.x >= antes - 2 && x0 - t.x <= 320 && !bloqueado(t) && !cabecalho(t));
+    const rodape = (t) => fora.some((c) => c.x <= t.x + 1 && c.x + c.w > t.x && c.y + c.h <= t.y + 6 && t.y - (c.y + c.h) < 20); // texto embaixo de outra tabela (Penalidade aplicada…)
+    const esq = textos.filter((t) => t.y + t.h > y0 + 2 && t.y < y1 - 2 && t.x + t.w <= x0 + 2 && t.x >= antes - 2 && x0 - t.x <= 320 && !bloqueado(t) && !cabecalho(t) && !rodape(t));
     const acima = (t) => t.y + t.h <= y0 + 2 && y0 - t.y < 260;
     const maeDe = () => textos.filter((t) => acima(t) && t.x >= antes - 2 && t.x < x0 - 2 && t.x + t.w > x0 - 140 && !bloqueado(t));
     // tabela (armadura, armas): fica só a tabela do campo, com o título e o cabeçalho de cada coluna
