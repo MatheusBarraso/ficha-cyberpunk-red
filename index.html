@@ -13,11 +13,11 @@ window.claude = { use: (n) => window.__fbPronto.then((a) => (a ? a[n] || null : 
 </script>
 <script src="firebase-config.js"></script>
 <script type="module" src="fb.js"></script>
-<meta name="cpr-build" content="9f777f319d16">
+<meta name="cpr-build" content="059f091d2fa5">
 <script>
 // avisa quando sai uma versão nova do site (o navegador pode ficar horas com a antiga aberta)
 (function () {
-  var atual = '9f777f319d16', avisou = false;
+  var atual = '059f091d2fa5', avisou = false;
   function mostrar() {
     if (avisou || !document.body) return; avisou = true;
     var b = document.createElement('div'); b.id = 'cpr-nova'; b.setAttribute('role', 'alert');
@@ -1292,6 +1292,22 @@ body.cm-vez-ficha .scaler{animation:cmVezBrilho 1.4s ease-in-out infinite}
 .cm-ml-cav circle,.cm-ml-cav path:not(:first-child){fill:#1b1b1b}
 .cm-ml-tit .cm-ml-cav{margin-right:6px;width:18px;height:18px}
 .cm-add-cav{color:#111}
+
+/* ---------- estrelinha e mortos ---------- */
+.cm-fb-olho.cm-fb-estrela.on{color:#ffd23f}
+.cm-fb-olho.cm-fb-matar svg{width:16px;height:16px}
+.cm-fb-olho.cm-fb-matar svg circle,.cm-fb-olho.cm-fb-matar svg path:not(:first-child){fill:#000}
+.cm-fb-olho.cm-fb-matar.on{background:var(--red)}
+.cm-fb-olho.cm-fb-matar.on svg circle,.cm-fb-olho.cm-fb-matar.on svg path:not(:first-child){fill:var(--red)}
+.cm-fb-monstro .cm-fb-olho.cm-fb-matar.on{background:#000}
+.cm-fb-monstro .cm-fb-olho.cm-fb-matar.on svg circle,.cm-fb-monstro .cm-fb-olho.cm-fb-matar.on svg path:not(:first-child){fill:#000}
+.cm-fb-fav{position:absolute;right:10px;top:34px;color:var(--red);font:700 20px/1 var(--font);pointer-events:none}
+.cm-faixa.cm-faixa-mortos{background:#2b2b2b;color:#fff;display:inline-flex;align-items:center;gap:6px}
+.cm-faixa-mortos .cm-caveira{color:#fff;width:15px;height:15px}
+.cm-faixa-mortos .cm-caveira circle,.cm-faixa-mortos .cm-caveira path:not(:first-child){fill:#2b2b2b}
+.cm-ml-fav,.cm-add-fav{color:#ffd23f;font-size:14px;line-height:1}
+.cm-add-fav{color:var(--red)}
+@media (max-width:640px){.cm-fb-olho{width:22px;margin-left:2px}.cm-fb-topo>span:not(.cm-fb-num){font-size:10px;letter-spacing:1px}}
 /* ================= MENU PRINCIPAL no visual da ficha =================
    folha branca, cabeçalhos pretos com canto cortado, itens em linhas finas vermelhas */
 #menu{background:var(--paper);color:var(--ink);border-right:2px solid var(--red)}
@@ -5016,7 +5032,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
       sub(col('fichasMestre'), (s) => { S.d.fichasM = lista(s); if (R.id) pintarRemota(); }, 'fichasM');
       sub(col('ataques'), (s) => { S.d.ataques = lista(s).sort((a, b) => (b.ts || 0) - (a.ts || 0)); checarContestados(); if (R.id) pintarRemota(); }, 'ataques');
       sub(dok('mestreEstado', 'ordem'), (s) => { S.d.ordem = s.exists ? s.data() : null; if (R.id) pintarRemota(); }, 'ordem');
-      sub(dok('mestreEstado', 'ocultas'), (s) => { S.d.ocultas = s.exists ? s.data() : {}; }, 'ocultas');
+      for (const doc of ['ocultas', 'mortas', 'favoritas']) sub(dok('mestreEstado', doc), (s) => { S.d[doc] = s.exists ? s.data() : {}; if (R.id) pintarRemota(); }, doc);
       sub(col('conversas'), (s) => { S.d.conversas = lista(s); }, 'conversas');
       sub(col('denuncias'), (s) => { S.d.den = lista(s); }, 'den');
     } else {
@@ -5634,6 +5650,8 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   function todasFichas() {
     const players = membrosSala().map((u) => ({ tipo: 'player', id: u }));
     const inimigos = (S.d.fichasM || []).slice().sort((a, b) => (a.tipo || '').localeCompare(b.tipo || '') || (a.nome || '').localeCompare(b.nome || '')).map((f) => ({ tipo: f.tipo, id: f.id }));
+    const fav = (x) => (typeof favorita === 'function' && favorita(x.tipo, x.id) ? 0 : 1);
+    inimigos.sort((a, b) => fav(a) - fav(b));
     return { players, inimigos };
   }
   const PV = 'PONTOS DE VIDA';
@@ -5684,6 +5702,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     return h('button', { type: 'button', class: 'cm-ml-item' + (atual ? ' on' : '') + (naVez(x.tipo, x.id) ? ' cm-vez' : '') + (oculta(x.tipo, x.id) ? ' cm-ml-oculta' : ''), disabled: !reg && !atual,
       onclick: () => { if (fechaAntes) fechaAntes(); if (window.innerWidth < 1000) S.ladoFechado = true; abrirFicha(x.tipo, x.id); } },
       h('span', { class: `cm-ml-tag cm-ml-${x.tipo}`, text: SIGLA[x.tipo] }),
+      favorita(x.tipo, x.id) ? h('span', { class: 'cm-ml-fav', text: '★' }) : null,
       h('span', { class: 'cm-ml-nome', text: tituloFicha(x.tipo, x.id) }),
       morta(x.tipo, x.id) ? caveira('cm-caveira cm-ml-cav') : null,
       d[PV] ? h('span', { class: 'cm-ml-pv', text: d[PV] }) : null);
@@ -6047,7 +6066,12 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
       if (S.ferrVer === 'combate') { pintarCombate(); return; }
       const players = membrosSala();
       const doTipo = (t) => (S.d.fichasM || []).filter((f) => f.tipo === t).sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
-      const blocos = (xs) => xs.sort((a, b) => oculta(a[0], a[1]) - oculta(b[0], b[1])).map(([t, i]) => blocoFicha(t, i, { olho: true }));
+      const real = (t) => (t === 'player' ? 0 : 1);
+      const blocos = (xs, pjPrimeiro) => xs.filter(([t, i]) => !morta(t, i))
+        .sort((a, b) => (pjPrimeiro ? real(a[0]) - real(b[0]) : 0) || pesoF(a[0], a[1]) - pesoF(b[0], b[1])).map(([t, i]) => blocoFicha(t, i, { olho: true }));
+      const todasT = [...players.map((u) => ['player', u]), ...(S.d.fichasM || []).slice().sort((a, b) => (a.nome || '').localeCompare(b.nome || '')).map((f) => [f.tipo, f.id])];
+      const mortos = todasT.filter(([t, i]) => morta(t, i)).sort((a, b) => pesoF(a[0], a[1]) - pesoF(b[0], b[1])).map(([t, i]) => blocoFicha(t, i, { olho: true }));
+      const vivos = (t) => doTipo(t).filter((f) => !morta(f.tipo, f.id)).length;
       const grupo = (tit, itens, vazio) => h('div', { class: 'cm-fb-grupo' },
         h('div', { class: 'cm-faixa', text: tit }),
         h('div', { class: 'cm-fb-grade' }, itens.length ? itens : h('div', { class: 'cm-vazio', text: vazio })));
@@ -6056,24 +6080,33 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
         h('div', { class: 'cm-row' }, (S.d.fichasM || []).some((f) => f.demo)
           ? btn('Apagar as fichas de demonstração', async () => { if (await confirmar('Apagar as 9 fichas de demonstração?', 'Apagar')) await salvar(async () => { for (const f of S.d.fichasM.filter((x) => x.demo)) { if (R.id === f.id) sairRemota(true); await dok('fichasMestre', f.id).delete(); } }); }, 'cm-mini')
           : btn('Criar fichas de demonstração', async () => { if (await salvar(() => criarDemos(baseDe('fichasMestre')))) toast('Fichas', '3 players, 3 NPCs e 3 monstros de demonstração criados.'); }, 'cm-mini cm-pri')),
-        grupo(`Players (${players.length + doTipo('demo').length})`, blocos([...players.map((u) => ['player', u]), ...doTipo('demo').map((f) => ['demo', f.id])]), 'Ninguém na mesa ainda.'),
-        grupo(`NPCs (${doTipo('npc').length})`, [...blocos(doTipo('npc').map((f) => ['npc', f.id])), blocoNovo('npc')]),
-        grupo(`Monstros (${doTipo('monstro').length})`, [...blocos(doTipo('monstro').map((f) => ['monstro', f.id])), blocoNovo('monstro')]));
+        grupo(`Players (${players.filter((u) => !morta('player', u)).length + vivos('demo')})`, blocos([...players.map((u) => ['player', u]), ...doTipo('demo').map((f) => ['demo', f.id])], true), 'Ninguém na mesa ainda.'),
+        grupo(`NPCs (${vivos('npc')})`, [...blocos(doTipo('npc').map((f) => ['npc', f.id])), blocoNovo('npc')]),
+        grupo(`Monstros (${vivos('monstro')})`, [...blocos(doTipo('monstro').map((f) => ['monstro', f.id])), blocoNovo('monstro')]),
+        h('div', { class: 'cm-fb-grupo cm-fb-mortos' }, h('div', { class: 'cm-faixa cm-faixa-mortos' }, caveira(), ` Mortos (${mortos.length})`),
+          h('div', { class: 'cm-fb-grade' }, mortos.length ? mortos : h('div', { class: 'cm-vazio', text: 'Ninguém morreu ainda. Use a caveira no canto de uma ficha pra marcar como morta (ou zere os Pontos de Vida).' }))));
     },
   };
   // ----- fichas ocultas (o mestre esconde da lista de fichas; ficam transparentes) -----
   // ficha morta: Pontos de Vida em 0 (ou menos)
-  const morta = (tipo, id) => { const d = ((registroDe(tipo, id) || {}).dados) || {}; const pv = parseInt(d[PV], 10); return !isNaN(pv) && pv <= 0; };
+  const pvZerado = (tipo, id) => { const d = ((registroDe(tipo, id) || {}).dados) || {}; const pv = parseInt(d[PV], 10); return !isNaN(pv) && pv <= 0; };
+  const morta = (tipo, id) => marcada('mortas', tipo, id) || pvZerado(tipo, id);
+  const favorita = (tipo, id) => marcada('favoritas', tipo, id);
   const CAVEIRA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c-4.7 0-8 3.2-8 7.6 0 2.6 1.2 4.4 2.8 5.5V19a1 1 0 0 0 1 1h1.4v1.5h1.6V20h2.4v1.5h1.6V20h1.4a1 1 0 0 0 1-1v-3.4c1.6-1.1 2.8-2.9 2.8-5.5 0-4.4-3.3-7.6-8-7.6z" fill="currentColor"/><circle cx="8.7" cy="11" r="2.1" fill="#fff"/><circle cx="15.3" cy="11" r="2.1" fill="#fff"/><path d="M12 13.6l-1.3 2.4h2.6z" fill="#fff"/></svg>';
   const caveira = (cls = 'cm-caveira') => { const e = h('span', { class: cls, title: 'Morta', 'aria-label': 'Morta' }); e.innerHTML = CAVEIRA; return e; };
   const chaveF = (tipo, id) => `${tipo}:${id}`;
-  const oculta = (tipo, id) => !!(S.d.ocultas || {})[chaveF(tipo, id)];
-  async function alternarOculta(tipo, id) {
-    const o = { ...(S.d.ocultas || {}) }, k = chaveF(tipo, id);
+  const marcada = (doc, tipo, id) => !!(S.d[doc] || {})[chaveF(tipo, id)];
+  const oculta = (tipo, id) => marcada('ocultas', tipo, id);
+  async function alternarMarca(doc, tipo, id) {
+    const o = { ...(S.d[doc] || {}) }, k = chaveF(tipo, id);
     if (o[k]) delete o[k]; else o[k] = true;
-    S.d.ocultas = o; mudou();
-    await salvar(() => dok('mestreEstado', 'ocultas').set(o));
+    S.d[doc] = o; mudou();
+    await salvar(() => dok('mestreEstado', doc).set(o));
   }
+  const alternarOculta = (tipo, id) => alternarMarca('ocultas', tipo, id);
+  // ordem dentro de um grupo: estrelinha na frente, ocultas no fim
+  const pesoF = (tipo, id) => (favorita(tipo, id) ? 0 : 1) + (oculta(tipo, id) ? 2 : 0);
+  const ESTRELA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4L2.8 9.5l6.4-.8z" fill="FILL" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>';
   const OLHO = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
   const OLHO_X = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 3l18 18" stroke="currentColor" stroke-width="2"/></svg>';
 
@@ -6134,14 +6167,16 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
         return true;
       });
       const ts = (x) => ((registroDe(x.tipo, x.id) || {}).ts || 0);
-      it.sort(F.ordem === 'nome' ? (a, b) => tituloFicha(a.tipo, a.id).localeCompare(tituloFicha(b.tipo, b.id))
-        : F.ordem === 'nivel' ? (a, b) => (nivelDe(b) || 0) - (nivelDe(a) || 0) : (a, b) => ts(b) - ts(a));
+      const fv = (x) => (favorita(x.tipo, x.id) ? 0 : 1);
+      it.sort(F.ordem === 'nome' ? (a, b) => fv(a) - fv(b) || tituloFicha(a.tipo, a.id).localeCompare(tituloFicha(b.tipo, b.id))
+        : F.ordem === 'nivel' ? (a, b) => fv(a) - fv(b) || (nivelDe(b) || 0) - (nivelDe(a) || 0) : (a, b) => fv(a) - fv(b) || ts(b) - ts(a));
       rc(lista, it.length ? it.map((x) => {
         const reg = registroDe(x.tipo, x.id), d = (reg && reg.dados) || {}, k = chaveF(x.tipo, x.id);
         const cb = h('input', { type: 'checkbox' }); cb.checked = marcados.has(k);
         cb.addEventListener('change', () => { if (cb.checked) marcados.add(k); else marcados.delete(k); conta(); });
         return h('label', { class: 'cm-add-item' + (oculta(x.tipo, x.id) ? ' cm-add-oculta' : '') }, cb,
           h('span', { class: `cm-ml-tag cm-ml-${x.tipo}`, text: SIGLA[x.tipo] }),
+          favorita(x.tipo, x.id) ? h('span', { class: 'cm-add-fav', text: '★' }) : null,
           morta(x.tipo, x.id) ? caveira('cm-caveira cm-add-cav') : null,
           h('span', { class: 'cm-add-txt' }, h('b', { text: tituloFicha(x.tipo, x.id) + (morta(x.tipo, x.id) ? ' (morta)' : '') }),
             h('small', { text: [d.PAPEL, d.NIVEL ? `nível ${d.NIVEL}` : null, d[PV] ? `PV ${d[PV]}` : null, reg ? `alterada ${quando(reg.ts)}` : 'ficha ainda não chegou'].filter(Boolean).join(' · ') })));
@@ -6234,12 +6269,15 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
       onclick: abrirEste, onkeydown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrirEste(); } } },
       h('div', { class: 'cm-fb-topo' }, op.num ? h('span', { class: 'cm-fb-num', text: op.num + 'º' }) : null, h('span', { text: TIPOS_FICHA[tipo] }),
         op.lado && tipo !== 'player' && tipo !== 'demo' ? h('button', { type: 'button', class: 'cm-fb-lado', title: 'Trocar de lado', text: ladoDe(tipo, id) === 'aliado' ? '→ inimigo' : '→ aliado', onclick: (e) => { e.stopPropagation(); trocarLado(id); } }) : null,
+        op.olho ? (() => { const fav = favorita(tipo, id); const b = h('button', { type: 'button', class: 'cm-fb-olho cm-fb-estrela' + (fav ? ' on' : ''), title: fav ? 'Tirar da frente' : 'Deixar sempre na frente', 'aria-label': fav ? 'Tirar a estrela' : 'Marcar com estrela', onclick: (e) => { e.stopPropagation(); alternarMarca('favoritas', tipo, id); } }); b.innerHTML = ESTRELA.replace('FILL', fav ? 'currentColor' : 'none'); return b; })() : null,
+        op.olho ? (() => { const mm = marcada('mortas', tipo, id), pz = pvZerado(tipo, id); const b = h('button', { type: 'button', class: 'cm-fb-olho cm-fb-matar' + (mm || pz ? ' on' : ''), title: pz && !mm ? 'Morta (PV 0)' : mm ? 'Marcar como viva' : 'Marcar como morta', 'aria-label': mm ? 'Marcar como viva' : 'Marcar como morta', onclick: (e) => { e.stopPropagation(); if (pz && !mm) { toast('Ficha', 'Ela está morta porque os Pontos de Vida estão em 0. Pra voltar, aumente a vida na ficha.'); return; } alternarMarca('mortas', tipo, id); } }); b.innerHTML = CAVEIRA; return b; })() : null,
         op.olho ? (() => { const b = h('button', { type: 'button', class: 'cm-fb-olho', title: oculta(tipo, id) ? 'Mostrar ficha' : 'Ocultar ficha', 'aria-label': oculta(tipo, id) ? 'Mostrar ficha' : 'Ocultar ficha', onclick: (e) => { e.stopPropagation(); alternarOculta(tipo, id); } }); b.innerHTML = oculta(tipo, id) ? OLHO_X : OLHO; return b; })() : null,
         op.tirar ? h('button', { type: 'button', class: 'cm-fb-x', title: 'Tirar do combate', 'aria-label': 'Tirar do combate', text: '×', onclick: (e) => { e.stopPropagation(); tirarDoCombate({ tipo, id }); } }) : null,
         !op.lado && tipo !== 'player' ? h('button', { type: 'button', class: 'cm-fb-x', title: 'Apagar ficha', 'aria-label': 'Apagar ficha', text: '×', onclick: (e) => { e.stopPropagation(); apagarFicha(tipo, id); } }) : null),
       h('div', { class: 'cm-fb-corpo' },
         h('div', { class: 'cm-fb-foto' }, d.__img ? h('img', { src: d.__img, alt: '' }) : iniciais(tit), morreu ? caveira('cm-caveira cm-fb-cav') : null),
         h('div', { class: 'cm-fb-txt' }, h('b', { text: tit }), linhas.map((l) => h('small', { text: l })))),
+      favorita(tipo, id) ? h('span', { class: 'cm-fb-fav', title: 'Sempre na frente', text: '★' }) : null,
       h('div', { class: 'cm-fb-pe' },
         morreu ? h('span', { class: 'cm-fb-pv cm-fb-morto' }, caveira(), 'Morta') : pv ? h('span', { class: 'cm-fb-pv', text: `PV ${pv}` }) : null,
         h('span', { text: !f ? 'a ficha ainda não chegou: peça pro player abrir o site de novo' : (f.por === S.me ? 'você mexeu ' : 'atualizada ') + quando(f.ts) }))));
