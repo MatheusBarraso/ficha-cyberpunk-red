@@ -55,7 +55,7 @@ service cloud.firestore {
       allow create, update: if logado() && uid == eu()
         && request.resource.data.keys().hasOnly(['senha', 'ts'])
         && request.resource.data.senha is string && request.resource.data.senha.size() < 200
-        && hashing.sha256(request.resource.data.senha).toHexString().lower() == 'ed899b2d20b035a784cfdbc7d4eaf5673fc9b32dd69744b12be24ef0997c1eba';
+        && hashing.sha256(request.resource.data.senha).toHexString().lower() == '83cf8b609de60036a8277bd0e96135751bbc07eb234256d4b65b893360651bf2';
     }
     // tudo que é particular de cada pessoa (rascunhos do mestre, o que já viu)
     match /data/users/{uid}/{resto=**} {
