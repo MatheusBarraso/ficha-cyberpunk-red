@@ -4752,6 +4752,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   }
   if (FB) window.__cmLivros = {
     sala: () => (S.sess ? { gm: S.sess.gm, sid: S.sess.id, mestre: S.mestre, nome: S.sess.nome || 'Sessão' } : null),
+    papel: () => S.lob.papel,
     async enviar(meta, bytes, prog) {
       if (!S.sess || !S.mestre) throw { code: 'invalid_argument' };
       const u8 = new Uint8Array(bytes), n = Math.ceil(u8.length / PARTE);
@@ -4886,7 +4887,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     rc(L, S.lob.papel === 'mestre' ? (S.lob.ger ? painelSessao() : telaMestre()) : telaPlayer());
     resolverNomes();
   }
-  function trocarPapel(p) { if (p) liberarFicha(); if (S.aberto && !S.db && !S.erro && p) { /* ainda conectando: monta de novo quando chegar */ } S.lob.papel = p; S.lob.ger = null; S.lob.busca = null; try { p ? localStorage.setItem(PAPEL_KEY, p) : localStorage.removeItem(PAPEL_KEY); } catch { /* ok */ } pintarTopo(); montar(); corpo.scrollTop = 0; }
+  function trocarPapel(p) { if (p) liberarFicha(); if (S.aberto && !S.db && !S.erro && p) { /* ainda conectando: monta de novo quando chegar */ } S.lob.papel = p; S.lob.ger = null; S.lob.busca = null; try { p ? localStorage.setItem(PAPEL_KEY, p) : localStorage.removeItem(PAPEL_KEY); } catch { /* ok */ } dispatchEvent(new Event('cm-papel')); pintarTopo(); montar(); corpo.scrollTop = 0; }
   function telaEscolha() {
     const cartao = (cls, tit, txt, p) => h('button', { type: 'button', class: `cm-escolha ${cls}`, onclick: () => trocarPapel(p) },
       h('span', { class: 'cm-esc-tit', text: tit }), h('span', { class: 'cm-esc-txt', text: txt }),

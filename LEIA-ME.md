@@ -16,7 +16,7 @@ São uns 15 minutos, uma vez só. Siga na ordem.
 | `firebase-config.js` | **você cola aqui** a configuração do seu Firebase (passo 4) |
 | `firestore.rules` | regras de segurança: **você cola no Firebase** (passo 3) |
 | `fb.js` | liga a Comunidade ao Firebase (não precisa mexer) |
-| `livros_local.js` | leitor de livros: cada pessoa adiciona o próprio PDF (não precisa mexer) |
+| `livros_local.js` | leitor de livros: o mestre carrega os PDFs e compartilha com a mesa (não precisa mexer) |
 | `lib/` | leitor de PDF (pdf.js) |
 | `exemplo/` | imagens da cidade de exemplo |
 
@@ -99,14 +99,15 @@ Cada pessoa usa a própria conta Google, de qualquer computador ou celular.
 ## Livros
 
 Os PDFs dos livros **não vão pro GitHub**: o repositório é público e os livros têm direitos autorais.
-Cada pessoa adiciona o PDF que tem, e ele fica guardado **só no aparelho dela**:
+Só o **mestre** carrega livros. Os players veem os que o mestre compartilhou com a sessão.
 
-**Livros → 📖 (menu do leitor) → ＋ Adicionar PDF**
+**Mestre:** Livros → 📖 (menu do leitor) → **＋ Adicionar PDF**, depois **Enviar pra mesa** (precisa estar dentro da sala da sessão).
+**Player:** entra na sessão e abre Livros. O livro da mesa baixa sozinho na primeira vez e fica guardado no aparelho.
 
 - O *Livro de Regras* e o *The Jacket* (CEMK) e o *Livro Básico* do Cyberpunk RED são reconhecidos sozinhos, e as páginas marcadas na ficha continuam funcionando.
-- Qualquer outro PDF também pode ser adicionado.
-- A busca funciona igual (na primeira busca de cada livro ela demora alguns segundos pra ler o PDF).
-- **Tirar** remove o livro do aparelho (as marcações continuam).
+- Qualquer outro PDF também pode ser adicionado pelo mestre.
+- Só quem está na sessão consegue baixar (as regras do banco bloqueiam o resto).
+- **Tirar da mesa** para de compartilhar. **Tirar** / **Apagar cópia** remove o livro do aparelho (as marcações continuam).
 
 ## A ficha
 
