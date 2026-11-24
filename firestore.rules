@@ -107,6 +107,14 @@ service cloud.firestore {
           && request.resource.data.reacoes.diff(resource.data.get('reacoes', {})).affectedKeys().hasOnly([eu()]);
         allow delete: if logado() && (autorAtual() || gmSala(sid));
       }
+      // quadro da História: texto, imagem e desenho; cada um mexe no que é seu, o mestre mexe em tudo
+      match /quadro/{id} {
+        allow read: if membroSala(sid);
+        allow create: if membroSala(sid) && autorNovo() && request.resource.data.tipo in ['texto', 'imagem', 'traco'];
+        allow update: if membroSala(sid) && (autorAtual() || gmSala(sid))
+          && request.resource.data.autor == resource.data.autor && request.resource.data.tipo == resource.data.tipo;
+        allow delete: if logado() && (autorAtual() || gmSala(sid));
+      }
       match /comentarios/{id} {
         allow read: if membroSala(sid);
         allow create: if membroSala(sid) && autorNovo();
