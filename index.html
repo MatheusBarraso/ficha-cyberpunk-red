@@ -1070,6 +1070,35 @@ body.cm-semficha .sheet.pdfpage .cm-semficha-box{--ln:3px;display:flex;position:
 body.comu-on #cm-remota{display:none}
 body.cm-remota #btn-clear{display:none!important}
 @media (max-width:640px){#cm-remota .cm-rb-txt{display:none}#cm-remota{max-width:calc(100vw - 24px);bottom:70px}}
+
+/* ---------- ferramentas: fichas em blocos ---------- */
+.cm-fb-area{display:flex;flex-direction:column;gap:18px}
+.cm-fb-grupo{display:flex;flex-direction:column;gap:8px}
+.cm-fb-grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.cm-fb{--c:var(--corte);position:relative;display:flex;flex-direction:column;background:#fff;border:var(--ln) solid var(--red);color:var(--ink);cursor:pointer;text-align:left;font:inherit;min-height:142px;padding:0;
+  clip-path:polygon(0 0,100% 0,100% calc(100% - var(--c)),calc(100% - var(--c)) 100%,0 100%)}
+.cm-fb::after{content:'';position:absolute;right:calc(-1 * var(--ln));bottom:calc(-1 * var(--ln));width:calc(var(--c) + var(--ln));height:calc(var(--c) + var(--ln));pointer-events:none;
+  background:linear-gradient(to bottom right,transparent calc(50% - var(--ln) * .5),var(--red) calc(50% - var(--ln) * .5),var(--red) calc(50% + var(--ln) * .5),transparent calc(50% + var(--ln) * .5))}
+.cm-fb:hover,.cm-fb:focus-visible{background:var(--tint);outline:none}
+.cm-fb-topo{display:flex;align-items:center;justify-content:space-between;background:#000;color:#fff;font:700 12px var(--font);letter-spacing:1.5px;text-transform:uppercase;padding:3px 4px 3px 10px;min-height:26px}
+.cm-fb-npc .cm-fb-topo{background:#2b2b2b}
+.cm-fb-monstro .cm-fb-topo{background:var(--red)}
+.cm-fb-x{background:transparent;border:0;color:#fff;font:700 18px/1 var(--font);width:26px;height:22px;cursor:pointer;padding:0}
+.cm-fb-x:hover{background:rgba(255,255,255,.2)}
+.cm-fb-corpo{display:flex;gap:10px;padding:10px;align-items:flex-start;flex:1}
+.cm-fb-foto{width:58px;height:58px;flex:0 0 58px;border:2px solid var(--red);background:var(--tint);display:flex;align-items:center;justify-content:center;font:700 18px var(--font);color:var(--red);overflow:hidden}
+.cm-fb-foto img{width:100%;height:100%;object-fit:cover}
+.cm-fb-txt{display:flex;flex-direction:column;gap:2px;min-width:0}
+.cm-fb-txt b{font-size:17px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;line-height:1.15;overflow-wrap:anywhere}
+.cm-fb-txt small{font-size:13px;color:#555;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cm-fb-pe{display:flex;align-items:center;gap:8px;border-top:1px solid var(--red);padding:5px 10px 6px;font-size:12px;color:#666}
+.cm-fb-pv{background:var(--red);color:#fff;font-weight:700;padding:1px 6px;letter-spacing:.5px}
+.cm-fb-off{cursor:default;border-style:dashed}
+.cm-fb-off:hover{background:#fff}
+.cm-fb-off .cm-fb-corpo{opacity:.6}
+.cm-fb-novo{align-items:center;justify-content:center;gap:6px;border-style:dashed;color:var(--red);font:700 13px var(--font);letter-spacing:1px;text-transform:uppercase}
+.cm-fb-novo b{font-size:38px;line-height:1}
+@media (max-width:640px){.cm-fb-grade{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.cm-fb{min-height:128px}.cm-fb-corpo{flex-direction:column;gap:6px}.cm-fb-foto{width:44px;height:44px;flex-basis:44px}.cm-fb-txt b{font-size:15px}}
 /* ================= MENU PRINCIPAL no visual da ficha =================
    folha branca, cabeçalhos pretos com canto cortado, itens em linhas finas vermelhas */
 #menu{background:var(--paper);color:var(--ink);border-right:2px solid var(--red)}
@@ -3589,7 +3618,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
 
   const S = {
     db: null, user: null, assets: null, me: null, mestre: false, escreve: true, erro: null, lento: false,
-    d: { mapa: null, locais: [], npcs: [], pistas: [], rasc: [], missoes: [], aceites: [], rep: {}, perfis: {}, mural: [], coment: [], desc: [], conversas: [], minhaConv: null, msgs: [], den: [], thread: [], fichas: [] },
+    d: { mapa: null, locais: [], npcs: [], pistas: [], rasc: [], missoes: [], aceites: [], rep: {}, perfis: {}, mural: [], coment: [], desc: [], conversas: [], minhaConv: null, msgs: [], den: [], thread: [], fichas: [], fichasM: [] },
     visto: null, nomes: {}, sec: 'mural', aberto: false, carregou: new Set(), conhecidos: null,
     ui: {}, abertosCom: new Set(), abertosDesc: new Set(), rascCom: {}, rascDesc: {}, npcAberto: null, chatNpc: null, threadDe: null, subThread: null,
     sess: null, subsSala: [], lob: { pedFB: {}, papel: null, minhas: [], membrosDe: {}, pedidosTodos: {}, meusPedidos: {}, sessDe: {}, meuMembro: {}, ger: null, busca: null, criando: false, conhecidosLob: null }, subsLob: {}, 
@@ -4629,7 +4658,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   function baseDe(nomeCol) {
     if (nomeCol === 'perfis') return '';
     if (DO_MESTRE.has(nomeCol)) return `mestres/${S.sess.gm}/sessoes/${S.sess.id}/`;
-    if (nomeCol === 'rascunhos') return `data/users/${S.me}/s-${S.sess.id}/`; // privado do mestre
+    if (nomeCol === 'rascunhos' || nomeCol === 'fichasMestre') return `data/users/${S.me}/s-${S.sess.id}/`; // privado do mestre
     return `sessoes/${S.sess.id}/`; // o que os jogadores escrevem (mural, conversas, aceites…)
   }
   const col = (n) => S.db.collection(baseDe(n) + n);
@@ -4757,7 +4786,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   function limparSala() {
     S.subsSala.splice(0).forEach((f) => f());
     fecharThread();
-    S.d = { mapa: null, locais: [], npcs: [], pistas: [], rasc: [], missoes: [], aceites: [], rep: {}, perfis: S.d.perfis || {}, mural: [], coment: [], desc: [], conversas: [], minhaConv: null, msgs: [], den: [], thread: [], fichas: [] };
+    S.d = { mapa: null, locais: [], npcs: [], pistas: [], rasc: [], missoes: [], aceites: [], rep: {}, perfis: S.d.perfis || {}, mural: [], coment: [], desc: [], conversas: [], minhaConv: null, msgs: [], den: [], thread: [], fichas: [], fichasM: [] };
     S.visto = null; S.conhecidos = null; S.carregou = new Set([...S.carregou].filter((k) => k.startsWith('lob:'))); S.lob.membrosSala = {}; S.lento = false;
     S.npcAberto = null; S.chatNpc = null; S.perfilAberto = null; S.verDen = false; S.filtroLocal = ''; S.ui = {};
     for (const k in decifradas) delete decifradas[k];
@@ -4786,7 +4815,8 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     if (FB) sub(col('livros'), (s) => { S.d.livrosMesa = lista(s); avisarLivros(); }, 'livros');
     if (S.mestre) {
       sub(col('rascunhos'), (s) => { S.d.rasc = lista(s); }, 'rasc');
-      sub(col('fichas'), (s) => { S.d.fichas = lista(s); if (R.uid) pintarRemota(); }, 'fichas');
+      sub(col('fichas'), (s) => { S.d.fichas = lista(s); if (R.id) pintarRemota(); }, 'fichas');
+      sub(col('fichasMestre'), (s) => { S.d.fichasM = lista(s); if (R.id) pintarRemota(); }, 'fichasM');
       sub(col('conversas'), (s) => { S.d.conversas = lista(s); }, 'conversas');
       sub(col('denuncias'), (s) => { S.d.den = lista(s); }, 'den');
     } else {
@@ -5308,21 +5338,31 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     tPush = setTimeout(() => { const d = fichaLocal(); for (const sid of Object.keys(PS)) enviarMinha(sid, d); }, 1200);
   };
 
-  // ----- mestre: abre a ficha de um player na própria tela da ficha -----
-  const R = { uid: null, ref: null, unsub: null, base: null, pend: null, t: 0 };
-  const barraR = h('div', { id: 'cm-remota', hidden: true, role: 'region', 'aria-label': 'Ficha do player' });
-  function abrirFichaDe(uid) {
-    if (!S.sess || !S.mestre || !fichaDe(uid)) return;
+  // ----- mestre: abre uma ficha (de player, NPC ou monstro) na própria tela da ficha -----
+  // As de player ficam na sessão (o player recebe as mudanças); as de NPC e monstro são só do mestre.
+  const TIPOS_FICHA = { player: 'Player', npc: 'NPC', monstro: 'Monstro' };
+  const fichaM = (id) => (S.d.fichasM || []).find((f) => f.id === id);
+  const registroDe = (tipo, id) => (tipo === 'player' ? fichaDe(id) : fichaM(id));
+  const refFicha = (tipo, id) => (tipo === 'player' ? S.db.doc(`sessoes/${S.sess.id}/fichas/${id}`) : dok('fichasMestre', id));
+  function tituloFicha(tipo, id) {
+    const d = ((registroDe(tipo, id) || {}).dados) || {};
+    if (tipo === 'player') return d.NOME ? `${d.NOME} (${nome(id)})` : nome(id);
+    return d.NOME || `${TIPOS_FICHA[tipo]} sem nome`;
+  }
+  const R = { tipo: null, id: null, ref: null, unsub: null, base: null, pend: null, t: 0 };
+  const barraR = h('div', { id: 'cm-remota', hidden: true, role: 'region', 'aria-label': 'Ficha aberta pelo mestre' });
+  function abrirFicha(tipo, id, nova) {
+    if (!S.sess || !S.mestre || (!nova && !registroDe(tipo, id))) return;
     sairRemota(false);
-    R.uid = uid; R.base = null;
-    R.ref = S.db.doc(`sessoes/${S.sess.id}/fichas/${uid}`);
+    R.tipo = tipo; R.id = id; R.base = null;
+    R.ref = refFicha(tipo, id);
     window.__fichaRemota = {
       salvou: (d) => { R.pend = limparDados(d); clearTimeout(R.t); R.t = setTimeout(enviarRemota, 600); },
       sair: () => sairRemota(true),
     };
     document.body.classList.add('cm-remota');
     R.unsub = R.ref.onSnapshot((s) => {
-      if (!s.exists) { toast('Ficha', 'Essa ficha ainda não chegou.'); sairRemota(true); return; }
+      if (!s.exists) { if (R.base === null && nova) return; toast('Ficha', 'Essa ficha não existe mais.'); sairRemota(true); return; }
       const d = s.data() || {}, remoto = d.dados || {};
       if (R.base === null) { window.__fichaAplicar(remoto); R.base = assinatura(remoto); return; }
       if (d.por === S.me) { R.base = assinatura(remoto); return; }
@@ -5337,31 +5377,45 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const d = R.pend; R.pend = null;
     if (!d || !R.ref) return;
     R.base = assinatura(d);
-    R.ref.set({ dados: d, ts: agora(), por: S.me, nome: d.NOME || '' }).catch(falhou);
+    const reg = { dados: d, ts: agora(), por: S.me, nome: d.NOME || '' };
+    if (R.tipo !== 'player') reg.tipo = R.tipo;
+    R.ref.set(reg).catch(falhou);
+  }
+  async function novaFicha(tipo) {
+    let ref = null;
+    const ok = await salvar(async () => { ref = await col('fichasMestre').add({ tipo, dados: {}, ts: agora(), por: S.me, nome: '' }); });
+    if (ok && ref && ref.id) abrirFicha(tipo, ref.id, true);
+  }
+  async function apagarFicha(tipo, id) {
+    if (!(await confirmar(`Apagar a ficha “${tituloFicha(tipo, id)}”? Isso não tem volta.`, 'Apagar'))) return;
+    if (R.id === id) sairRemota(true);
+    await salvar(() => dok('fichasMestre', id).delete());
   }
   function sairRemota(restaurar) {
-    if (!R.uid) return;
+    if (!R.id) return;
     clearTimeout(R.t); if (R.pend) enviarRemota();
     if (R.unsub) R.unsub();
-    Object.assign(R, { uid: null, ref: null, unsub: null, base: null, pend: null });
+    Object.assign(R, { tipo: null, id: null, ref: null, unsub: null, base: null, pend: null });
     window.__fichaRemota = null;
     document.body.classList.remove('cm-remota');
     if (restaurar !== false && window.__fichaVoltarLocal) window.__fichaVoltarLocal();
     pintarRemota(); estadoFicha();
   }
   function pintarRemota() {
-    barraR.hidden = !R.uid;
-    if (!R.uid) { barraR.replaceChildren(); return; }
-    const outros = membrosSala().filter((u) => fichaDe(u));
-    const sel = h('select', { class: 'cm-in', 'aria-label': 'Trocar de player', onchange: (e) => abrirFichaDe(e.target.value) },
-      outros.map((u) => h('option', { value: u, selected: u === R.uid, text: nome(u) + (fichaDe(u).dados && fichaDe(u).dados.NOME ? ' · ' + fichaDe(u).dados.NOME : '') })));
-    rc(barraR, h('span', { class: 'cm-rb-tit', text: 'Ficha de' }), sel,
-      h('span', { class: 'cm-rb-txt', text: 'Tudo que você muda vai direto pra ficha do player.' }),
+    barraR.hidden = !R.id;
+    if (!R.id) { barraR.replaceChildren(); return; }
+    const grupos = [['player', membrosSala().filter((u) => fichaDe(u))], ['npc', (S.d.fichasM || []).filter((f) => f.tipo === 'npc').map((f) => f.id)], ['monstro', (S.d.fichasM || []).filter((f) => f.tipo === 'monstro').map((f) => f.id)]];
+    if (!grupos.some(([t, ids]) => t === R.tipo && ids.includes(R.id))) grupos.find(([t]) => t === R.tipo)[1].push(R.id); // ficha nova, ainda chegando
+    const sel = h('select', { class: 'cm-in', 'aria-label': 'Trocar de ficha', onchange: (e) => { const [t, i] = e.target.value.split(':'); abrirFicha(t, i); } },
+      grupos.filter(([, ids]) => ids.length).map(([t, ids]) => h('optgroup', { label: t === 'player' ? 'Players' : t === 'npc' ? 'NPCs' : 'Monstros' },
+        ids.map((i) => h('option', { value: `${t}:${i}`, selected: t === R.tipo && i === R.id, text: tituloFicha(t, i) })))));
+    rc(barraR, h('span', { class: 'cm-rb-tit', text: TIPOS_FICHA[R.tipo] }), sel,
+      h('span', { class: 'cm-rb-txt', text: R.tipo === 'player' ? 'O que você muda vai direto pra ficha do player.' : 'Só você vê esta ficha.' }),
       btn('Voltar às Ferramentas', () => { sairRemota(true); abrir('ferramentas'); }, 'cm-mini cm-pri'));
   }
   // o mestre não tem ficha própria: no lugar das páginas da ficha aparece um aviso
   function estadoFicha() {
-    const sem = S.lob.papel === 'mestre' && !R.uid;
+    const sem = S.lob.papel === 'mestre' && !R.id;
     document.body.classList.toggle('cm-semficha', sem);
     document.querySelectorAll('.sheet.pdfpage .pdflayer').forEach((l) => { l.inert = sem; });
   }
@@ -5379,25 +5433,42 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   SECOES.ferramentas = {
     montar(w) {
       w.append(h('div', { class: 'cm-h' }, h('h2', { text: 'Ferramentas do mestre' })));
-      S.ui.area = h('div', { style: 'display:flex;flex-direction:column;gap:10px' });
+      S.ui.area = h('div', { class: 'cm-fb-area' });
       w.append(S.ui.area);
     },
     atualizar() {
       if (!S.mestre) { rc(S.ui.area, h('div', { class: 'cm-vazio', text: 'Só o mestre vê esta parte.' })); return; }
-      const ids = membrosSala();
-      const lin = (u) => {
-        const f = fichaDe(u), d = (f && f.dados) || {};
-        return h('div', { class: 'cm-linha cm-linha-fixa cm-ficha-player' },
-          h('span', { class: 'cm-linha-txt' }, h('b', null, spanNome(u)),
-            h('small', { text: f ? ([d.NOME, d.PAPEL].filter(Boolean).join(' · ') || 'ficha sem nome') : 'ainda não abriu a ficha depois de entrar na sessão' })),
-          f ? h('span', { class: 'cm-quando', text: (f.por === S.me ? 'você mexeu ' : 'atualizada ') + quando(f.ts) }) : null,
-          btn('Abrir ficha', () => abrirFichaDe(u), 'cm-mini cm-pri', !f));
-      };
-      rc(S.ui.area, h('div', { class: 'cm-faixa', text: 'Fichas dos players' }),
-        h('div', { class: 'cm-txt', text: 'Abra a ficha de qualquer player da mesa e mexa à vontade: vida, equipamento, cyberware, tudo. Cada mudança vai direto pra ficha dele e ele vê na hora.' }),
-        ids.length ? h('div', { class: 'cm-lista' }, ids.map(lin)) : h('div', { class: 'cm-vazio', text: 'Ninguém na mesa ainda.' }));
+      const players = membrosSala();
+      const doTipo = (t) => (S.d.fichasM || []).filter((f) => f.tipo === t).sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
+      const grupo = (tit, itens, vazio) => h('div', { class: 'cm-fb-grupo' },
+        h('div', { class: 'cm-faixa', text: tit }),
+        h('div', { class: 'cm-fb-grade' }, itens.length ? itens : h('div', { class: 'cm-vazio', text: vazio })));
+      rc(S.ui.area,
+        h('div', { class: 'cm-txt', text: 'Toque numa ficha pra abrir e mexer à vontade. A de player muda na ficha dele na hora; as de NPC e monstro só você vê. Por enquanto todas usam o mesmo modelo de ficha.' }),
+        grupo(`Players (${players.length})`, players.map((u) => blocoFicha('player', u)), 'Ninguém na mesa ainda.'),
+        grupo(`NPCs (${doTipo('npc').length})`, [...doTipo('npc').map((f) => blocoFicha('npc', f.id)), blocoNovo('npc')]),
+        grupo(`Monstros (${doTipo('monstro').length})`, [...doTipo('monstro').map((f) => blocoFicha('monstro', f.id)), blocoNovo('monstro')]));
     },
   };
+  function blocoFicha(tipo, id) {
+    const f = registroDe(tipo, id), d = (f && f.dados) || {};
+    const tit = d.NOME || (tipo === 'player' ? nome(id) : `${TIPOS_FICHA[tipo]} sem nome`);
+    const linhas = [tipo === 'player' && d.NOME ? nome(id) : null, d.PAPEL || null].filter(Boolean);
+    const pv = d['PONTOS DE VIDA'];
+    const abrirEste = () => { if (f) abrirFicha(tipo, id); };
+    return h('div', { class: `cm-fb cm-fb-${tipo}` + (f ? '' : ' cm-fb-off'), role: 'button', tabindex: f ? '0' : '-1', 'aria-disabled': f ? null : 'true',
+      onclick: abrirEste, onkeydown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrirEste(); } } },
+      h('div', { class: 'cm-fb-topo' }, h('span', { text: TIPOS_FICHA[tipo] }),
+        tipo !== 'player' ? h('button', { type: 'button', class: 'cm-fb-x', title: 'Apagar ficha', 'aria-label': 'Apagar ficha', text: '×', onclick: (e) => { e.stopPropagation(); apagarFicha(tipo, id); } }) : null),
+      h('div', { class: 'cm-fb-corpo' },
+        h('div', { class: 'cm-fb-foto' }, d.__img ? h('img', { src: d.__img, alt: '' }) : iniciais(tit)),
+        h('div', { class: 'cm-fb-txt' }, h('b', { text: tit }), linhas.map((l) => h('small', { text: l })))),
+      h('div', { class: 'cm-fb-pe' },
+        pv ? h('span', { class: 'cm-fb-pv', text: `PV ${pv}` }) : null,
+        h('span', { text: !f ? 'ainda não abriu a ficha na sessão' : (f.por === S.me ? 'você mexeu ' : 'atualizada ') + quando(f.ts) })));
+  }
+  const blocoNovo = (tipo) => h('button', { type: 'button', class: 'cm-fb cm-fb-novo', onclick: () => novaFicha(tipo) },
+    h('b', { text: '+' }), h('span', { text: tipo === 'npc' ? 'Nova ficha de NPC' : 'Nova ficha de monstro' }));
 
   ligarMenu();
   addEventListener('cm-asset', () => mudou());
