@@ -1211,6 +1211,21 @@ body.cm-vez-ficha .scaler{animation:cmVezBrilho 1.4s ease-in-out infinite}
 .cm-ordem-nome{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
 .cm-ordem-lista .cm-btn{min-height:28px;padding:2px 8px}
 .cm-ordem .cm-row select{flex:1}
+
+/* ---------- combate: aliados e inimigos em blocos ---------- */
+.cm-faixa.cm-faixa-inimigo{background:var(--red)!important;color:#fff!important}
+.cm-cb-vezbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;background:#0d0d0d;color:#fff;padding:10px 12px;border-left:6px solid var(--red)}
+.cm-cb-vezbar .cm-ml-vez-tit small{color:#aaa}
+.cm-cb-vezbar .cm-ml-vez-tit b{font-size:18px}
+.cm-cb-vezbar .cm-btn{background:transparent;color:#fff;border-color:var(--red)}
+.cm-cb-vezbar .cm-btn.cm-pri{background:var(--red)}
+.cm-fb-num{background:#fff;color:#000;font:700 13px var(--font);padding:0 6px;margin-right:6px;letter-spacing:0}
+.cm-fb-topo{justify-content:flex-start;gap:0}
+.cm-fb-topo>span:not(.cm-fb-num){flex:1}
+.cm-fb-lado{background:transparent;border:1px solid rgba(255,255,255,.6);color:#fff;font:700 10px var(--font);letter-spacing:.8px;text-transform:uppercase;padding:2px 6px;cursor:pointer}
+.cm-fb-lado:hover{background:rgba(255,255,255,.2)}
+.cm-fb-w.cm-fb-fora{opacity:.5}
+.cm-fb-w.cm-fb-fora:hover{opacity:.85}
 /* ================= MENU PRINCIPAL no visual da ficha =================
    folha branca, cabeçalhos pretos com canto cortado, itens em linhas finas vermelhas */
 #menu{background:var(--paper);color:var(--ink);border-right:2px solid var(--red)}
@@ -5496,7 +5511,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     if (!d || !R.ref) return;
     R.base = assinatura(d);
     const reg = { dados: d, ts: agora(), por: S.me, nome: d.NOME || '' };
-    if (R.tipo !== 'player') reg.tipo = R.tipo;
+    if (R.tipo !== 'player') { reg.tipo = R.tipo; const f = fichaM(R.id); if (f && f.lado) reg.lado = f.lado; }
     R.ref.set(reg).catch(falhou);
   }
   async function novaFicha(tipo) {
@@ -5546,6 +5561,17 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     return { players, inimigos };
   }
   const PV = 'PONTOS DE VIDA';
+  const ladoDe = (tipo, id) => (tipo === 'player' ? 'aliado' : ((fichaM(id) || {}).lado === 'aliado' ? 'aliado' : 'inimigo'));
+  function porLado() {
+    const { players, inimigos } = todasFichas();
+    const todos = [...players, ...inimigos];
+    return { aliados: todos.filter((x) => ladoDe(x.tipo, x.id) === 'aliado'), inimigos: todos.filter((x) => ladoDe(x.tipo, x.id) === 'inimigo') };
+  }
+  async function trocarLado(id) {
+    const f = fichaM(id); if (!f) return;
+    const { id: _id, ...resto } = f;
+    await salvar(() => dok('fichasMestre', id).set({ ...resto, lado: ladoDe(f.tipo, id) === 'aliado' ? 'inimigo' : 'aliado' }));
+  }
 
   // janela simples por cima de tudo (ficha, livros ou comunidade)
   function modal(tit, conteudo, rodape, cls = '') {
@@ -5604,7 +5630,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     barraR.hidden = !R.id || S.ladoFechado;
     ajustarLado(); estadoVez();
     if (!R.id) { barraR.replaceChildren(); return; }
-    const { players, inimigos } = todasFichas();
+    const lados = porLado();
     const inimigo = R.tipo !== 'player';
     rc(barraR,
       h('div', { class: 'cm-ml-topo' },
@@ -5618,11 +5644,11 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
           btn('Fichas', () => { sairRemota(true); S.ferrVer = 'fichas'; abrir('ferramentas'); }, 'cm-mini')),
         h('div', { class: 'cm-sub cm-ml-dica', text: R.tipo === 'player' ? 'O que você muda vai direto pra ficha do player.' : 'Só você vê esta ficha.' }),
         blocoVez(), blocoContestados(),
-        h('div', { class: 'cm-faixa', text: `Inimigos (${inimigos.length})` }),
-        h('div', { class: 'cm-ml-lista' }, inimigos.length ? inimigos.map((x) => itemFicha(x)) : h('div', { class: 'cm-vazio', text: 'Nenhum ainda.' })),
-        h('div', { class: 'cm-row' }, btn('+ NPC', () => novaFicha('npc'), 'cm-mini'), btn('+ Monstro', () => novaFicha('monstro'), 'cm-mini')),
-        h('div', { class: 'cm-faixa', text: `Players (${players.length})` }),
-        h('div', { class: 'cm-ml-lista' }, players.length ? players.map((x) => itemFicha(x)) : h('div', { class: 'cm-vazio', text: 'Ninguém na mesa.' }))));
+        h('div', { class: 'cm-faixa cm-faixa-aliado', text: `Aliados (${lados.aliados.length})` }),
+        h('div', { class: 'cm-ml-lista' }, lados.aliados.length ? lados.aliados.map((x) => itemFicha(x)) : h('div', { class: 'cm-vazio', text: 'Ninguém ainda.' })),
+        h('div', { class: 'cm-faixa cm-faixa-inimigo', text: `Inimigos (${lados.inimigos.length})` }),
+        h('div', { class: 'cm-ml-lista' }, lados.inimigos.length ? lados.inimigos.map((x) => itemFicha(x)) : h('div', { class: 'cm-vazio', text: 'Nenhum ainda.' })),
+        h('div', { class: 'cm-row' }, btn('+ NPC', () => novaFicha('npc'), 'cm-mini'), btn('+ Monstro', () => novaFicha('monstro'), 'cm-mini'))));
   }
   // brilho na ficha aberta quando é a vez dela
   function estadoVez() { document.body.classList.toggle('cm-vez-ficha', !!R.id && naVez(R.tipo, R.id)); }
@@ -5853,6 +5879,16 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     },
   };
   // ----- menu de combate -----
+  // blocos de um lado: quem está na ordem vem primeiro, com o número; quem não está fica apagado no fim
+  function grupoCombate(tit, lado, itens, o) {
+    const pos = (x) => (o ? o.lista.findIndex((y) => y.tipo === x.tipo && y.id === x.id) : -1);
+    const lista = itens.map((x) => ({ x, n: pos(x) })).sort((a, b) => (a.n < 0) - (b.n < 0) || a.n - b.n);
+    return h('div', { class: 'cm-fb-grupo cm-lado-' + lado },
+      h('div', { class: 'cm-faixa cm-faixa-' + lado, text: `${tit} (${itens.length})` }),
+      h('div', { class: 'cm-fb-grade' }, lista.length
+        ? lista.map(({ x, n }) => blocoFicha(x.tipo, x.id, { num: n >= 0 ? n + 1 : null, fora: !!o && n < 0, lado: true }))
+        : h('div', { class: 'cm-vazio', text: lado === 'aliado' ? 'Os players aparecem aqui quando entram na sessão.' : 'Crie fichas de NPC ou monstro no menu de Fichas.' })));
+  }
   const ESTADO_AT = { pendente: 'esperando resposta', aceito: 'aceitou o dano', contestado: 'contestou', defendeu: 'se defendeu', falhou: 'não se defendeu' };
   function pintarCombate() {
     const o = ordem();
@@ -5865,6 +5901,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
         h('span', { class: 'cm-ml-pv', text: d[PV] ? `PV ${d[PV]}` : 'PV —' }));
     };
     const cont = (S.d.ataques || []).filter((a) => a.estado === 'contestado');
+    const lados = porLado();
     const ult = (S.d.ataques || []).slice(0, 12);
     const resolvidos = (S.d.ataques || []).filter((a) => a.estado !== 'pendente' && a.estado !== 'contestado');
     rc(S.ui.area,
@@ -5877,11 +5914,13 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
           h('span', { class: 'cm-rot', text: `${a.dano} dano` }),
           h('span', { class: 'cm-linha-txt' }, h('b', { text: `${nome(a.alvo)} contestou` }), h('small', { text: `${a.de}${a.texto ? ': ' + corte(a.texto, 60) : ''}` })),
           btn('Decidir', () => decidir(a), 'cm-mini cm-pri'))))) : null,
-      h('div', { class: 'cm-fb-grupo' }, h('div', { class: 'cm-faixa', text: o ? `Ordem de jogada · rodada ${o.rodada || 1}` : 'Ordem de jogada' }),
-        o ? [h('div', { class: 'cm-cb-ordem' }, o.lista.map(linhaOrdem)),
-          h('div', { class: 'cm-row' }, btn('‹ Anterior', () => passarVez(-1), 'cm-mini'), btn('Próxima vez ›', () => passarVez(1), 'cm-pri'),
-            h('span', { style: 'flex:1' }), btn('Encerrar combate', async () => { if (await confirmar('Encerrar o combate e apagar a ordem de jogada?', 'Encerrar')) await salvar(() => dok('mestreEstado', 'ordem').delete()); }, 'cm-mini cm-perigo'))]
-          : h('div', { class: 'cm-vazio', text: 'Monte a ordem pra saber de quem é a vez. A ficha da vez brilha pra você.' })),
+      o ? h('div', { class: 'cm-cb-vezbar' },
+        h('div', { class: 'cm-ml-vez-tit' }, h('small', { text: `Rodada ${o.rodada || 1} · ${o.vez + 1} de ${o.lista.length}` }), h('b', { text: o.lista[o.vez] ? 'Vez de ' + tituloFicha(o.lista[o.vez].tipo, o.lista[o.vez].id) : '' })),
+        h('div', { class: 'cm-row' }, btn('‹ Anterior', () => passarVez(-1), 'cm-mini'), btn('Próxima vez ›', () => passarVez(1), 'cm-pri'),
+          btn('Encerrar combate', async () => { if (await confirmar('Encerrar o combate e apagar a ordem de jogada?', 'Encerrar')) await salvar(() => dok('mestreEstado', 'ordem').delete()); }, 'cm-mini cm-perigo')))
+        : h('div', { class: 'cm-sub', text: 'Monte a ordem de jogada pra numerar as fichas. A ficha da vez brilha pra você.' }),
+      grupoCombate('Aliados', 'aliado', lados.aliados, o),
+      grupoCombate('Inimigos', 'inimigo', lados.inimigos, o),
       h('div', { class: 'cm-fb-grupo' }, h('div', { class: 'cm-faixa', text: 'Últimos ataques' }),
         ult.length ? h('div', { class: 'cm-lista' }, ult.map((a) => h('div', { class: 'cm-linha cm-linha-fixa cm-at-' + a.estado },
           h('span', { class: 'cm-rot', text: a.estado === 'falhou' ? `−${a.danoFinal} PV` : a.estado === 'aceito' ? `−${a.dano} PV` : `${a.dano} dano` }),
@@ -5890,16 +5929,17 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
           : h('div', { class: 'cm-vazio', text: 'Nenhum ataque ainda.' }),
         resolvidos.length ? h('div', { class: 'cm-row' }, btn('Limpar os resolvidos', async () => { await salvar(async () => { for (const a of resolvidos) await dok('ataques', a.id).delete(); }); }, 'cm-mini')) : null));
   }
-  function blocoFicha(tipo, id) {
+  function blocoFicha(tipo, id, op = {}) {
     const f = registroDe(tipo, id), d = (f && f.dados) || {};
     const tit = d.NOME || (tipo === 'player' ? nome(id) : `${TIPOS_FICHA[tipo]} sem nome`);
     const linhas = [tipo === 'player' && d.NOME ? nome(id) : null, d.PAPEL || null].filter(Boolean);
     const pv = d['PONTOS DE VIDA'];
     const abrirEste = () => { if (f) abrirFicha(tipo, id); };
-    return h('div', { class: 'cm-fb-w' + (naVez(tipo, id) ? ' cm-vez' : '') }, h('div', { class: `cm-fb cm-fb-${tipo}` + (f ? '' : ' cm-fb-off'), role: 'button', tabindex: f ? '0' : '-1', 'aria-disabled': f ? null : 'true',
+    return h('div', { class: 'cm-fb-w' + (naVez(tipo, id) ? ' cm-vez' : '') + (op.fora ? ' cm-fb-fora' : '') }, h('div', { class: `cm-fb cm-fb-${tipo}` + (f ? '' : ' cm-fb-off'), role: 'button', tabindex: f ? '0' : '-1', 'aria-disabled': f ? null : 'true',
       onclick: abrirEste, onkeydown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); abrirEste(); } } },
-      h('div', { class: 'cm-fb-topo' }, h('span', { text: TIPOS_FICHA[tipo] }),
-        tipo !== 'player' ? h('button', { type: 'button', class: 'cm-fb-x', title: 'Apagar ficha', 'aria-label': 'Apagar ficha', text: '×', onclick: (e) => { e.stopPropagation(); apagarFicha(tipo, id); } }) : null),
+      h('div', { class: 'cm-fb-topo' }, op.num ? h('span', { class: 'cm-fb-num', text: op.num + 'º' }) : null, h('span', { text: TIPOS_FICHA[tipo] }),
+        op.lado && tipo !== 'player' ? h('button', { type: 'button', class: 'cm-fb-lado', title: 'Trocar de lado', text: ladoDe(tipo, id) === 'aliado' ? '→ inimigo' : '→ aliado', onclick: (e) => { e.stopPropagation(); trocarLado(id); } }) : null,
+        !op.lado && tipo !== 'player' ? h('button', { type: 'button', class: 'cm-fb-x', title: 'Apagar ficha', 'aria-label': 'Apagar ficha', text: '×', onclick: (e) => { e.stopPropagation(); apagarFicha(tipo, id); } }) : null),
       h('div', { class: 'cm-fb-corpo' },
         h('div', { class: 'cm-fb-foto' }, d.__img ? h('img', { src: d.__img, alt: '' }) : iniciais(tit)),
         h('div', { class: 'cm-fb-txt' }, h('b', { text: tit }), linhas.map((l) => h('small', { text: l })))),
