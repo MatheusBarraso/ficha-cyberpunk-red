@@ -109,6 +109,12 @@ Só o **mestre** carrega livros. Os players veem os que o mestre compartilhou co
 - Só quem está na sessão consegue baixar (as regras do banco bloqueiam o resto).
 - **Tirar da mesa** para de compartilhar. **Tirar** / **Apagar cópia** remove o livro do aparelho (as marcações continuam).
 
+## Mestre
+
+- Pra entrar como **Mestre** precisa da senha do mestre (cada conta digita uma vez). Quem confere é o servidor: a senha não fica escrita no site nem neste repositório, só o "hash" dela nas regras.
+- O mestre não tem ficha própria. Na sala da sessão tem a aba **Ferramentas**, com a ficha de cada player da mesa: dá pra abrir e mexer em tudo, e a mudança chega na ficha do player na hora.
+- A ficha do player é enviada pra sessão automaticamente quando ele está numa sessão (só ele e o mestre conseguem ler).
+
 ## A ficha
 
 A ficha, anotações e história continuam salvas **no navegador de cada aparelho**, como antes.

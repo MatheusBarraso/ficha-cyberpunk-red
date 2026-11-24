@@ -1047,6 +1047,29 @@ body.land #fold-paginas{grid-row:2/5}
 .cm-foto:disabled{opacity:.6;cursor:default}
 
 @media print{#comu,.cm-toasts{display:none!important}}
+
+/* ---------- mestre: senha, ficha dos players ---------- */
+.cm-senha .cm-in{max-width:420px}
+#menu .cm-go[hidden]{display:none!important}
+/* o mestre não tem ficha própria: aviso por cima das páginas da ficha */
+.sheet.pdfpage .cm-semficha-box{display:none}
+body.cm-semficha .sheet.pdfpage .cm-semficha-box{--ln:3px;display:flex;position:absolute;inset:0;z-index:40;flex-direction:column;align-items:center;justify-content:center;gap:30px;
+  background:rgba(255,255,255,.96);color:var(--ink);text-align:center;font-family:var(--font);padding:120px 260px}
+.cm-semficha-box .cm-sf-faixa{background:#0d0d0d;color:#fff;font:700 30px var(--font);letter-spacing:3px;text-transform:uppercase;padding:8px 40px;
+  clip-path:polygon(18px 0,100% 0,calc(100% - 18px) 100%,0 100%)}
+.cm-semficha-box b{font:700 64px var(--font);letter-spacing:2px;text-transform:uppercase;color:var(--red)}
+.cm-semficha-box p{font:500 32px/1.4 var(--font);margin:0;max-width:1100px}
+.cm-semficha-box .cm-btn{font-size:28px;padding:14px 40px;min-height:0}
+/* barra de baixo enquanto o mestre mexe na ficha de um player */
+#cm-remota{--ln:2px;position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:90;display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;
+  background:#0d0d0d;color:#fff;border:var(--ln) solid var(--red);padding:8px 14px;font-family:var(--font);max-width:calc(100vw - 100px);box-shadow:0 6px 18px rgba(0,0,0,.4)}
+#cm-remota[hidden]{display:none}
+#cm-remota .cm-rb-tit{font:700 13px var(--font);letter-spacing:1.5px;text-transform:uppercase;color:var(--dark-text)}
+#cm-remota .cm-rb-txt{font-size:13px;color:#ddd}
+#cm-remota select{background:#fff;color:var(--ink);border:2px solid var(--red);font:700 14px var(--font);height:34px;padding:0 6px;max-width:260px}
+body.comu-on #cm-remota{display:none}
+body.cm-remota #btn-clear{display:none!important}
+@media (max-width:640px){#cm-remota .cm-rb-txt{display:none}#cm-remota{max-width:calc(100vw - 24px);bottom:70px}}
 /* ================= MENU PRINCIPAL no visual da ficha =================
    folha branca, cabeçalhos pretos com canto cortado, itens em linhas finas vermelhas */
 #menu{background:var(--paper);color:var(--ink);border-right:2px solid var(--red)}
@@ -1760,10 +1783,12 @@ function collect() {
   return data;
 }
 function save() {
+  if (window.__fichaRemota) { window.__fichaRemota.salvou(collect()); status.textContent = 'Salvo na ficha do player'; return; }
   try {
     localStorage.setItem(KEY, JSON.stringify(collect()));
     const h = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
     status.textContent = `Salvo automaticamente às ${h}`;
+    if (window.__fichaSalvouLocal) window.__fichaSalvouLocal();
   } catch (e) {
     status.textContent = 'Não consegui salvar (armazenamento cheio?)';
   }
@@ -1795,6 +1820,30 @@ function load() {
   }
   status.textContent = 'Ficha carregada — salva automaticamente neste navegador';
 }
+
+// põe na tela os dados de outra ficha (a do player, quando o mestre abre) ou volta pra ficha deste aparelho
+window.__fichaColetar = () => collect();
+window.__fichaAplicar = (data, chaves) => {
+  data = data || {};
+  const so = chaves ? new Set(chaves) : null;
+  if (!so) savedExtra = Object.assign({}, data);
+  else for (const k of so) { if (data[k] === undefined) delete savedExtra[k]; else savedExtra[k] = data[k]; }
+  for (const f of fields) {
+    const k = f.dataset.f;
+    if (so && !so.has(k)) continue;
+    const v = data[k];
+    if (f.type === 'checkbox') f.checked = !!v; else f.value = v == null ? '' : v;
+  }
+  if (!so || so.has('__img')) {
+    const img = $('#portrait-img');
+    if (data.__img) { img.src = data.__img; $('#portrait').classList.add('hasimg'); }
+    else { img.removeAttribute('src'); $('#portrait').classList.remove('hasimg'); }
+  }
+  recalc();
+  if (window.__renderBadges) window.__renderBadges();
+};
+window.__fichaLocal = () => { try { return JSON.parse(localStorage.getItem(KEY) || 'null') || {}; } catch { return {}; } };
+window.__fichaVoltarLocal = () => { window.__fichaAplicar(window.__fichaLocal()); status.textContent = 'Ficha deste aparelho'; };
 
 /* ================= cálculo ATR/BASE ================= */
 let baseCells = null;
@@ -1862,7 +1911,7 @@ function salvarBackup() {
       app: 'cpr-ficha',
       versao: 1,
       salvoEm: new Date().toISOString(),
-      ficha: collect(),
+      ficha: window.__fichaRemota ? window.__fichaLocal() : collect(),
       notas: window.__notesData ? window.__notesData() : null,
       quadro: window.__boardData ? window.__boardData() : null,
       tema: localStorage.getItem(THEME_KEY) || null,
@@ -1883,6 +1932,7 @@ function salvarBackup() {
 }
 
 function carregarBackup(file) {
+  if (window.__fichaRemota) window.__fichaRemota.sair();
   const rd = new FileReader();
   rd.onload = () => {
     try {
@@ -2139,6 +2189,7 @@ $('#backup-file').addEventListener('change', (e) => {
   e.target.value = '';
 });
 $('#btn-clear').addEventListener('click', async () => {
+  if (window.__fichaRemota) return; // o botão some enquanto o mestre edita a ficha de um player
   if (!(await confirmar('Apagar TODA a ficha salva neste navegador? Isso não tem volta.'))) return;
   localStorage.removeItem(KEY);
   savedExtra = {};
@@ -3526,7 +3577,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
    conversam com NPCs (o mestre responde), resolvem pistas e aceitam missões. */
 (function () {
   'use strict';
-  const SECS = [['mural', 'Mural'], ['mapa', 'Mapa'], ['npcs', 'NPCs'], ['pistas', 'Pistas'], ['missoes', 'Missões'], ['perfil', 'Perfis']];
+  const SECS = [['mural', 'Mural'], ['mapa', 'Mapa'], ['npcs', 'NPCs'], ['pistas', 'Pistas'], ['missoes', 'Missões'], ['perfil', 'Perfis'], ['ferramentas', 'Ferramentas']];
   const NOME_SEC = Object.fromEntries(SECS.map((s) => [s[0], s[1]]));
   const TIPOS_PISTA = { documento: 'Documento', cifrada: 'Mensagem cifrada', enigma: 'Enigma', arquivo: 'Arquivo', transmissao: 'Transmissão' };
   const TIPOS_LOCAL = { distrito: 'Distrito', local: 'Ponto de interesse', evento: 'Evento' };
@@ -3538,7 +3589,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
 
   const S = {
     db: null, user: null, assets: null, me: null, mestre: false, escreve: true, erro: null, lento: false,
-    d: { mapa: null, locais: [], npcs: [], pistas: [], rasc: [], missoes: [], aceites: [], rep: {}, perfis: {}, mural: [], coment: [], desc: [], conversas: [], minhaConv: null, msgs: [], den: [], thread: [] },
+    d: { mapa: null, locais: [], npcs: [], pistas: [], rasc: [], missoes: [], aceites: [], rep: {}, perfis: {}, mural: [], coment: [], desc: [], conversas: [], minhaConv: null, msgs: [], den: [], thread: [], fichas: [] },
     visto: null, nomes: {}, sec: 'mural', aberto: false, carregou: new Set(), conhecidos: null,
     ui: {}, abertosCom: new Set(), abertosDesc: new Set(), rascCom: {}, rascDesc: {}, npcAberto: null, chatNpc: null, threadDe: null, subThread: null,
     sess: null, subsSala: [], lob: { pedFB: {}, papel: null, minhas: [], membrosDe: {}, pedidosTodos: {}, meusPedidos: {}, sessDe: {}, meuMembro: {}, ger: null, busca: null, criando: false, conhecidosLob: null }, subsLob: {}, 
@@ -3701,6 +3752,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   function abrir(sec) {
     if (sec && sec !== S.sec) { S.npcAberto = null; S.chatNpc = null; fecharThread(); S.perfilAberto = null; S.verDen = false; }
     S.sec = (sec && SECOES[sec]) ? sec : (SECOES[S.sec] ? S.sec : 'mural');
+    if (S.sec === 'ferramentas' && !S.mestre) S.sec = 'mural';
     S.aberto = true;
     painel.hidden = false;
     document.body.classList.add('comu-on');
@@ -4675,7 +4727,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   let tMudou = 0;
   function mudou() {
     if (tMudou) return;
-    tMudou = requestAnimationFrame(() => { tMudou = 0; preNomes(); verificarLobby(); badges(); atualizar(); pintarTopo(); pintarSino(); });
+    tMudou = requestAnimationFrame(() => { tMudou = 0; preNomes(); verificarLobby(); badges(); atualizar(); pintarTopo(); pintarSino(); sincFichas(); });
   }
   function pintarTopo() {
     avisoLento.hidden = !(S.lento && S.aberto);
@@ -4687,6 +4739,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     sinoBtn.hidden = !S.sess;
     if (!S.sess && !sinoPainel.hidden) alternarSino(false);
     fichaBtn.hidden = !!S.sess || !S.lob.papel;
+    document.querySelectorAll('[data-sec="ferramentas"]').forEach((b) => { b.hidden = !S.mestre; });
     appBtn.hidden = !S.lob.papel && !S.sess;
     if (S.sess) {
       sm.textContent = (S.d.mapa && S.d.mapa.cidade) || 'Comunidade';
@@ -4704,7 +4757,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   function limparSala() {
     S.subsSala.splice(0).forEach((f) => f());
     fecharThread();
-    S.d = { mapa: null, locais: [], npcs: [], pistas: [], rasc: [], missoes: [], aceites: [], rep: {}, perfis: S.d.perfis || {}, mural: [], coment: [], desc: [], conversas: [], minhaConv: null, msgs: [], den: [], thread: [] };
+    S.d = { mapa: null, locais: [], npcs: [], pistas: [], rasc: [], missoes: [], aceites: [], rep: {}, perfis: S.d.perfis || {}, mural: [], coment: [], desc: [], conversas: [], minhaConv: null, msgs: [], den: [], thread: [], fichas: [] };
     S.visto = null; S.conhecidos = null; S.carregou = new Set([...S.carregou].filter((k) => k.startsWith('lob:'))); S.lob.membrosSala = {}; S.lento = false;
     S.npcAberto = null; S.chatNpc = null; S.perfilAberto = null; S.verDen = false; S.filtroLocal = ''; S.ui = {};
     for (const k in decifradas) delete decifradas[k];
@@ -4733,6 +4786,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     if (FB) sub(col('livros'), (s) => { S.d.livrosMesa = lista(s); avisarLivros(); }, 'livros');
     if (S.mestre) {
       sub(col('rascunhos'), (s) => { S.d.rasc = lista(s); }, 'rasc');
+      sub(col('fichas'), (s) => { S.d.fichas = lista(s); if (R.uid) pintarRemota(); }, 'fichas');
       sub(col('conversas'), (s) => { S.d.conversas = lista(s); }, 'conversas');
       sub(col('denuncias'), (s) => { S.d.den = lista(s); }, 'den');
     } else {
@@ -4793,6 +4847,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     abrir('mural');
   }
   function sairSala() {
+    sairRemota(true);
     limparSala();
     S.sess = null; S.mestre = false;
     avisarLivros();
@@ -4884,17 +4939,17 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
       if (window.__cmLogin && (S.db || S.erro)) { rc(L, h('div', { class: 'cm-h' }, h('h2', { text: S.lob.papel === 'mestre' ? 'Mestre' : 'Player' }), btn('Trocar', () => trocarPapel(null), 'cm-mini')), h('div', { class: 'cm-caixa cm-login' }, h('div', { class: 'cm-txt', text: 'Entre com a conta Google pra ' + (S.lob.papel === 'mestre' ? 'criar sessões.' : 'entrar numa sessão.') }), btn('Entrar com Google', () => { try { sessionStorage.setItem('cpr-com-poslogin', S.lob.papel || ''); } catch { /* ok */ } window.__cmLogin(); }, 'cm-pri'))); return; }
       rc(L, h('div', { class: 'cm-vazio', text: S.db ? 'Entre com a sua conta do Claude pra usar a Comunidade.' : 'Conectando…' })); return;
     }
-    rc(L, S.lob.papel === 'mestre' ? (S.lob.ger ? painelSessao() : telaMestre()) : telaPlayer());
+    rc(L, S.lob.papel === 'mestre' ? (S.lob.chave !== true ? telaSenha() : S.lob.ger ? painelSessao() : telaMestre()) : telaPlayer());
     resolverNomes();
   }
-  function trocarPapel(p) { if (p) liberarFicha(); if (S.aberto && !S.db && !S.erro && p) { /* ainda conectando: monta de novo quando chegar */ } S.lob.papel = p; S.lob.ger = null; S.lob.busca = null; try { p ? localStorage.setItem(PAPEL_KEY, p) : localStorage.removeItem(PAPEL_KEY); } catch { /* ok */ } dispatchEvent(new Event('cm-papel')); pintarTopo(); montar(); corpo.scrollTop = 0; }
+  function trocarPapel(p) { sairRemota(true); if (p) liberarFicha(); if (p === 'mestre' && S.lob.chave === undefined) conferirChave(); if (S.aberto && !S.db && !S.erro && p) { /* ainda conectando: monta de novo quando chegar */ } S.lob.papel = p; S.lob.ger = null; S.lob.busca = null; try { p ? localStorage.setItem(PAPEL_KEY, p) : localStorage.removeItem(PAPEL_KEY); } catch { /* ok */ } dispatchEvent(new Event('cm-papel')); estadoFicha(); pintarTopo(); montar(); corpo.scrollTop = 0; }
   function telaEscolha() {
     const cartao = (cls, tit, txt, p) => h('button', { type: 'button', class: `cm-escolha ${cls}`, onclick: () => trocarPapel(p) },
       h('span', { class: 'cm-esc-tit', text: tit }), h('span', { class: 'cm-esc-txt', text: txt }),
       h('span', { class: 'cm-esc-ir', text: S.lob.ultimo === p ? 'Entrar · última vez' : 'Entrar' }));
     return [h('div', { class: 'cm-esc-logo' }, h('span', { text: 'FICHA' }), h('b', { text: 'CYBERPUNK RED' })),
       h('div', { class: 'cm-esc-grid' },
-        cartao('mestre', 'Mestre', 'Cria a sessão, convida a mesa e cuida da cidade.', 'mestre'),
+        cartao('mestre', 'Mestre', 'Cria a sessão, convida a mesa e cuida da cidade. Precisa da senha.', 'mestre'),
         cartao('player', 'Player', 'Entra na sessão com o código do mestre.', 'player'))];
   }
 
@@ -5106,7 +5161,8 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   }
 
   async function iniciar() {
-    document.body.append(painel, toasts);
+    document.body.append(painel, toasts, barraR);
+    caixasSemFicha();
     try { S.lob.ultimo = localStorage.getItem(PAPEL_KEY) || null; } catch { S.lob.ultimo = null; }
     S.lob.papel = null;
     abrir();
@@ -5124,6 +5180,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     if (!S.me) { if (S.aberto) montar(); return; }
     sub(S.db.collection('perfis'), (s) => { S.d.perfis = Object.fromEntries(s.docs.map((d) => [d.id, d.data()])); }, 'perfis', null);
     assinarLobby();
+    conferirChave();
     if (S.aberto) montar();
     mudou();
   }
@@ -5142,6 +5199,205 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const anterior = showPage;
     showPage = function (i) { fechar(); anterior(i); };
   }
+
+  // ===================== SENHA DO MESTRE =====================
+  // Pra entrar como mestre precisa da senha. Quem confere é o servidor (firestore.rules compara o hash
+  // dela); a senha em si não fica no código do site. Cada conta digita uma vez.
+  const normSenha = (t) => norm(t).replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ' ').trim();
+  async function conferirChave() {
+    if (!FB) { S.lob.chave = true; return; }
+    if (!S.me || !S.db) return;
+    try { const d = await S.db.doc('chaves/' + S.me).get(); S.lob.chave = !!d.exists; } catch { S.lob.chave = false; }
+    if (S.aberto && !S.sess) atualizarLobby();
+  }
+  function telaSenha() {
+    const topo = h('div', { class: 'cm-h' }, h('h2', { text: 'Mestre' }), btn('Trocar perfil', () => trocarPapel(null), 'cm-mini'));
+    if (S.lob.chave === undefined) return [topo, h('div', { class: 'cm-vazio', text: 'Conferindo…' })];
+    const inp = h('input', { class: 'cm-in', type: 'password', autocomplete: 'off', placeholder: 'Senha do mestre', 'aria-label': 'Senha do mestre' });
+    const msg = h('div', { class: 'cm-sub' });
+    const ir = async () => {
+      const senha = normSenha(inp.value);
+      if (!senha) { inp.focus(); return; }
+      bt.disabled = true; msg.className = 'cm-sub'; msg.textContent = 'Conferindo…';
+      try {
+        await S.db.doc('chaves/' + S.me).set({ senha, ts: agora() });
+        S.lob.chave = true; toast('Mestre', 'Senha certa. Pode criar e abrir suas sessões.'); atualizarLobby();
+      } catch { bt.disabled = false; msg.className = 'cm-err'; msg.textContent = 'Senha errada.'; inp.select(); }
+    };
+    const bt = btn('Entrar como mestre', ir, 'cm-pri');
+    inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') ir(); });
+    setTimeout(() => inp.focus(), 50);
+    return [topo, h('div', { class: 'cm-caixa cm-login cm-senha' }, h('div', { class: 'cm-faixa', text: 'Senha do mestre' }),
+      h('div', { class: 'cm-txt', text: 'Só quem tem a senha entra como mestre. Você digita uma vez nesta conta.' }), inp, h('div', { class: 'cm-row' }, bt), msg)];
+  }
+
+  // ===================== FICHAS DOS PLAYERS =====================
+  // O player manda a ficha dele pra cada sessão em que está (sessoes/{sid}/fichas/{uid}).
+  // O mestre abre a ficha de qualquer player pelas Ferramentas e mexe à vontade: a mudança chega no player na hora.
+  const IMG_MAX = 600000; // retrato maior que isso não cabe no documento: fica só no aparelho
+  const limparDados = (d) => { const o = { ...(d || {}) }; if (o.__img && o.__img.length > IMG_MAX) delete o.__img; return o; };
+  const nv = (k, v) => (v === undefined || v === null || v === false ? '' : k === '__img' && v ? v.length + ':' + v.slice(-48) : v);
+  const difere = (a, b) => { a = a || {}; b = b || {}; return [...new Set([...Object.keys(a), ...Object.keys(b)])].filter((k) => JSON.stringify(nv(k, a[k])) !== JSON.stringify(nv(k, b[k]))); };
+  const assinatura = (d) => { const o = { ...(d || {}) }; if (o.__img) o.__img = nv('__img', o.__img); return o; };
+  const fichaLocal = () => limparDados(window.__fichaLocal ? window.__fichaLocal() : {});
+  const fichaDe = (u) => (S.d.fichas || []).find((f) => f.id === u);
+
+  // ----- player: manda a própria ficha e recebe o que o mestre mudou -----
+  const PS = {}; // sid -> { ref, base, unsub }
+  let tPush = 0;
+  const BASE_KEY = (sid) => `cpr-ficha-base-${sid}-${S.me}`;
+  function sessoesOk() {
+    if (S.lob.papel !== 'player' || !S.me || !S.db) return [];
+    const out = new Set();
+    for (const [sid, it] of Object.entries(S.lob.meusPedidos || {})) {
+      if (!it || it.cancelado) continue;
+      const ss = S.lob.sessDe[sid];
+      if (ss && acesso(ss, S.lob.meuMembro[sid], it) === 'ok') out.add(sid);
+    }
+    if (S.sess && !S.mestre) out.add(S.sess.id);
+    return [...out];
+  }
+  function sincFichas() {
+    const quer = new Set(sessoesOk());
+    for (const sid of Object.keys(PS)) if (!quer.has(sid)) { PS[sid].unsub(); delete PS[sid]; }
+    for (const sid of quer) {
+      if (PS[sid]) continue;
+      let base = null; try { base = JSON.parse(localStorage.getItem(BASE_KEY(sid)) || 'null'); } catch { /* ok */ }
+      const st = PS[sid] = { ref: S.db.doc(`sessoes/${sid}/fichas/${S.me}`), base, unsub: () => {} };
+      st.unsub = st.ref.onSnapshot((s) => recebeuMinha(sid, s), () => {});
+    }
+  }
+  function guardarBase(sid, d) {
+    const st = PS[sid]; if (!st) return;
+    st.base = assinatura(d);
+    try { localStorage.setItem(BASE_KEY(sid), JSON.stringify(st.base)); } catch { /* cheio: fica só na memória */ }
+  }
+  function recebeuMinha(sid, s) {
+    const st = PS[sid]; if (!st) return;
+    if (!s.exists) { enviarMinha(sid, fichaLocal(), true); return; }
+    const d = s.data() || {}, remoto = d.dados || {};
+    if (d.por && d.por !== S.me) {
+      // o mestre mexeu: vale o que mudou desde a última vez que sincronizei (sem histórico, tudo que difere)
+      const mud = st.base ? difere(st.base, remoto) : difere(fichaLocal(), remoto);
+      if (mud.length) aplicarNaMinha(remoto, mud);
+    }
+    guardarBase(sid, remoto);
+    const local = fichaLocal();
+    if (difere(local, remoto).length) enviarMinha(sid, local); // o que mudei aqui e o servidor ainda não tem
+  }
+  // o campo que a pessoa acabou de digitar não é sobrescrito (o que ela digitou vai pro servidor logo depois)
+  const digitado = {};
+  document.addEventListener('input', (e) => { const k = e.target && e.target.dataset && e.target.dataset.f; if (k) digitado[k] = Date.now(); }, true);
+  const naoDigitando = (ks) => ks.filter((k) => !(digitado[k] > Date.now() - 2500));
+  function aplicarNaMinha(remoto, chaves) {
+    chaves = naoDigitando(chaves);
+    if (!chaves.length || window.__fichaRemota || !window.__fichaAplicar) return;
+    window.__fichaAplicar(remoto, chaves);
+    if (typeof save === 'function') save();
+    toast('Ficha', chaves.length === 1 ? 'O mestre mudou 1 campo da sua ficha.' : `O mestre mudou ${chaves.length} campos da sua ficha.`);
+  }
+  function enviarMinha(sid, dados, forca) {
+    const st = PS[sid]; if (!st) return;
+    if (!forca && st.base && !difere(st.base, dados).length) return;
+    guardarBase(sid, dados);
+    st.ref.set({ dados, ts: agora(), por: S.me, nome: dados.NOME || '' }).catch((e) => { st.base = null; console.warn('ficha', e && e.code); });
+  }
+  window.__fichaSalvouLocal = () => {
+    if (!Object.keys(PS).length) return;
+    clearTimeout(tPush);
+    tPush = setTimeout(() => { const d = fichaLocal(); for (const sid of Object.keys(PS)) enviarMinha(sid, d); }, 1200);
+  };
+
+  // ----- mestre: abre a ficha de um player na própria tela da ficha -----
+  const R = { uid: null, ref: null, unsub: null, base: null, pend: null, t: 0 };
+  const barraR = h('div', { id: 'cm-remota', hidden: true, role: 'region', 'aria-label': 'Ficha do player' });
+  function abrirFichaDe(uid) {
+    if (!S.sess || !S.mestre || !fichaDe(uid)) return;
+    sairRemota(false);
+    R.uid = uid; R.base = null;
+    R.ref = S.db.doc(`sessoes/${S.sess.id}/fichas/${uid}`);
+    window.__fichaRemota = {
+      salvou: (d) => { R.pend = limparDados(d); clearTimeout(R.t); R.t = setTimeout(enviarRemota, 600); },
+      sair: () => sairRemota(true),
+    };
+    document.body.classList.add('cm-remota');
+    R.unsub = R.ref.onSnapshot((s) => {
+      if (!s.exists) { toast('Ficha', 'Essa ficha ainda não chegou.'); sairRemota(true); return; }
+      const d = s.data() || {}, remoto = d.dados || {};
+      if (R.base === null) { window.__fichaAplicar(remoto); R.base = assinatura(remoto); return; }
+      if (d.por === S.me) { R.base = assinatura(remoto); return; }
+      const mud = difere(R.base, remoto); R.base = assinatura(remoto);
+      const ks = naoDigitando(mud); if (ks.length) window.__fichaAplicar(remoto, ks); // o player mexeu ao mesmo tempo
+    }, () => { toast('Ficha', 'Não deu pra abrir essa ficha.'); sairRemota(true); });
+    fechar();
+    if (typeof showPage === 'function') showPage(0);
+    estadoFicha(); pintarRemota();
+  }
+  function enviarRemota() {
+    const d = R.pend; R.pend = null;
+    if (!d || !R.ref) return;
+    R.base = assinatura(d);
+    R.ref.set({ dados: d, ts: agora(), por: S.me, nome: d.NOME || '' }).catch(falhou);
+  }
+  function sairRemota(restaurar) {
+    if (!R.uid) return;
+    clearTimeout(R.t); if (R.pend) enviarRemota();
+    if (R.unsub) R.unsub();
+    Object.assign(R, { uid: null, ref: null, unsub: null, base: null, pend: null });
+    window.__fichaRemota = null;
+    document.body.classList.remove('cm-remota');
+    if (restaurar !== false && window.__fichaVoltarLocal) window.__fichaVoltarLocal();
+    pintarRemota(); estadoFicha();
+  }
+  function pintarRemota() {
+    barraR.hidden = !R.uid;
+    if (!R.uid) { barraR.replaceChildren(); return; }
+    const outros = membrosSala().filter((u) => fichaDe(u));
+    const sel = h('select', { class: 'cm-in', 'aria-label': 'Trocar de player', onchange: (e) => abrirFichaDe(e.target.value) },
+      outros.map((u) => h('option', { value: u, selected: u === R.uid, text: nome(u) + (fichaDe(u).dados && fichaDe(u).dados.NOME ? ' · ' + fichaDe(u).dados.NOME : '') })));
+    rc(barraR, h('span', { class: 'cm-rb-tit', text: 'Ficha de' }), sel,
+      h('span', { class: 'cm-rb-txt', text: 'Tudo que você muda vai direto pra ficha do player.' }),
+      btn('Voltar às Ferramentas', () => { sairRemota(true); abrir('ferramentas'); }, 'cm-mini cm-pri'));
+  }
+  // o mestre não tem ficha própria: no lugar das páginas da ficha aparece um aviso
+  function estadoFicha() {
+    const sem = S.lob.papel === 'mestre' && !R.uid;
+    document.body.classList.toggle('cm-semficha', sem);
+    document.querySelectorAll('.sheet.pdfpage .pdflayer').forEach((l) => { l.inert = sem; });
+  }
+  function caixasSemFicha() {
+    document.querySelectorAll('.sheet.pdfpage').forEach((sh) => {
+      if (sh.querySelector('.cm-semficha-box')) return;
+      sh.append(h('div', { class: 'cm-semficha-box' },
+        h('div', { class: 'cm-sf-faixa', text: 'Mestre' }),
+        h('b', { text: 'O mestre não tem ficha própria' }),
+        h('p', { text: 'Pra ver ou mexer na ficha de um player, abra a sala da sessão e vá em Ferramentas.' }),
+        h('button', { type: 'button', class: 'cm-btn cm-pri', text: 'Abrir as Ferramentas', onclick: () => (S.sess && S.mestre ? abrir('ferramentas') : abrir()) })));
+    });
+  }
+
+  SECOES.ferramentas = {
+    montar(w) {
+      w.append(h('div', { class: 'cm-h' }, h('h2', { text: 'Ferramentas do mestre' })));
+      S.ui.area = h('div', { style: 'display:flex;flex-direction:column;gap:10px' });
+      w.append(S.ui.area);
+    },
+    atualizar() {
+      if (!S.mestre) { rc(S.ui.area, h('div', { class: 'cm-vazio', text: 'Só o mestre vê esta parte.' })); return; }
+      const ids = membrosSala();
+      const lin = (u) => {
+        const f = fichaDe(u), d = (f && f.dados) || {};
+        return h('div', { class: 'cm-linha cm-linha-fixa cm-ficha-player' },
+          h('span', { class: 'cm-linha-txt' }, h('b', null, spanNome(u)),
+            h('small', { text: f ? ([d.NOME, d.PAPEL].filter(Boolean).join(' · ') || 'ficha sem nome') : 'ainda não abriu a ficha depois de entrar na sessão' })),
+          f ? h('span', { class: 'cm-quando', text: (f.por === S.me ? 'você mexeu ' : 'atualizada ') + quando(f.ts) }) : null,
+          btn('Abrir ficha', () => abrirFichaDe(u), 'cm-mini cm-pri', !f));
+      };
+      rc(S.ui.area, h('div', { class: 'cm-faixa', text: 'Fichas dos players' }),
+        h('div', { class: 'cm-txt', text: 'Abra a ficha de qualquer player da mesa e mexa à vontade: vida, equipamento, cyberware, tudo. Cada mudança vai direto pra ficha dele e ele vê na hora.' }),
+        ids.length ? h('div', { class: 'cm-lista' }, ids.map(lin)) : h('div', { class: 'cm-vazio', text: 'Ninguém na mesa ainda.' }));
+    },
+  };
 
   ligarMenu();
   addEventListener('cm-asset', () => mudou());

@@ -24,7 +24,9 @@ service cloud.firestore {
             && get(pPath).data.get('codigo', '') in s.get('codigosAceitos', [])))));
     }
     function membroSala(sid) { return logado() && exists(/databases/$(database)/documents/sessoes/$(sid)) && liberado(gmDe(sid), sid); }
-    function gmSala(sid) { return logado() && exists(/databases/$(database)/documents/sessoes/$(sid)) && gmDe(sid) == eu(); }
+    function gmSala(sid) { return logado() && exists(/databases/$(database)/documents/sessoes/$(sid)) && gmDe(sid) == eu() && mestreOk(); }
+    // quem digitou a senha do mestre (o documento só é criado com a senha certa, ver /chaves)
+    function mestreOk() { return logado() && exists(/databases/$(database)/documents/chaves/$(eu())); }
     function autorNovo() { return request.resource.data.autor == eu(); }
     function autorAtual() { return resource.data.autor == eu(); }
 
@@ -47,6 +49,14 @@ service cloud.firestore {
       allow create: if logado() && request.resource.data.dono == eu() && request.resource.data.url is string && request.resource.data.url.size() < 1000000;
       allow delete: if logado() && resource.data.dono == eu();
     }
+    // senha do mestre: o servidor só aceita gravar se o hash da senha bater. A senha não fica escrita aqui.
+    match /chaves/{uid} {
+      allow get: if logado() && uid == eu();
+      allow create, update: if logado() && uid == eu()
+        && request.resource.data.keys().hasOnly(['senha', 'ts'])
+        && request.resource.data.senha is string && request.resource.data.senha.size() < 200
+        && hashing.sha256(request.resource.data.senha).toHexString().lower() == 'ed899b2d20b035a784cfdbc7d4eaf5673fc9b32dd69744b12be24ef0997c1eba';
+    }
     // tudo que é particular de cada pessoa (rascunhos do mestre, o que já viu)
     match /data/users/{uid}/{resto=**} {
       allow read, write: if logado() && uid == eu();
@@ -55,7 +65,7 @@ service cloud.firestore {
     // ----- códigos de convite: só dá pra abrir sabendo o código (não dá pra listar) -----
     match /convites/{codigo} {
       allow get: if logado();
-      allow create: if logado() && request.resource.data.gm == eu() && codigo.matches('^[A-Z0-9]{4}-[A-Z0-9]{4}$');
+      allow create: if mestreOk() && request.resource.data.gm == eu() && codigo.matches('^[A-Z0-9]{4}-[A-Z0-9]{4}$');
       allow update, delete: if logado() && resource.data.gm == eu();
     }
 
@@ -63,11 +73,11 @@ service cloud.firestore {
     match /mestres/{gm}/sessoes/{sid} {
       allow get: if logado();
       allow list: if logado() && gm == eu();
-      allow write: if logado() && gm == eu() && (request.resource == null || request.resource.data.gm == eu());
+      allow write: if mestreOk() && gm == eu() && (request.resource == null || request.resource.data.gm == eu());
 
       match /membros/{uid} {
         allow read: if logado();
-        allow write: if logado() && gm == eu();
+        allow write: if mestreOk() && gm == eu();
       }
       // cópia do pedido de entrada: o próprio player grava; o mestre lê
       match /pedidos/{uid} {
@@ -77,13 +87,13 @@ service cloud.firestore {
       // mapa, locais, NPCs, pistas, missões, reputação: o mestre escreve, a mesa lê
       match /{col}/{id} {
         allow read: if liberado(gm, sid);
-        allow write: if logado() && gm == eu();
+        allow write: if mestreOk() && gm == eu();
       }
     }
     // marca de qual mestre é cada sessão (usada nas conferências acima)
     match /sessoes/{sid} {
       allow get: if logado();
-      allow create: if logado() && request.resource.data.gm == eu() && exists(sessDoc(eu(), sid));
+      allow create: if mestreOk() && request.resource.data.gm == eu() && exists(sessDoc(eu(), sid));
       allow update, delete: if logado() && resource.data.gm == eu();
 
       // ----- o que a mesa escreve dentro da sala -----
@@ -122,6 +132,13 @@ service cloud.firestore {
           allow create: if logado() && ((uid == eu() && membroSala(sid) && autorNovo() && request.resource.data.de == 'jogador') || gmSala(sid));
           allow delete: if gmSala(sid);
         }
+      }
+      // ficha de cada player: ele manda a dele; o mestre lê todas e pode mexer em qualquer uma
+      match /fichas/{uid} {
+        allow get: if logado() && ((uid == eu() && membroSala(sid)) || gmSala(sid));
+        allow list: if gmSala(sid);
+        allow write: if logado() && request.resource.data.por == eu()
+          && ((uid == eu() && membroSala(sid)) || gmSala(sid));
       }
       // denúncias: o player escreve a dele, só o mestre lê todas
       match /denuncias/{uid} {
