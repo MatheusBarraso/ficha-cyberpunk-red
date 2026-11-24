@@ -14,11 +14,11 @@ window.claude = { use: (n) => window.__fbPronto.then((a) => (a ? a[n] || null : 
 </script>
 <script src="firebase-config.js"></script>
 <script type="module" src="fb.js"></script>
-<meta name="cpr-build" content="5477c0194063">
+<meta name="cpr-build" content="21890d063398">
 <script>
 // avisa quando sai uma versão nova do site (o navegador pode ficar horas com a antiga aberta)
 (function () {
-  var atual = '5477c0194063', avisou = false;
+  var atual = '21890d063398', avisou = false;
   function mostrar() {
     if (avisou || !document.body) return; avisou = true;
     var b = document.createElement('div'); b.id = 'cpr-nova'; b.setAttribute('role', 'alert');
@@ -2274,7 +2274,7 @@ function setMob(on) {
   applyScale();
 }
 // em pé: tela estreita e o celular NÃO está deitado (o teclado aberto não troca o layout)
-const wantMob = () => window.innerWidth <= MOB_MAX && !phoneLandscape();
+const wantMob = () => window.innerWidth <= MOB_MAX && !phoneLandscape() && !(matchMedia('(pointer: fine)').matches && !matchMedia('(pointer: coarse)').matches);
 
 /* ================= persistência ================= */
 const KEY = 'cpr-ficha-v1';
@@ -6818,8 +6818,9 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   const PADRAO = 0.45;
   const stage = document.querySelector('.stage');
   if (!stage || typeof applyScale !== 'function') return;
-  const celular = () => document.body.classList.contains('mob') || document.body.classList.contains('land')
-    || (matchMedia('(pointer: coarse)').matches && Math.min(screen.width, screen.height) <= 600);
+  // só aparelho de toque: no PC com zoom alto a janela fica estreita, mas continua sendo PC
+  const celular = () => matchMedia('(pointer: coarse)').matches && !matchMedia('(pointer: fine)').matches
+    && (document.body.classList.contains('mob') || document.body.classList.contains('land') || Math.min(screen.width, screen.height) <= 600);
   const emPe = () => celular() && !document.body.classList.contains('land');
   const folha = () => document.querySelector('.sheet.active');
   const ehPdf = () => { const s = folha(); return !document.body.classList.contains('cartoes') && !!(s && s.classList.contains('pdfpage')); };
@@ -6898,8 +6899,9 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
 (() => {
   if (typeof applyScale !== 'function') return;
   const NIVEIS = [0.25, 0.33, 0.5, 0.67, 0.75, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5];
-  const celular = () => document.body.classList.contains('mob') || document.body.classList.contains('land')
-    || (matchMedia('(pointer: coarse)').matches && Math.min(screen.width, screen.height) <= 600);
+  // só aparelho de toque: no PC com zoom alto a janela fica estreita, mas continua sendo PC
+  const celular = () => matchMedia('(pointer: coarse)').matches && !matchMedia('(pointer: fine)').matches
+    && (document.body.classList.contains('mob') || document.body.classList.contains('land') || Math.min(screen.width, screen.height) <= 600);
   function zoomNavegador() {
     if (celular() || !window.outerWidth || !window.innerWidth) return 1;
     const r = window.outerWidth / window.innerWidth;
