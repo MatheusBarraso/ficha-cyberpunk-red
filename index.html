@@ -14,11 +14,11 @@ window.claude = { use: (n) => window.__fbPronto.then((a) => (a ? a[n] || null : 
 </script>
 <script src="firebase-config.js"></script>
 <script type="module" src="fb.js"></script>
-<meta name="cpr-build" content="5d703956aec4">
+<meta name="cpr-build" content="459e2c67f478">
 <script>
 // avisa quando sai uma versão nova do site (o navegador pode ficar horas com a antiga aberta)
 (function () {
-  var atual = '5d703956aec4', avisou = false;
+  var atual = '459e2c67f478', avisou = false;
   function mostrar() {
     if (avisou || !document.body) return; avisou = true;
     var b = document.createElement('div'); b.id = 'cpr-nova'; b.setAttribute('role', 'alert');
@@ -4793,6 +4793,15 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
         btn('Todas as sessões e códigos', () => { fecharPops(); irLobby(); }, 'cm-mini cm-largo')));
     }
     out.push(sec('Aparência', chaveEscuro(), coresConta(), destaqueConta()));
+    const copias = Object.keys(NUVEM).filter((n) => { try { return localStorage.getItem('cpr-antes-nuvem-' + n) != null; } catch { return false; } });
+    if (copias.length && S.me) out.push(sec('Cópia deste aparelho', h('div', { class: 'cm-sub', text: 'Quando sua conta trouxe uma versão mais nova, a que estava aqui ficou guardada. Se quiser, volte pra ela (ela passa a ser a da sua conta).' }),
+      h('div', { class: 'cm-row' },
+        btn('Voltar pra cópia', () => {
+          if (!confirm('Trocar o que está aberto pela cópia que estava neste aparelho?')) return;
+          copias.forEach((n) => { try { const v = localStorage.getItem('cpr-antes-nuvem-' + n); localStorage.setItem(NUVEM[n], v); localStorage.removeItem('cpr-antes-nuvem-' + n); } catch { /* ok */ } });
+          nuvemSubir().finally(() => location.reload());
+        }, 'cm-mini'),
+        btn('Apagar cópia', () => { copias.forEach((n) => { try { localStorage.removeItem('cpr-antes-nuvem-' + n); } catch { /* ok */ } }); pintarConta(); }, 'cm-mini'))));
     if (S.me && window.__cmLogout) out.push(sec(null, h('div', { class: 'cm-row' },
       btn('Trocar de conta', () => { try { sessionStorage.setItem('cpr-com-poslogin', S.lob.papel || ''); } catch { /* ok */ } (window.__cmTrocarConta || window.__cmLogout)(); }, 'cm-mini'),
       btn('Sair da conta', () => window.__cmLogout(), 'cm-mini cm-perigo'))));
@@ -6321,12 +6330,123 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     try { const eu = S.me ? await user.me() : null; S.meuNome = (eu && eu.name) || ''; } catch { S.meuNome = ''; }
     pintarConta();
     try { const w = user ? await user.can('data.write') : null; S.escreve = w !== false && !!S.me; } catch { S.escreve = !!S.me; }
-    if (!S.me) { if (S.aberto) montar(); return; }
+    if (!S.me) { rodapeSemConta(); if (S.aberto) montar(); return; }
+    nuvemIniciar();
     sub(S.db.collection('perfis'), (s) => { S.d.perfis = Object.fromEntries(s.docs.map((d) => [d.id, d.data()])); }, 'perfis', null);
     assinarLobby();
     conferirChave();
     if (S.aberto) montar();
     mudou();
+  }
+
+  // ===================== NUVEM: o que é do player também fica na conta dele =====================
+  // ficha, notas, quadro da História e marcações dos livros vão pra data/users/{uid}/salvo-… (só a pessoa lê e grava).
+  // Grava uns segundos depois de cada mudança; ao entrar num aparelho, traz a versão mais nova. A que for substituída
+  // fica guardada no navegador (cpr-antes-nuvem-…), então nada some.
+  const NUVEM = { ficha: 'cpr-ficha-v1', notas: 'cpr-notas-v2', quadro: 'cpr-quadro-v2', livros: 'cpr-livros-v1' };
+  const NUVEM_DE = Object.fromEntries(Object.entries(NUVEM).map(([n, k]) => [k, n]));
+  const NUVEM_META = 'cpr-nuvem-meta', PEDACO = 450000;
+  const N = { ligada: false, meta: {}, timer: 0, desde: 0, sujo: new Set(), subindo: false };
+  let setOrig = Storage.prototype.setItem;
+  const resumo = (txt) => { let h = 0x811c9dc5; for (let i = 0; i < txt.length; i++) { h ^= txt.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36) + '.' + txt.length; };
+  const lerMeta = () => { try { return JSON.parse(localStorage.getItem(NUVEM_META) || '{}') || {}; } catch { return {}; } };
+  const gravarMeta = () => { try { setOrig.call(localStorage, NUVEM_META, JSON.stringify(N.meta)); } catch { /* ok */ } };
+  N.meta = lerMeta();
+  // toda gravação dessas chaves no navegador marca pra subir (reinstala se outro script trocar o setItem depois)
+  function ganchoNuvem() {
+    const atual = Storage.prototype.setItem;
+    if (atual.__nuvem) return;
+    setOrig = atual;
+    const novo = function (k, v) {
+      if (N.travado && this === localStorage && NUVEM_DE[k]) return; // trouxe da conta e vai recarregar: não deixa a tela velha (vazia) gravar por cima
+      atual.call(this, k, v);
+      try { if (this === localStorage && NUVEM_DE[k]) nuvemMudou(NUVEM_DE[k]); } catch { /* ok */ }
+    };
+    novo.__nuvem = true;
+    Storage.prototype.setItem = novo;
+  }
+  ganchoNuvem();
+  function nuvemMudou(nome) {
+    (N.meta[nome] = N.meta[nome] || {}).ts = Date.now(); gravarMeta();
+    N.sujo.add(nome);
+    if (!N.ligada) return;
+    clearTimeout(N.timer);
+    if (!N.desde) N.desde = Date.now();
+    N.timer = setTimeout(nuvemSubir, Date.now() - N.desde > 15000 ? 0 : 2500); // junta as mudanças, mas não segura mais de 15 s
+  }
+  const refNuvem = (id) => S.db.doc(`data/users/${S.me}/salvo-${id}`);
+  function statusNuvem(txt) { const st = document.getElementById('savestatus'); if (st) st.textContent = txt; }
+  async function nuvemSubir() {
+    if (!N.ligada || N.subindo) return;
+    N.subindo = true; N.desde = 0;
+    const nomes = [...N.sujo]; N.sujo.clear();
+    let ok = true;
+    for (const nome of nomes) {
+      try {
+        const txt = localStorage.getItem(NUVEM[nome]);
+        if (txt == null) continue;
+        const h = resumo(txt), m = N.meta[nome] || (N.meta[nome] = {});
+        if (m.h === h) continue; // a nuvem já tem isso
+        const partes = Math.max(1, Math.ceil(txt.length / PEDACO));
+        for (let i = 0; i < partes; i++) await refNuvem(`${nome}-p${i}`).set({ v: txt.slice(i * PEDACO, (i + 1) * PEDACO) });
+        const ts = m.ts || Date.now();
+        await refNuvem(nome).set({ ts, h, partes, tam: txt.length });
+        m.h = h; m.ts = ts; gravarMeta();
+      } catch (e) { ok = false; N.sujo.add(nome); try { console.warn('nuvem falhou', nome, e && (e.message || e.code || e)); } catch { /* ok */ } }
+    }
+    N.subindo = false;
+    const hora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    if (nomes.length) statusNuvem(ok ? `Salvo na sua conta às ${hora}` : 'Salvo só neste aparelho (sem conexão) — tento de novo');
+    if (!ok) { clearTimeout(N.timer); N.timer = setTimeout(nuvemSubir, 20000); }
+    else if (N.sujo.size) N.timer = setTimeout(nuvemSubir, 1500);
+  }
+  async function nuvemBaixar(nome, info) {
+    let txt = '';
+    for (let i = 0; i < (info.partes || 1); i++) { const d = await refNuvem(`${nome}-p${i}`).get(); txt += (d.exists && d.data().v) || ''; }
+    if (resumo(txt) !== info.h) throw new Error('incompleto');
+    return txt;
+  }
+  async function nuvemIniciar() {
+    if (!S.db || !S.me || N.ligada) return;
+    ganchoNuvem();
+    const outraConta = N.meta.uid && N.meta.uid !== S.me;
+    let trouxe = [];
+    for (const [nome, chave] of Object.entries(NUVEM)) {
+      try {
+        const doc = await refNuvem(nome).get();
+        const local = localStorage.getItem(chave);
+        const m = N.meta[nome] || (N.meta[nome] = {});
+        if (outraConta || N.meta.uid !== S.me) delete m.h; // o que estava marcado era de outra conta (ou é a 1ª vez)
+        if (!doc.exists) { if (local != null) N.sujo.add(nome); continue; }
+        const info = doc.data();
+        if (local != null && resumo(local) === info.h) { m.h = info.h; m.ts = Math.max(m.ts || 0, info.ts || 0); continue; }
+        const tsLocal = !outraConta && N.meta.uid === S.me ? (m.ts || 0) : 0;
+        if ((info.ts || 0) > tsLocal || local == null) {
+          const txt = await nuvemBaixar(nome, info);
+          N.travado = true;
+          if (local != null) { try { setOrig.call(localStorage, 'cpr-antes-nuvem-' + nome, local); } catch { /* sem espaço pra cópia */ } }
+          N.travado = false; setOrig.call(localStorage, chave, txt); N.travado = true;
+          m.h = info.h; m.ts = info.ts || Date.now(); trouxe.push(nome);
+        } else N.sujo.add(nome); // o daqui é mais novo: sobe
+      } catch { /* sem conexão: tenta subir depois */ }
+    }
+    N.meta.uid = S.me; gravarMeta();
+    N.ligada = true;
+    if (!trouxe.length) N.travado = false;
+    const rodape = document.querySelector('#menu .m-status');
+    if (rodape) rodape.textContent = 'Tudo fica salvo neste navegador e na sua conta do Google: entrando em outro aparelho, sua ficha vem junto.';
+    if (trouxe.length) {
+      let ja = false; try { ja = sessionStorage.getItem('cpr-nuvem-trouxe') === '1'; } catch { /* ok */ }
+      if (!ja) { try { sessionStorage.setItem('cpr-nuvem-trouxe', '1'); } catch { /* ok */ } N.travado = true; location.reload(); return; }
+      N.travado = false; // já recarregou uma vez: segue sem recarregar de novo
+    }
+    try { if (sessionStorage.getItem('cpr-nuvem-trouxe') === '1') { sessionStorage.removeItem('cpr-nuvem-trouxe'); toast('Sua ficha foi carregada da sua conta', 'A versão que estava neste aparelho ficou guardada como cópia.'); } } catch { /* ok */ }
+    if (N.sujo.size) nuvemSubir();
+  }
+  window.__cprNuvem = () => ({ ligada: N.ligada, meta: N.meta, sujo: [...N.sujo] });
+  function rodapeSemConta() {
+    const rodape = document.querySelector('#menu .m-status');
+    if (rodape) rodape.textContent = 'Tudo fica salvo neste navegador. Entre com o Google (botão da conta) pra guardar sua ficha também na sua conta.';
   }
 
   // ---------- menu principal: seção Comunidade ----------
