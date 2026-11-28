@@ -1,6 +1,9 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-512.png">
+<script>if("serviceWorker" in navigator&&location.protocol==="https:")addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})});</script>
 <script>(function(){var d=document.documentElement;function on(v){d.classList.toggle("cpr-escuro",!!v);try{localStorage.setItem("cpr-escuro",v?"1":"0")}catch(e){}var m=document.querySelector('meta[name="theme-color"]');if(m)m.content=v?"#0b0b0b":"#0d0d0d";try{dispatchEvent(new Event("cpr-escuro"))}catch(e){}}window.__cprEscuro=on;try{if(localStorage.getItem("cpr-escuro")==="1")d.classList.add("cpr-escuro")}catch(e){}try{var a=localStorage.getItem("cpr-destaque");if(/^#[0-9a-f]{6}$/i.test(a||"")){var n=parseInt(a.slice(1),16);d.style.setProperty("--acc2",a);d.style.setProperty("--acc2-ink",(0.299*(n>>16)+0.587*((n>>8)&255)+0.114*(n&255))>150?"#0d0d0d":"#ffffff")}}catch(e){}})()</script>
 <script>document.documentElement.classList.add("cm-gate")</script>
 <meta charset="utf-8">
@@ -14,11 +17,11 @@ window.claude = { use: (n) => window.__fbPronto.then((a) => (a ? a[n] || null : 
 </script>
 <script src="firebase-config.js"></script>
 <script type="module" src="fb.js"></script>
-<meta name="cpr-build" content="851bda2ef84b">
+<meta name="cpr-build" content="7ed2b794f9a7">
 <script>
 // avisa quando sai uma versão nova do site (o navegador pode ficar horas com a antiga aberta)
 (function () {
-  var atual = '851bda2ef84b', avisou = false;
+  var atual = '7ed2b794f9a7', avisou = false;
   function mostrar() {
     if (avisou || !document.body) return; avisou = true;
     var b = document.createElement('div'); b.id = 'cpr-nova'; b.setAttribute('role', 'alert');

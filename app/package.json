@@ -1,0 +1,42 @@
+{
+  "name": "ficha-cyberpunk-red",
+  "productName": "Ficha Cyberpunk RED",
+  "version": "1.0.0",
+  "description": "App da Ficha Cyberpunk RED (abre o site online numa janela própria).",
+  "author": "MatheusBarraso",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win --x64 --publish never"
+  },
+  "devDependencies": {
+    "electron": "^45.0.0",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "io.github.matheusbarraso.fichacpr",
+    "productName": "Ficha Cyberpunk RED",
+    "directories": { "output": "dist", "buildResources": "build" },
+    "files": ["main.js", "offline.html", "build/icon.png"],
+    "win": {
+      "icon": "build/icon.png",
+      "target": [
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Ficha Cyberpunk RED",
+      "artifactName": "Ficha-CPR-Instalador-${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "Ficha-CPR-Portatil-${version}.${ext}"
+    }
+  }
+}

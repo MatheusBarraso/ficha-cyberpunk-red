@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:">
+<title>Ficha Cyberpunk RED — sem conexão</title>
+<style>
+  html,body{height:100%;margin:0;background:#0b0b0d;color:#ece8e2;font:16px/1.5 system-ui,"Segoe UI",sans-serif}
+  main{height:100%;display:grid;place-content:center;text-align:center;padding:24px}
+  h1{margin:0 0 6px;font:italic 800 34px/1.1 system-ui,"Segoe UI",sans-serif;letter-spacing:.5px}
+  h1 b{color:#cf2b21}
+  p{margin:6px 0;opacity:.8;max-width:440px}
+  small{display:block;margin-top:14px;opacity:.45;font-size:12px}
+  button{margin-top:22px;padding:12px 26px;border:0;background:#fcee0a;color:#0d0d0d;font:800 14px system-ui,"Segoe UI",sans-serif;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;
+    clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%)}
+  button:hover{filter:brightness(1.08)}
+</style>
+</head>
+<body>
+<main>
+  <h1>SEM <b>CONEXÃO</b></h1>
+  <p>O app abre a Ficha Cyberpunk RED pela internet. Confira sua conexão e tente de novo.</p>
+  <div><button id="tentar" type="button">Tentar de novo</button></div>
+  <small id="erro"></small>
+</main>
+<script>
+  var e = new URLSearchParams(location.search).get('erro');
+  if (e) document.getElementById('erro').textContent = 'Detalhe: ' + e;
+  document.getElementById('tentar').onclick = function () { location.href = 'https://matheusbarraso.github.io/ficha-cyberpunk-red/'; };
+  addEventListener('online', function () { location.href = 'https://matheusbarraso.github.io/ficha-cyberpunk-red/'; });
+</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+name: App Windows
+
+on:
+  push:
+    branches: [main]
+    paths: ['app/**', '.github/workflows/app-windows.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Instalar Electron
+        run: npm install --no-audit --no-fund
+
+      - name: Montar o instalador
+        run: npx electron-builder --win --x64 --publish never
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+
+      - name: Versão
+        id: v
+        shell: bash
+        run: echo "versao=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Guardar os arquivos
+        uses: actions/upload-artifact@v4
+        with:
+          name: Ficha-CPR-Windows-${{ steps.v.outputs.versao }}
+          path: app/dist/*.exe
+
+      - name: Publicar na página de downloads (Releases)
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          TAG="app-v${{ steps.v.outputs.versao }}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" dist/*.exe --clobber
+          else
+            gh release create "$TAG" dist/*.exe --title "App Windows ${{ steps.v.outputs.versao }}" \
+              --notes "App da Ficha Cyberpunk RED pra Windows. **Instalador**: instala e cria atalhos. **Portátil**: roda direto, sem instalar. Se o Windows avisar \"O Windows protegeu o computador\", clique em Mais informações → Executar assim mesmo."
+          fi
