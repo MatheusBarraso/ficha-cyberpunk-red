@@ -20,7 +20,7 @@ document.addEventListener('change', (e) => {
 $('#btn-menu').addEventListener('click', () => openMenu(true));
 $('#btn-menu-close').addEventListener('click', () => openMenu(false));
 $('#backdrop').addEventListener('click', () => openMenu(false));
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') openMenu(false); });
+aoEsc(40, () => { if (!$('#menu').classList.contains('open')) return false; openMenu(false); return true; });
 
 // seções recolhíveis do menu
 const FOLD_KEY = 'cpr-menu-fold';
@@ -74,7 +74,7 @@ $('#zoom-fab').addEventListener('click', (e) => {
 document.addEventListener('click', (e) => {
   if (!e.target.closest('#zoom-pop') && !e.target.closest('#zoom-fab')) $('#zoom-pop').classList.remove('open');
 });
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') $('#zoom-pop').classList.remove('open'); });
+aoEsc(50, () => { const z = $('#zoom-pop'); if (!z.classList.contains('open')) return false; z.classList.remove('open'); return true; });
 
 $('#z-in').addEventListener('click', () => {
   if (zoomMode === 'fit') { const vw = document.documentElement.clientWidth - 16; zoomVal = Math.min(vw, 1920) / 1920; }

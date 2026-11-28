@@ -21,5 +21,5 @@
       op('combate', 'Combate', v ? `Rodada ${o.rodada || 1} · vez de ${tituloFicha(v.tipo, v.id)}` : 'Ordem de jogada, ataques e alertas', cont ? h('b', { class: 'cm-n', text: cont }) : null));
   }
   document.addEventListener('click', () => { if (!ferrPainel.hidden) alternarFerr(false); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !ferrPainel.hidden) alternarFerr(false); });
+  aoEsc(55, () => { if (ferrPainel.hidden) return false; alternarFerr(false); return true; });
 

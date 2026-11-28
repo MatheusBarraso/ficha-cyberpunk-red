@@ -58,7 +58,7 @@ function openQedit(f) {
   });
   ctl.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && ctl.tagName === 'INPUT') { e.preventDefault(); qeMove(1); }
-    else if (e.key === 'Escape') closeQedit();
+    else if (e.key === 'Escape') { e.preventDefault(); closeQedit(); }
   });
   box.append(ctl);
   $('#qe-lbl').textContent = host.dataset.label || f.dataset.f;

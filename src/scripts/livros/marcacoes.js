@@ -254,7 +254,7 @@ function setupLivros() {
   $('#lvb-menos').addEventListener('click', () => mudarZoom(-1));
   $('#lvb-mais').addEventListener('click', () => mudarZoom(1));
   view.addEventListener('scroll', () => { if (lendo) setTimeout(lvbPg, 160); });
-  document.addEventListener('keydown', (e) => { if (lendo && e.key === 'Escape' && !$('#menu').classList.contains('open')) fecharDrawer(); });
+  aoEsc(30, () => { if (!lendo || !drawer.classList.contains('aberta')) return false; fecharDrawer(); return true; });
   aplicarZoom();
 
   $('#lv-book').addEventListener('change', () => openBook($('#lv-book').value, 1));
@@ -476,7 +476,7 @@ function setupLivros() {
     }
     stopLinkMode();
   }, true);
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') stopLinkMode(); });
+  aoEsc(70, () => { if (!linkModeFor) return false; stopLinkMode(); return true; });
 
   // --- modal de edição ---
   function openModal(id) {
@@ -520,7 +520,7 @@ function setupLivros() {
   $('#bk-close').addEventListener('click', closeModal);
   $('#bkmodal').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeModal(); });
   $('#bkmodal').addEventListener('keydown', (e) => { if (e.key !== 'Escape') e.stopPropagation(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  aoEsc(80, () => { if (!$('#bkmodal').classList.contains('open')) return false; closeModal(); return true; });
 
   window.__livrosData = () => marks;
   window.__renderBadges = renderBadges;

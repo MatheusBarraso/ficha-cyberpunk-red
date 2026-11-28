@@ -31,7 +31,7 @@
     const fecharM = () => fundo.remove();
     if (!/cm-modal-fixo/.test(cls)) {
       fundo.addEventListener('click', (e) => { if (e.target === fundo) fecharM(); });
-      fundo.addEventListener('keydown', (e) => { if (e.key === 'Escape') fecharM(); });
+      fundo.addEventListener('keydown', (e) => { if (e.key === 'Escape') { e.preventDefault(); fecharM(); } });
     }
     return { fechar: fecharM, el: caixa };
   }

@@ -17,11 +17,11 @@ window.claude = { use: (n) => window.__fbPronto.then((a) => (a ? a[n] || null : 
 </script>
 <script src="firebase-config.js"></script>
 <script type="module" src="fb.js"></script>
-<meta name="cpr-build" content="8668bd60c00a">
+<meta name="cpr-build" content="435c17743ab1">
 <script>
 // avisa quando sai uma versão nova do site (o navegador pode ficar horas com a antiga aberta)
 (function () {
-  var atual = '8668bd60c00a', avisou = false;
+  var atual = '435c17743ab1', avisou = false;
   function mostrar() {
     if (avisou || !document.body) return; avisou = true;
     var b = document.createElement('div'); b.id = 'cpr-nova'; b.setAttribute('role', 'alert');
@@ -2168,6 +2168,22 @@ function recalc() {
   }
 }
 
+/* ================= tecla Esc: fecha só o que está por cima =================
+   Cada parte que abre alguma coisa por cima da página (menu, gaveta, balão, painel…) se registra com
+   aoEsc(prioridade, fechar): `fechar` fecha e devolve true se havia algo aberto. Um Esc fecha só a
+   camada de maior prioridade que estava aberta. Janelas modais (confirmar, janelas do dossiê, janelas da
+   Comunidade) tratam o próprio Esc e marcam o evento, então nada por baixo fecha junto.
+   Prioridades: 80 janela de página salva · 70 modo de vincular · 60 balões da Comunidade (sino, conta)
+   · 55 painel Ferramentas · 50 controles de zoom · 40 menu · 30 gaveta do leitor. */
+const camadasEsc = [];
+function aoEsc(prioridade, fechar) {
+  camadasEsc.push({ prioridade, fechar });
+  camadasEsc.sort((a, b) => b.prioridade - a.prioridade);
+}
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape' || e.defaultPrevented) return;
+  for (const c of camadasEsc) if (c.fechar()) { e.preventDefault(); return; }
+});
 /* ================= zoom da ficha =================
    A ficha (desenho de 1920×1080) fica encaixada na tela ('fit') ou num zoom escolhido ('manual').
    No PC o encaixe leva em conta o zoom do navegador (Ctrl + / Ctrl −): com 125% a ficha fica 25% maior e rola.
@@ -2386,7 +2402,7 @@ function openQedit(f) {
   });
   ctl.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && ctl.tagName === 'INPUT') { e.preventDefault(); qeMove(1); }
-    else if (e.key === 'Escape') closeQedit();
+    else if (e.key === 'Escape') { e.preventDefault(); closeQedit(); }
   });
   box.append(ctl);
   $('#qe-lbl').textContent = host.dataset.label || f.dataset.f;
@@ -2444,7 +2460,7 @@ document.addEventListener('change', (e) => {
 $('#btn-menu').addEventListener('click', () => openMenu(true));
 $('#btn-menu-close').addEventListener('click', () => openMenu(false));
 $('#backdrop').addEventListener('click', () => openMenu(false));
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') openMenu(false); });
+aoEsc(40, () => { if (!$('#menu').classList.contains('open')) return false; openMenu(false); return true; });
 
 // seções recolhíveis do menu
 const FOLD_KEY = 'cpr-menu-fold';
@@ -2498,7 +2514,7 @@ $('#zoom-fab').addEventListener('click', (e) => {
 document.addEventListener('click', (e) => {
   if (!e.target.closest('#zoom-pop') && !e.target.closest('#zoom-fab')) $('#zoom-pop').classList.remove('open');
 });
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') $('#zoom-pop').classList.remove('open'); });
+aoEsc(50, () => { const z = $('#zoom-pop'); if (!z.classList.contains('open')) return false; z.classList.remove('open'); return true; });
 
 $('#z-in').addEventListener('click', () => {
   if (zoomMode === 'fit') { const vw = document.documentElement.clientWidth - 16; zoomVal = Math.min(vw, 1920) / 1920; }
@@ -3503,7 +3519,7 @@ function setupLivros() {
   $('#lvb-menos').addEventListener('click', () => mudarZoom(-1));
   $('#lvb-mais').addEventListener('click', () => mudarZoom(1));
   view.addEventListener('scroll', () => { if (lendo) setTimeout(lvbPg, 160); });
-  document.addEventListener('keydown', (e) => { if (lendo && e.key === 'Escape' && !$('#menu').classList.contains('open')) fecharDrawer(); });
+  aoEsc(30, () => { if (!lendo || !drawer.classList.contains('aberta')) return false; fecharDrawer(); return true; });
   aplicarZoom();
 
   $('#lv-book').addEventListener('change', () => openBook($('#lv-book').value, 1));
@@ -3725,7 +3741,7 @@ function setupLivros() {
     }
     stopLinkMode();
   }, true);
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') stopLinkMode(); });
+  aoEsc(70, () => { if (!linkModeFor) return false; stopLinkMode(); return true; });
 
   // --- modal de edição ---
   function openModal(id) {
@@ -3769,7 +3785,7 @@ function setupLivros() {
   $('#bk-close').addEventListener('click', closeModal);
   $('#bkmodal').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeModal(); });
   $('#bkmodal').addEventListener('keydown', (e) => { if (e.key !== 'Escape') e.stopPropagation(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  aoEsc(80, () => { if (!$('#bkmodal').classList.contains('open')) return false; closeModal(); return true; });
 
   window.__livrosData = () => marks;
   window.__renderBadges = renderBadges;
@@ -4095,7 +4111,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   let seguraPops = false; // clique de mentira nos botões do menu ☰ (cores) não fecha o painel
   const fecharPops = () => { if (seguraPops) return; if (!sinoPainel.hidden) alternarSino(false); if (!contaPainel.hidden) alternarConta(false); };
   document.addEventListener('click', fecharPops);
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') fecharPops(); });
+  aoEsc(60, () => { if (sinoPainel.hidden && contaPainel.hidden) return false; fecharPops(); return true; });
   addEventListener('resize', fecharPops);
 
   function abrir(sec) {
@@ -6241,7 +6257,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const fecharM = () => fundo.remove();
     if (!/cm-modal-fixo/.test(cls)) {
       fundo.addEventListener('click', (e) => { if (e.target === fundo) fecharM(); });
-      fundo.addEventListener('keydown', (e) => { if (e.key === 'Escape') fecharM(); });
+      fundo.addEventListener('keydown', (e) => { if (e.key === 'Escape') { e.preventDefault(); fecharM(); } });
     }
     return { fechar: fecharM, el: caixa };
   }
@@ -6551,7 +6567,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
       op('combate', 'Combate', v ? `Rodada ${o.rodada || 1} · vez de ${tituloFicha(v.tipo, v.id)}` : 'Ordem de jogada, ataques e alertas', cont ? h('b', { class: 'cm-n', text: cont }) : null));
   }
   document.addEventListener('click', () => { if (!ferrPainel.hidden) alternarFerr(false); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !ferrPainel.hidden) alternarFerr(false); });
+  aoEsc(55, () => { if (ferrPainel.hidden) return false; alternarFerr(false); return true; });
 
   // ----- ataque: o mestre manda, o player aceita ou contesta -----
   // 1º passo: mirar no player (um toque) — ou marcar vários; 2º passo: o dano

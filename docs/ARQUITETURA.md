@@ -54,6 +54,8 @@ Herança do jeito que o site cresceu — a refatoração vai trocando isso por m
   `__livro*`; o modo escuro, `__cprEscuro`; o Firebase, `__cmLogin`, `__cmLogout`, `__cmConta`.
 - **Troca de página**: `showPage(i)` avisa antes (`sk:trocando-pagina`) e depois (`sk:pagina`), com
   `{ detail: { pagina } }`. Quem precisa reagir escuta o evento — não embrulhe a função.
+- **Tecla Esc**: quem abre algo por cima registra `aoEsc(prioridade, fechar)` (ver `nucleo/esc.js`); um Esc
+  fecha só a camada aberta de maior prioridade. Janelas modais tratam o próprio Esc e marcam o evento.
 - **Eventos**: `cm-fechou` (Comunidade fechou), `cm-asset` (imagem chegou), `livros-mudaram`,
   `cpr-escuro` (tema trocou), `cm-gate-fim` (Comunidade liberou a ficha).
 

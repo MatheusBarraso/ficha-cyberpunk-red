@@ -35,7 +35,7 @@
   let seguraPops = false; // clique de mentira nos botões do menu ☰ (cores) não fecha o painel
   const fecharPops = () => { if (seguraPops) return; if (!sinoPainel.hidden) alternarSino(false); if (!contaPainel.hidden) alternarConta(false); };
   document.addEventListener('click', fecharPops);
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') fecharPops(); });
+  aoEsc(60, () => { if (sinoPainel.hidden && contaPainel.hidden) return false; fecharPops(); return true; });
   addEventListener('resize', fecharPops);
 
   function abrir(sec) {

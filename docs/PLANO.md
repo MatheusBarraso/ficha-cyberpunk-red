@@ -44,7 +44,7 @@ Decisões do Matheus (28/11/2026):
 - [ ] Tirar a limpeza da v67 depois que todo mundo tiver entrado uma vez (fim de dezembro).
 - [x] Troca de página por eventos (`sk:trocando-pagina` / `sk:pagina`) em vez de 4 embrulhos em `showPage` — com teste (`teste_troca_pagina.py`).
 - [x] Um zoom só: `nucleo/zoom.js` (encaixe, zoom do navegador, `applyScale`); `nitidez.js` ficou só com as interações. Limite mínimo unificado em 20% (os botões do menu paravam em 30%).
-- [ ] Um controle de Esc (fecha só a camada de cima: modal → gaveta → menu).
+- [x] Um controle de Esc (`nucleo/esc.js`): fecha só a camada de cima. Antes um Esc fechava, por exemplo, a janela de página salva e a gaveta do leitor juntas — com teste (`teste_tecla_esc.py`).
 - [ ] Juntar CSS repetido; cores do modo escuro por variáveis onde der.
 - [ ] Padronizar nomes e cabeçalhos dos arquivos.
 
