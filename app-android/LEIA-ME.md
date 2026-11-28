@@ -14,10 +14,11 @@ usuário `matheusbarraso.github.io` — o mesmo do redirecionamento do endereço
 (ver `docs/endereco-antigo/`). Sem ele, o app funciona, só que com uma barrinha de endereço em cima.
 
 ## Chave de assinar
-O APK é assinado com uma chave que fica **só** nos segredos do repositório (Settings → Secrets and variables →
-Actions): `ANDROID_KEYSTORE` (o arquivo da chave em base64) e `ANDROID_SENHA`. Toda versão precisa sair com a
-mesma chave, senão o Android não instala por cima. Guarde uma cópia da chave fora do GitHub.
-Sem os segredos, a ação monta só um APK de teste (em Actions → a execução → Artifacts), sem Release.
+Toda versão sai assinada com a mesma chave (senão o Android não instala por cima). Ela está em `chave/`
+(arquivo e senha) — **pública**, por escolha: o GitHub não deixou criar segredos pela automação. O risco é
+alguém montar um APK falso assinado como Sketcher. Pra fechar isso: crie os segredos `ANDROID_KEYSTORE`
+(o `chave/sketcher.jks` em base64) e `ANDROID_SENHA` em Settings → Secrets and variables → Actions — a ação
+passa a usar eles — e depois apague a pasta `chave/`. (Trocar de chave obriga quem já instalou a reinstalar.)
 
 ## Versão nova do app
 Só quando mudar algo desta pasta: suba `versionCode` (+1) e `versionName` em `app/build.gradle` e envie.

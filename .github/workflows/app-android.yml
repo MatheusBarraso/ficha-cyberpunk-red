@@ -27,32 +27,26 @@ jobs:
         with:
           gradle-version: '8.11.1'
 
-      # a chave de assinar fica nos segredos do repositório; sem ela, sai só um APK de teste (sem Release)
+      # a chave de assinar: dos segredos do repositório, se existirem; senão, a que está em app-android/chave/
+      # (escolha do Matheus: pública, então qualquer pessoa conseguiria assinar um APK como se fosse o Sketcher)
       - name: Chave de assinar
-        id: chave
         env:
           ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+          ANDROID_SENHA_SEGREDO: ${{ secrets.ANDROID_SENHA }}
         run: |
           if [ -n "$ANDROID_KEYSTORE" ]; then
             echo "$ANDROID_KEYSTORE" | base64 -d > "$RUNNER_TEMP/sketcher.jks"
-            echo "tem=1" >> "$GITHUB_OUTPUT"
+            echo "ANDROID_SENHA=$ANDROID_SENHA_SEGREDO" >> "$GITHUB_ENV"
           else
-            echo "::warning::Sem os segredos ANDROID_KEYSTORE e ANDROID_SENHA: o APK sai só de teste, sem Release."
-            echo "tem=0" >> "$GITHUB_OUTPUT"
+            cp chave/sketcher.jks "$RUNNER_TEMP/sketcher.jks"
+            echo "ANDROID_SENHA=$(tr -d '\n' < chave/senha.txt)" >> "$GITHUB_ENV"
           fi
+          echo "ANDROID_KEYSTORE_ARQUIVO=$RUNNER_TEMP/sketcher.jks" >> "$GITHUB_ENV"
 
       - name: Montar o APK
-        env:
-          ANDROID_KEYSTORE_ARQUIVO: ${{ runner.temp }}/sketcher.jks
-          ANDROID_SENHA: ${{ secrets.ANDROID_SENHA }}
         run: |
-          if [ "${{ steps.chave.outputs.tem }}" = "1" ]; then
-            gradle --no-daemon assembleRelease
-            mkdir -p saida && cp app/build/outputs/apk/release/app-release.apk "saida/Sketcher-Android-$(grep -oP "versionName '\K[^']+" app/build.gradle).apk"
-          else
-            gradle --no-daemon assembleDebug
-            mkdir -p saida && cp app/build/outputs/apk/debug/app-debug.apk saida/Sketcher-Android-teste.apk
-          fi
+          gradle --no-daemon assembleRelease
+          mkdir -p saida && cp app/build/outputs/apk/release/app-release.apk "saida/Sketcher-Android-$(grep -oP "versionName '\K[^']+" app/build.gradle).apk"
 
       - name: Versão
         id: v
@@ -65,7 +59,6 @@ jobs:
           path: app-android/saida/*.apk
 
       - name: Publicar na página de downloads (Releases)
-        if: steps.chave.outputs.tem == '1'
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
