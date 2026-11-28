@@ -1,0 +1,23 @@
+:root{
+  --red:#cf2b21;
+  --red-dark:#a81f17;
+  --ink:#0d0d0d;
+  --paper:#ffffff;
+  --bg:#1a1a1a;
+  --tint:color-mix(in srgb,var(--red) 6%,#fff);
+  --tint2:color-mix(in srgb,var(--red) 10%,#fff);
+  --tint3:color-mix(in srgb,var(--red) 25%,#fff);
+  --dark-line:color-mix(in srgb,var(--red) 55%,#000);
+  --dark-bg:color-mix(in srgb,var(--red) 30%,#000);
+  --dark-text:color-mix(in srgb,var(--red) 45%,#fff);
+  --font:"Ficha Sans","Source Sans 3","Myriad Pro","Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scrollbar-color:var(--red) var(--bg)}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+:focus-visible{outline:3px solid var(--red);outline-offset:1px}
+button{cursor:pointer;font-family:var(--font)}
+input,textarea{font-family:var(--font);color:var(--ink)}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{-moz-appearance:textfield;appearance:textfield}
+

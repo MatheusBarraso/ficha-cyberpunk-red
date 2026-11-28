@@ -1,0 +1,2 @@
+/* letras da ficha como texto de verdade (nítidas em qualquer tamanho) */
+.pdfart text{font-family:var(--font);letter-spacing:0;font-kerning:none;-webkit-user-select:none;user-select:none}

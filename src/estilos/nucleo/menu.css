@@ -1,0 +1,54 @@
+/* ============ menu sanfona ============ */
+#backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:90;opacity:0;pointer-events:none;transition:opacity .2s}
+#backdrop.open{opacity:1;pointer-events:auto}
+#menu{position:fixed;top:0;left:0;bottom:0;width:320px;max-width:88vw;z-index:100;background:#111;
+  border-right:3px solid var(--red);transform:translateX(-105%);transition:transform .22s ease;
+  display:flex;flex-direction:column;color:#fff;overflow-y:auto}
+#menu.open{transform:translateX(0)}
+#menu .m-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;
+  border-bottom:2px solid #333;font-weight:700;font-size:18px;text-transform:uppercase;letter-spacing:1px}
+#menu .m-head button{background:transparent;border:2px solid #555;color:#ddd;width:36px;height:36px;font-size:16px}
+#menu .m-head button:hover{border-color:var(--red);color:#fff}
+#menu .m-sec{padding:14px 16px 6px;font-size:13px;font-weight:700;letter-spacing:1.5px;color:#999;text-transform:uppercase}
+#menu .m-sec.fold{width:100%;display:flex;align-items:center;justify-content:space-between;cursor:pointer;
+  background:none;border:none;font-family:inherit;text-align:left;padding:14px 16px 10px}
+#menu .m-sec.fold:hover{color:#fff}
+#menu .m-sec .chev{transition:transform .18s;font-size:14px}
+#menu .m-sec.closed .chev{transform:rotate(-90deg)}
+.fold-body.closed{display:none}
+#menu .cfg-txt{padding:8px 16px 4px;font-size:13px;color:#999;line-height:1.4}
+#menu .cfg-swatches{display:flex;flex-wrap:wrap;gap:8px;padding:8px 16px 12px}
+#menu .csw{width:36px;height:36px;border:2px solid #555;background:var(--c);cursor:pointer;padding:0}
+#menu .csw:hover{border-color:#fff}
+#menu .csw.sel{border-color:#fff;box-shadow:0 0 0 3px var(--red)}
+#menu .csw-custom{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;
+  background:conic-gradient(#f55,#ff5,#5f5,#5ff,#55f,#f5f,#f55)}
+#menu .csw-custom input{position:absolute;inset:-8px;opacity:0;cursor:pointer}
+#menu .csw-custom::after{content:'+';color:#fff;font-weight:700;font-size:20px;text-shadow:0 0 4px #000;pointer-events:none}
+#menu .m-item{display:block;width:calc(100% - 24px);margin:4px 12px;padding:12px 14px;text-align:left;
+  background:transparent;border:2px solid #444;color:#fff;font-size:16px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.5px;transition:border-color .15s,background .15s}
+#menu .m-item:hover{border-color:var(--red)}
+#menu .m-item.active{background:var(--red);border-color:var(--red)}
+#menu .m-item.danger{border-color:var(--dark-line);color:var(--dark-text)}
+#menu .m-item.danger:hover{background:var(--dark-bg);border-color:var(--red)}
+/* lupa flutuante de zoom (só com o menu fechado) */
+.zoomfab{position:fixed;right:18px;bottom:18px;width:62px;height:62px;border-radius:50%;background:#111;
+  border:3px solid var(--red);color:#fff;display:flex;align-items:center;justify-content:center;
+  z-index:95;box-shadow:0 4px 18px rgba(0,0,0,.5);transition:transform .15s,opacity .2s}
+.zoomfab svg{width:28px;height:28px}
+.zoomfab:hover{transform:scale(1.08)}
+.zoomfab.hide{opacity:0;pointer-events:none}
+.zoompop{position:fixed;right:18px;bottom:90px;background:#111;border:3px solid var(--red);padding:12px;
+  display:none;flex-direction:column;gap:10px;z-index:95;min-width:220px}
+.zoompop.open{display:flex}
+.zoompop .zpct{color:#fff;font-weight:700;text-align:center;font-size:18px;letter-spacing:1px}
+.zoompop .zrow{display:flex;gap:8px}
+.zoompop button{background:#1c1c1c;border:2px solid var(--red);color:#fff;font-size:20px;font-weight:700;padding:8px 0;flex:1}
+.zoompop button:hover{background:var(--red)}
+.zoompop .zfit{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+#menu .m-body{flex:1 1 auto;overflow-y:auto;padding-bottom:10px}
+#menu .m-status{flex:0 0 auto;padding:14px 16px;border-top:2px solid #333;color:#999;font-size:13px;line-height:1.4;background:#111}
+.rotatehint{display:none;background:var(--red);color:#fff;text-align:center;padding:8px 12px;font-weight:700;font-size:14px}
+
+

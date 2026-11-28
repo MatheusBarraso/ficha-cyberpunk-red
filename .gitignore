@@ -1,0 +1,10 @@
+# testes
+tests/saida/
+tests/visual-base/
+__pycache__/
+# app do Windows
+app/node_modules/
+app/dist/
+# sistema
+.DS_Store
+Thumbs.db

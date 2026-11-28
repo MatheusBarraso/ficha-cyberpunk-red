@@ -1,0 +1,17 @@
+/* ============ impressão ============ */
+@media print{
+  @page{size:A4 landscape;margin:8mm}
+  body{background:#fff}
+  .toolbar,.rotatehint,#menu,#backdrop,.zoomfab,.zoompop,.board-tools,.notes-tools,.pgbar,.bdel,.brsz,.bgrip,.board-hint,.bkbadge,.linkbar,.bkmodal{display:none!important}
+  .scaler[data-sheet="5"]{display:none!important}
+  #print-root{display:block}
+  #print-root .print-pg:last-child{page-break-after:auto}
+  body.pm .scaler[data-sheet="3"],body.pm .scaler[data-sheet="4"]{display:none!important}
+  .stage{padding:0;gap:0;display:block}
+  .scaler{display:block!important;overflow:visible;max-width:none;width:auto!important;height:auto!important;page-break-after:always;margin:0}
+  .scaler:last-child{page-break-after:auto}
+  .sheet{position:static;display:grid!important;transform:none!important;zoom:.54!important;border-width:4px}
+  .sheet.p4,.sheet.p5,.sheet.p6{display:flex!important}
+  .box input:focus,.box textarea:focus,.trow .cell input:focus{background:transparent}
+}
+

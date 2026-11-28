@@ -1,0 +1,7 @@
+
+.cfm-bg{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:16px}
+.cfm{background:#fff;border:3px solid var(--red);max-width:420px;width:100%;padding:18px;font-family:var(--font);box-shadow:0 6px 24px rgba(0,0,0,.5)}
+.cfm p{margin:0 0 16px;font-size:18px;font-weight:700;color:#111;line-height:1.35}
+.cfm .cfm-bts{display:flex;gap:10px;justify-content:flex-end}
+.cfm button{font:700 16px var(--font);text-transform:uppercase;letter-spacing:.5px;padding:10px 16px;border:3px solid var(--red);background:#fff;color:#111;min-height:46px}
+.cfm button.ok{background:var(--red);color:#fff}

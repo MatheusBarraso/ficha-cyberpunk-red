@@ -1,0 +1,13 @@
+{
+  "name": "sketcher",
+  "private": true,
+  "description": "Sketcher — plataforma de RPG no navegador (Ficha Cyberpunk RED + comunidade).",
+  "type": "module",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "conferir": "node tools/build.mjs --conferir",
+    "testes": "python3 tests/rodar.py",
+    "visual": "python3 tests/visual.py comparar"
+  }
+}

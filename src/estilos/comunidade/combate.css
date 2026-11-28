@@ -1,0 +1,96 @@
+/* ---------- combate: aliados e inimigos em blocos ---------- */
+.cm-faixa.cm-faixa-inimigo{background:var(--red)!important;color:#fff!important}
+.cm-cb-vezbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;background:#0d0d0d;color:#fff;padding:10px 12px;border-left:6px solid var(--red)}
+.cm-cb-vezbar .cm-ml-vez-tit small{color:#aaa}
+.cm-cb-vezbar .cm-ml-vez-tit b{font-size:18px}
+.cm-cb-vezbar .cm-btn{background:transparent;color:#fff;border-color:var(--red)}
+.cm-cb-vezbar .cm-btn.cm-pri{background:var(--red)}
+.cm-fb-num{background:#fff;color:#000;font:700 13px var(--font);padding:0 6px;margin-right:6px;letter-spacing:0}
+.cm-fb-topo{justify-content:flex-start;gap:0}
+.cm-fb-topo>span:not(.cm-fb-num){flex:1}
+.cm-fb-lado{background:transparent;border:1px solid rgba(255,255,255,.6);color:#fff;font:700 10px var(--font);letter-spacing:.8px;text-transform:uppercase;padding:2px 6px;cursor:pointer}
+.cm-fb-lado:hover{background:rgba(255,255,255,.2)}
+.cm-fb-w.cm-fb-fora{opacity:.5}
+.cm-fb-w.cm-fb-fora:hover{opacity:.85}
+
+/* ---------- combate: só quem o mestre escolhe; fichas ocultas ---------- */
+.cm-fb-add{min-height:142px}
+.cm-fb-olho{background:transparent;border:0;color:#fff;width:26px;height:22px;padding:2px;cursor:pointer;margin-left:4px;flex:0 0 auto}
+.cm-fb-olho svg{width:18px;height:18px}
+.cm-fb-olho:hover{background:rgba(255,255,255,.2)}
+.cm-fb-w.cm-fb-oculta{opacity:.38}
+.cm-fb-w.cm-fb-oculta .cm-fb{border-style:dashed}
+.cm-fb-w.cm-fb-oculta:hover{opacity:.7}
+.cm-ml-item.cm-ml-oculta{opacity:.45}
+.cm-modal-add .cm-modal{width:min(720px,100%)}
+.cm-add-filtros{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.cm-add-filtros .cm-lbl{gap:3px}
+.cm-add-nivel{display:flex;align-items:center;gap:6px}
+.cm-add-nivel .cm-in{width:100%;min-width:0}
+.cm-add-lista{display:flex;flex-direction:column;gap:4px;max-height:min(46vh,420px);overflow-y:auto;border-top:1px solid var(--red);padding-top:8px}
+.cm-add-item{display:flex;align-items:center;gap:8px;border:1px solid var(--red);padding:7px 9px;cursor:pointer;text-transform:none;letter-spacing:0;font-weight:400}
+.cm-add-item:hover{background:var(--tint)}
+.cm-add-item input{width:18px;height:18px;accent-color:var(--red);flex:0 0 auto}
+.cm-add-item .cm-ml-tag{background:#000;color:#fff}
+.cm-add-item .cm-ml-npc{background:#777}
+.cm-add-item .cm-ml-monstro{background:var(--red)}
+.cm-add-txt{display:flex;flex-direction:column;min-width:0}
+.cm-add-txt b{font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cm-add-txt small{font-size:12px;color:#666}
+.cm-add-item.cm-add-oculta{opacity:.5;border-style:dashed}
+.cm-modal-add .cm-modal-pe{align-items:center}
+
+/* ---------- ficha morta (PV 0) ---------- */
+.cm-caveira{display:inline-flex;width:16px;height:16px;flex:0 0 auto;color:#111;vertical-align:-3px}
+.cm-caveira svg{width:100%;height:100%}
+.cm-fb-foto{position:relative}
+.cm-fb-cav{position:absolute;inset:0;width:auto;height:auto;padding:6px;background:rgba(255,255,255,.82);color:#111}
+.cm-fb-w.cm-fb-morta .cm-fb{background:#efefef}
+.cm-fb-w.cm-fb-morta .cm-fb-txt b{text-decoration:line-through;text-decoration-thickness:2px;color:#555}
+.cm-fb-w.cm-fb-morta .cm-fb-topo{background:#3a3a3a}
+.cm-fb-pv.cm-fb-morto{display:inline-flex;align-items:center;gap:4px;background:#111;color:#fff}
+.cm-fb-pv.cm-fb-morto .cm-caveira{color:#fff;width:14px;height:14px}
+.cm-fb-pv.cm-fb-morto .cm-caveira circle,.cm-fb-pv.cm-fb-morto .cm-caveira path:not(:first-child){fill:#111}
+.cm-ml-cav{color:#fff;width:16px;height:16px}
+.cm-ml-cav circle,.cm-ml-cav path:not(:first-child){fill:#1b1b1b}
+.cm-ml-tit .cm-ml-cav{margin-right:6px;width:18px;height:18px}
+.cm-add-cav{color:#111}
+
+/* ---------- estrelinha e mortos ---------- */
+.cm-fb-olho.cm-fb-estrela.on{color:#ffd23f}
+.cm-fb-olho.cm-fb-matar svg{width:16px;height:16px}
+.cm-fb-olho.cm-fb-matar svg circle,.cm-fb-olho.cm-fb-matar svg path:not(:first-child){fill:#000}
+.cm-fb-olho.cm-fb-matar.on{background:var(--red)}
+.cm-fb-olho.cm-fb-matar.on svg circle,.cm-fb-olho.cm-fb-matar.on svg path:not(:first-child){fill:var(--red)}
+.cm-fb-monstro .cm-fb-olho.cm-fb-matar.on{background:#000}
+.cm-fb-monstro .cm-fb-olho.cm-fb-matar.on svg circle,.cm-fb-monstro .cm-fb-olho.cm-fb-matar.on svg path:not(:first-child){fill:#000}
+.cm-fb-fav{position:absolute;right:10px;top:34px;color:var(--red);font:700 20px/1 var(--font);pointer-events:none}
+.cm-faixa.cm-faixa-mortos{background:#2b2b2b;color:#fff;display:inline-flex;align-items:center;gap:6px}
+.cm-faixa-mortos .cm-caveira{color:#fff;width:15px;height:15px}
+.cm-faixa-mortos .cm-caveira circle,.cm-faixa-mortos .cm-caveira path:not(:first-child){fill:#2b2b2b}
+.cm-ml-fav,.cm-add-fav{color:#ffd23f;font-size:14px;line-height:1}
+.cm-add-fav{color:var(--red)}
+@media (max-width:640px){.cm-fb-olho{width:22px;margin-left:2px}.cm-fb-topo>span:not(.cm-fb-num){font-size:10px;letter-spacing:1px}}
+
+/* ---------- ataque: mirar no player, depois o dano ---------- */
+.cm-mira{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.cm-mira-alvo{display:flex;align-items:center;gap:10px;background:#fff;border:2px solid var(--red);color:var(--ink);padding:10px;cursor:pointer;text-align:left;font-family:var(--font);min-height:70px}
+.cm-mira-alvo:hover,.cm-mira-alvo:focus-visible{background:var(--tint);outline:none}
+.cm-mira-alvo.on{background:var(--red);color:#fff}
+.cm-mira-alvo.on small{color:#fff}
+.cm-mira-alvo.cm-mira-morto{opacity:.55;border-style:dashed}
+.cm-mira-foto{width:46px;height:46px;flex:0 0 46px;border:2px solid var(--red);background:var(--tint);display:flex;align-items:center;justify-content:center;font:700 16px var(--font);color:var(--red);overflow:hidden}
+.cm-mira-foto img{width:100%;height:100%;object-fit:cover}
+.cm-mira-txt{display:flex;flex-direction:column;flex:1;min-width:0}
+.cm-mira-txt b{font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cm-mira-txt small{font-size:12px;color:#666}
+.cm-mira-ic{width:26px;height:26px;flex:0 0 26px;color:var(--red)}
+.cm-mira-alvo.on .cm-mira-ic{color:#fff}
+.cm-mira-ic svg{width:100%;height:100%}
+.cm-modal-mira .cm-modal{width:min(640px,100%)}
+.cm-dano-alvo{display:flex;align-items:center;gap:10px;background:#0d0d0d;color:#fff;padding:10px 12px;border-left:6px solid var(--red)}
+.cm-dano-alvo span{display:flex;flex-direction:column}
+.cm-dano-alvo small{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#aaa}
+.cm-dano-alvo b{font-size:17px}
+.cm-dano-in{font:700 34px var(--font)!important;height:60px;text-align:center;max-width:180px}
+

@@ -1,0 +1,17 @@
+/* ---------- sino de novidades ---------- */
+.cm-sino{position:relative;width:40px;height:36px;display:inline-flex;align-items:center;justify-content:center;background:transparent;border:var(--ln) solid var(--red);color:#fff;flex:0 0 auto}
+.cm-sino svg{width:22px;height:22px}
+.cm-sino:hover,.cm-sino.on{background:var(--red)}
+.cm-sino .cm-n{position:absolute;top:-8px;right:-8px;border:2px solid #0d0d0d}
+.cm-top{position:relative}
+.cm-sino-painel{position:absolute;right:10px;top:calc(100% - 4px);z-index:30;width:min(420px,calc(100vw - 20px));max-height:min(70vh,560px);display:flex;flex-direction:column;
+  background:#fff;color:var(--ink);border:var(--ln) solid var(--red);box-shadow:0 10px 30px rgba(0,0,0,.45);
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)}
+.cm-sino-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#000;color:#fff;padding:6px 8px 6px 12px;font-weight:700;font-size:13px;letter-spacing:1.2px;text-transform:uppercase}
+.cm-sino-hd .cm-btn{background:#fff;color:var(--ink);min-height:28px}
+.cm-sino-lista{overflow-y:auto;display:flex;flex-direction:column}
+.cm-sino-lista>.cm-linha+.cm-linha{border-top:1px solid var(--red)}
+.cm-sino-lista .cm-linha{grid-template-columns:86px minmax(0,1fr) auto;padding:8px 10px;gap:8px}
+.cm-sino-lista .cm-linha-txt{font-size:14px}
+.cm-sino-lista .cm-vazio{border:0}
+

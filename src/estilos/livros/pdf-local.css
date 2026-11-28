@@ -1,0 +1,13 @@
+
+.lv-addrow{display:flex;gap:6px;margin-top:6px}
+.lv-addrow .btool{flex:1;white-space:nowrap}
+.lv-addrow #lv-rem{flex:0 0 auto}
+.lv-tools .lv-addrow{margin-top:0}
+#lv-falta{position:sticky;top:74px;z-index:5;margin:74px auto 14px;max-width:440px;background:#fff;color:var(--ink);border:3px solid var(--red);padding:0 0 16px;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center;font-size:15px;line-height:1.4}
+#lv-falta b{align-self:stretch;background:#000;color:#fff;font-size:15px;letter-spacing:1px;text-transform:uppercase;padding:6px 12px}
+#lv-falta p{margin:0;padding:0 16px;color:#333}
+#lv-falta[hidden],#lv-msg[hidden]{display:none!important}
+#lv-msg{position:sticky;top:0;z-index:6;background:#111;color:#fff;padding:8px 12px;font-size:14px;text-align:center;border-bottom:2px solid var(--tint,#e0004d)}
+#lv-mesa{width:100%;margin-top:6px}#lv-mesa[hidden]{display:none!important}
+.lv-falta-bts{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}.lv-falta-bts [hidden]{display:none!important}
+.lv-semlivro .lv-stack,.lv-semlivro #lv-frame{display:none!important}

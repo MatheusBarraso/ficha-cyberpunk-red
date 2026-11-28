@@ -1,0 +1,23 @@
+/* ===== ficha nítida no celular: ampliar / página inteira ===== */
+.zmc{position:fixed;right:10px;bottom:12px;z-index:185;display:flex;align-items:center;gap:6px;background:#0d0d0d;border:2px solid var(--red);padding:5px;font-family:var(--font);box-shadow:0 6px 18px rgba(0,0,0,.45)}
+.zmc[hidden],.zmc [hidden]{display:none!important}
+.zmc-b{min-width:38px;height:38px;background:transparent;border:2px solid var(--red);color:#fff;font:800 20px var(--font);cursor:pointer;padding:0 8px}
+.zmc-b:active,.zmc-b:hover{background:var(--red)}
+.zmc-largo{font-size:12.5px;letter-spacing:.12em;text-transform:uppercase}
+.zmc-pri{background:var(--red)}
+.zmc-pct{min-width:44px;text-align:center;color:#fff;font:700 13px var(--font)}
+.zmc-dica{color:#bbb;font:600 12px var(--font);padding-right:4px}
+body.zm-ampliada .stage{overflow-x:auto;-webkit-overflow-scrolling:touch}
+body.zm-ampliada .scaler{margin:0}
+body.zm-toca .sheet.pdfpage .pdflayer{pointer-events:none}
+body.zm-toca .sheet.pdfpage{cursor:zoom-in}
+body.land .zmc{bottom:8px;right:8px;padding:3px}
+body.land .zmc-b{height:32px;min-width:32px;font-size:17px}
+body.land .zmc-dica{display:none!important}
+@media print{.zmc{display:none!important}}
+body.zm-ctl .cm-marca{bottom:70px}
+.zm-selo{position:fixed;z-index:470;pointer-events:none;background:#0d0d0d;color:#fff;border:2px solid var(--red);padding:3px 8px;font:800 13px var(--font);letter-spacing:.06em}
+.zm-selo[hidden]{display:none}
+/* a ficha grande rola de lado dentro da área dela: a barra de cima fica sempre no lugar */
+@media screen{.stage{overflow-x:auto}}
+

@@ -1,0 +1,18 @@
+/* ---- texto selecionável nas páginas dos livros (camada invisível do pdf.js por cima da imagem) ---- */
+.lv-stack{position:relative}
+.lv-stack .textLayer{color-scheme:only light;position:absolute;text-align:initial;overflow:clip;opacity:1;line-height:1;
+  -webkit-text-size-adjust:none;text-size-adjust:none;forced-color-adjust:none;transform-origin:0 0;caret-color:CanvasText;z-index:2;
+  --scale-round-x:1px;--scale-round-y:1px;
+  --min-font-size:1;--text-scale-factor:calc(var(--total-scale-factor) * var(--min-font-size));--min-font-size-inv:calc(1 / var(--min-font-size));
+  -webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+.lv-stack .textLayer :is(span,br){color:transparent;position:absolute;white-space:pre;cursor:text;transform-origin:0% 0%}
+.lv-stack .textLayer > :not(.markedContent),.lv-stack .textLayer .markedContent span:not(.markedContent){
+  z-index:1;--font-height:0;font-size:calc(var(--text-scale-factor) * var(--font-height));
+  --scale-x:1;--rotate:0deg;transform:rotate(var(--rotate)) scaleX(var(--scale-x)) scale(var(--min-font-size-inv))}
+.lv-stack .textLayer .markedContent{display:contents}
+.lv-stack .textLayer span[role="img"]{user-select:none;cursor:default}
+.lv-stack .textLayer ::selection{background:color-mix(in srgb,var(--red) 35%,transparent)}
+.lv-stack .textLayer br::selection{background:transparent}
+.lv-stack .textLayer .endOfContent{display:block;position:absolute;inset:100% 0 0;z-index:0;cursor:default;user-select:none}
+.lv-stack .textLayer.selecting .endOfContent{top:0}
+.lv-stack img{-webkit-user-select:none;user-select:none}

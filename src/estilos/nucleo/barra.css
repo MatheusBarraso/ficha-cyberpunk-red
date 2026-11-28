@@ -1,0 +1,12 @@
+/* ============ toolbar ============ */
+.toolbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:12px;
+  background:#0d0d0d;border-bottom:3px solid var(--red);padding:8px 14px;color:#fff}
+.hamb{background:transparent;border:2px solid var(--red);color:#fff;width:44px;height:40px;
+  font-size:22px;line-height:1;display:flex;align-items:center;justify-content:center;
+  transition:background .15s;flex:0 0 auto}
+.hamb:hover{background:var(--red-dark)}
+.toolbar .brand{font-weight:700;font-size:19px;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.toolbar .brand em{color:var(--red);font-style:normal}
+.toolbar .spacer{flex:1}
+.savestatus{color:#bbb;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:45vw}
+

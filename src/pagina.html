@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-512.png">
+<script>if("serviceWorker" in navigator&&location.protocol==="https:")addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})});</script>
+<script>(function(){var d=document.documentElement;function on(v){d.classList.toggle("cpr-escuro",!!v);try{localStorage.setItem("cpr-escuro",v?"1":"0")}catch(e){}var m=document.querySelector('meta[name="theme-color"]');if(m)m.content=v?"#0b0b0b":"#0d0d0d";try{dispatchEvent(new Event("cpr-escuro"))}catch(e){}}window.__cprEscuro=on;try{if(localStorage.getItem("cpr-escuro")==="1")d.classList.add("cpr-escuro")}catch(e){}try{var a=localStorage.getItem("cpr-destaque");if(/^#[0-9a-f]{6}$/i.test(a||"")){var n=parseInt(a.slice(1),16);d.style.setProperty("--acc2",a);d.style.setProperty("--acc2-ink",(0.299*(n>>16)+0.587*((n>>8)&255)+0.114*(n&255))>150?"#0d0d0d":"#ffffff")}}catch(e){}})()</script>
+<script>document.documentElement.classList.add("cm-gate")</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#cf2b21">
+<script>
+// Comunidade hospedada fora do Claude: os dados vão pro Firebase do projeto (veja LEIA-ME.md)
+window.__cmFirebase = true;
+window.__fbPronto = new Promise((r) => { window.__fbResolver = r; });
+window.claude = { use: (n) => window.__fbPronto.then((a) => (a ? a[n] || null : Promise.reject({ code: 'sem_servidor' }))) };
+</script>
+<script src="firebase-config.js"></script>
+<script type="module" src="fb.js"></script>
+<meta name="cpr-build" content="__CPR_BUILD__">
+<script>{{> scripts/nucleo/aviso-versao.js}}</script>
+
+<link rel="icon" href="./icon-192.png">
+<title>Ficha Cyberpunk RED</title>
+<style>{{> estilos/nucleo/fonte.css}}{{> estilos/nucleo/base.css}}{{> estilos/nucleo/barra.css}}{{> estilos/nucleo/menu.css}}{{> estilos/nucleo/palco.css}}{{> estilos/ficha/paginas.css}}{{> estilos/anotacoes/anotacoes.css}}{{> estilos/historia/quadro.css}}{{> estilos/livros/livros.css}}{{> estilos/nucleo/impressao.css}}{{> estilos/celular/em-pe.css}}{{> estilos/celular/deitado.css}}{{> estilos/livros/leitura.css}}{{> estilos/livros/leitor-aba.css}}{{> estilos/livros/pdf-local.css}}{{> estilos/nucleo/aviso-versao.css}}</style>
+<style>{{> estilos/nucleo/confirmar.css}}{{> estilos/anotacoes/dossie-mural.css}}{{> estilos/ficha/neon.css}}{{> estilos/livros/texto-selecionavel.css}}{{> estilos/comunidade/base.css}}{{> estilos/comunidade/barra.css}}{{> estilos/comunidade/folha.css}}{{> estilos/comunidade/entrada.css}}{{> estilos/comunidade/sessoes.css}}{{> estilos/comunidade/sala.css}}{{> estilos/comunidade/sino.css}}{{> estilos/comunidade/npc-foto.css}}{{> estilos/comunidade/mestre.css}}{{> estilos/comunidade/ferramentas.css}}{{> estilos/comunidade/painel-mestre.css}}{{> estilos/comunidade/combate.css}}{{> estilos/comunidade/estilo-livro.css}}{{> estilos/comunidade/conta-sino.css}}{{> estilos/comunidade/marca-canto.css}}{{> estilos/celular/zoom.css}}{{> estilos/comunidade/historia.css}}{{> estilos/comunidade/modo-ajuda.css}}{{> estilos/nucleo/destaque.css}}{{> estilos/nucleo/seta.css}}{{> estilos/nucleo/menu-sem-configuracao.css}}{{> estilos/nucleo/menu-principal.css}}{{> estilos/ficha/texto-real.css}}</style>
+<script>{{> scripts/nucleo/confirmar.js}}</script>
+{{escuro estilos/escuro-ajustes.css}}</head>
+<body>
+
+<header class="toolbar">
+  <button class="hamb" id="btn-menu" type="button" aria-label="Abrir menu">☰</button>
+  <span class="brand">Ficha <em>Cyberpunk RED</em></span>
+  <span class="spacer"></span>
+  <span class="savestatus" id="savestatus" role="status">Ficha nova — o preenchimento salva sozinho</span>
+</header>
+<div class="rotatehint">O quadro de desenho é panorâmico — vire o celular na horizontal pra desenhar melhor.</div>
+
+<div id="backdrop"></div>
+<aside id="menu" aria-label="Menu da ficha">
+  <div class="m-head"><span>Menu</span><button id="btn-menu-close" type="button" aria-label="Fechar menu">✕</button></div>
+  <div class="m-body">
+
+  <button class="m-sec fold" type="button" data-fold="fold-paginas" aria-expanded="true">Páginas <span class="chev">▾</span></button>
+  <div class="fold-body" id="fold-paginas">
+    <button class="m-item tab active" data-page="0" type="button">1 · Personagem</button>
+    <button class="m-item tab" data-page="1" type="button">2 · Fluxovida &amp; Equipamento</button>
+    <button class="m-item tab" data-page="2" type="button">3 · Cyberware</button>
+    <button class="m-item tab" data-page="3" type="button">4 · Anotações</button>
+    <button class="m-item tab" data-page="4" type="button">5 · História</button>
+    <button class="m-item tab" data-page="5" type="button">6 · Livros</button>
+  </div>
+
+  <button class="m-sec fold" type="button" data-fold="fold-ficha" aria-expanded="true">Ficha <span class="chev">▾</span></button>
+  <div class="fold-body" id="fold-ficha">
+    <button class="m-item" id="btn-savebak" type="button">Salvar backup completo</button>
+    <button class="m-item" id="btn-loadbak" type="button">Carregar backup</button>
+    <button class="m-item danger" id="btn-clear" type="button">Limpar ficha</button>
+  </div>
+
+  <button class="m-sec fold closed" type="button" data-fold="fold-config" aria-expanded="false">Configuração <span class="chev">▾</span></button>
+  <div class="fold-body closed" id="fold-config">
+    <div class="cfg-txt">Cor do site</div>
+    <div class="cfg-swatches">
+      <button class="csw" data-c="#cf2b21" style="--c:#cf2b21" type="button" title="Vermelho padrão"></button>
+      <button class="csw" data-c="#f2a900" style="--c:#f2a900" type="button" title="Amarelo"></button>
+      <button class="csw" data-c="#e06c1f" style="--c:#e06c1f" type="button" title="Laranja"></button>
+      <button class="csw" data-c="#21a0cf" style="--c:#21a0cf" type="button" title="Azul"></button>
+      <button class="csw" data-c="#1fb8a6" style="--c:#1fb8a6" type="button" title="Ciano"></button>
+      <button class="csw" data-c="#3fae5a" style="--c:#3fae5a" type="button" title="Verde"></button>
+      <button class="csw" data-c="#9b59cf" style="--c:#9b59cf" type="button" title="Roxo"></button>
+      <button class="csw" data-c="#e0457a" style="--c:#e0457a" type="button" title="Rosa"></button>
+      <label class="csw csw-custom" title="Cor personalizada"><input type="color" id="cfg-custom" value="#cf2b21" aria-label="Cor personalizada"></label>
+    </div>
+    <button class="m-item" id="cfg-reset" type="button">Voltar ao padrão</button>
+  </div>
+
+  </div>
+  <div class="m-status">Tudo fica salvo neste navegador. Pra levar a ficha pra outro aparelho, use o backup.</div>
+</aside>
+
+<button class="zoomfab hide" id="zoom-fab" type="button" aria-label="Abrir controles de zoom" title="Zoom">
+  <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
+    <circle cx="10.5" cy="10.5" r="6.5"></circle>
+    <line x1="15.3" y1="15.3" x2="21" y2="21"></line>
+    <line x1="8" y1="10.5" x2="13" y2="10.5"></line>
+    <line x1="10.5" y1="8" x2="10.5" y2="13"></line>
+  </svg>
+</button>
+<div class="zoompop" id="zoom-pop" role="group" aria-label="Controles de zoom">
+  <div class="zpct" id="zoom-pct">100%</div>
+  <div class="zrow">
+    <button id="z-out" type="button" aria-label="Diminuir zoom">−</button>
+    <button id="z-in" type="button" aria-label="Aumentar zoom">+</button>
+  </div>
+  <button id="z-fit" class="zfit" type="button">Ajustar à tela</button>
+</div>
+
+<main class="stage" id="stage">
+
+  <!-- PÁGINA 1 (desenho do PDF oficial) -->
+  <div class="scaler pp" data-sheet="0">
+    <section class="sheet pdfpage p1 active" aria-label="Página 1 — Personagem">
+      <div class="pdfbg">{{> sistemas/cpr/ficha/pagina-1.svg}}</div>
+      <div class="pdflayer" id="layer-0"></div>
+    </section>
+    <div class="mpage" id="mpage-0"></div>
+  </div>
+
+  <!-- PÁGINA 2 (desenho do PDF oficial) -->
+  <div class="scaler pp" data-sheet="1">
+    <section class="sheet pdfpage p2" aria-label="Página 2 — Fluxovida e Equipamento">
+      <div class="pdfbg">{{> sistemas/cpr/ficha/pagina-2.svg}}</div>
+      <div class="pdflayer" id="layer-1"></div>
+    </section>
+    <div class="mpage" id="mpage-1"></div>
+  </div>
+
+  <!-- PÁGINA 3 (desenho do PDF oficial) -->
+  <div class="scaler pp" data-sheet="2">
+    <section class="sheet pdfpage p3" aria-label="Página 3 — Cyberware">
+      <div class="pdfbg">{{> sistemas/cpr/ficha/pagina-3.svg}}</div>
+      <div class="pdflayer" id="layer-2"></div>
+    </section>
+    <div class="mpage" id="mpage-2"></div>
+  </div>
+
+  <!-- PÁGINA 4 — ANOTAÇÕES -->
+  <div class="scaler fl" data-sheet="3">
+    <section class="sheet p4" aria-label="Página 4 — Anotações">
+      <div class="phead">Anotações</div>
+      <div class="nt-barras">
+      <div class="board-tools notes-tools nt-fmt" role="toolbar" aria-label="Formatação">
+        <button class="btool fmt" data-cmd="bold" type="button" title="Negrito"><b>B</b></button>
+        <button class="btool fmt" data-cmd="italic" type="button" title="Itálico"><i>I</i></button>
+        <button class="btool fmt" data-cmd="underline" type="button" title="Sublinhado"><u>U</u></button>
+        <button class="btool fmt" data-cmd="strikeThrough" type="button" title="Riscado"><s>S</s></button>
+        <button class="btool fmt" data-cmd="insertUnorderedList" type="button" title="Lista">•<span class="lg"> Lista</span></button>
+        <button class="btool" id="nt-big" type="button" title="Texto grande">A+</button>
+        <button class="btool" id="nt-small" type="button" title="Texto pequeno">A−</button>
+        <button class="btool swatch" id="nt-c1" type="button" title="Texto preto"><i style="background:#111"></i></button>
+        <button class="btool swatch" id="nt-c2" type="button" title="Texto na cor da ficha"><i style="background:var(--red)"></i></button>
+        <button class="btool" id="nt-clearfmt" type="button" title="Limpar formatação"><span class="lg">Limpar formato</span><span class="sh">⌫</span></button>
+      </div>
+      <div class="board-tools notes-tools nt-acoes" role="toolbar" aria-label="Ferramentas do dossiê">
+        <button class="btool" id="nt-data" type="button" title="Escrever a data de hoje">📅 Data</button>
+        <button class="btool" id="nt-modelo" type="button" title="Inserir um modelo: sessão, gig, contato, lugar">＋ Modelo</button>
+        <button class="btool" id="nt-busca" type="button" title="Buscar em todas as páginas">🔍 Buscar</button>
+        <button class="btool" id="nt-img" type="button" title="Enviar imagem">🖼<span class="lg"> Imagem</span></button>
+        <span class="board-hint">Seleciona o texto e aplica o formato · imagens: arraste pra mover · canto inferior direito pra redimensionar</span>
+      </div>
+      </div>
+      <input class="nt-titulo" id="np-title" type="text" maxlength="60" placeholder="Título da página" aria-label="Título da página das anotações">
+      <div class="notepad" id="notepad"><div class="npedit" id="npedit" contenteditable="true" aria-label="Anotações gerais" data-ph="Escreve aqui tudo que precisar lembrar…"></div></div>
+      <div class="pgbar nt-pgbar">
+        <button class="btool" id="np-prev" type="button" title="Página anterior" aria-label="Página anterior">‹</button>
+        <span class="pglabel" id="np-label" hidden>Página 1 de 1</span><select class="pgsel" id="np-sel" aria-label="Índice das páginas das anotações"></select>
+        <button class="btool" id="np-next" type="button" title="Próxima página" aria-label="Próxima página">›</button>
+        <button class="btool" id="np-add" type="button" title="Nova página">＋<span class="lg"> Página</span></button>
+        <button class="btool danger" id="np-del" type="button" title="Apagar página" aria-label="Apagar página">🗑<span class="lg"> Apagar</span></button>
+      </div>
+    </section>
+  </div>
+
+  <!-- PÁGINA 5 — HISTÓRIA (QUADRO LIVRE) -->
+  <div class="scaler" data-sheet="4">
+    <section class="sheet p5" aria-label="Página 5 — História, quadro livre">
+      <div class="phead">História — Quadro Livre</div>
+      <div class="board-tools">
+        <button class="btool active" id="bt-pen" type="button">Caneta</button>
+        <button class="btool" id="bt-eraser" type="button">Borracha</button>
+        <button class="btool swatch" id="bt-c1" type="button"><i style="background:#111"></i>Preto</button>
+        <button class="btool swatch" id="bt-c2" type="button"><i style="background:var(--red)"></i>Cor da ficha</button>
+        <label class="btool swatch" id="bt-cor-lbl" title="Escolher outra cor"><i></i>Outra cor<input type="color" id="bt-cor" value="#1e9bd7" aria-label="Outra cor da caneta"></label>
+        <button class="btool" id="bt-traco" type="button" title="Espessura do traço">Traço: médio</button>
+        <button class="btool" id="bt-undo" type="button" title="Desfazer o último traço ou limpeza" disabled>↶ Desfazer</button>
+        <button class="btool" id="bt-nota" type="button" title="Nota adesiva com alfinete, pra montar o mural de pistas">📌 Nota</button>
+        <button class="btool" id="bt-text" type="button">Texto</button>
+        <button class="btool" id="bt-img" type="button">Enviar imagem</button>
+        <button class="btool danger" id="bt-clear" type="button">Limpar quadro</button>
+        <span class="board-hint">Arraste imagens pra mover · textos pelo ⠿ · canto inferior direito pra redimensionar</span>
+      </div>
+      <div class="pgbar">
+        <button class="btool" id="bp-prev" type="button" title="Página anterior">‹</button>
+        <span class="pglabel" id="bp-label" hidden>Página 1 de 1</span><select class="pgsel" id="bp-sel" aria-label="Índice das páginas do quadro"></select><input class="pgtitle" id="bp-title" type="text" maxlength="60" placeholder="Título da página" aria-label="Título da página do quadro">
+        <button class="btool" id="bp-next" type="button" title="Próxima página">›</button>
+        <button class="btool" id="bp-add" type="button">＋ Página</button>
+        <button class="btool danger" id="bp-del" type="button">Apagar página</button>
+        <span class="board-hint">Cada página guarda seus desenhos, textos e imagens</span>
+      </div>
+      <div class="board" id="board">
+        <canvas id="board-canvas" width="1920" height="906"></canvas>
+      </div>
+    </section>
+  </div>
+
+  <!-- PÁGINA 6 — LIVROS -->
+  <div class="scaler fl" data-sheet="5">
+    <section class="sheet p6" aria-label="Página 6 — Livros">
+      <div class="phead">Livros</div>
+      <div class="lv-tools">
+        <select id="lv-book" aria-label="Escolher livro">
+          <option value="regras">CEMK — Livro de Regras</option>
+          <option value="jacket">CEMK — The Jacket</option>
+          <option value="red">Cyberpunk RED — Livro Básico</option>
+        </select>
+        <div class="lv-addrow" id="lv-addrow"><button class="btool" id="lv-add" type="button">＋ Adicionar PDF</button><button class="btool" id="lv-rem" type="button" title="Tirar este livro do aparelho">Tirar</button></div>
+        <button class="btool" id="lv-mesa" type="button" hidden>Enviar pra mesa</button>
+        <button class="btool" id="lv-prev" type="button" title="Página anterior">‹</button>
+        <input class="lvpage" id="lv-page" type="number" min="1" value="1" aria-label="Página atual">
+        <span class="lv-total" id="lv-total">/ 71</span>
+        <button class="btool" id="lv-next" type="button" title="Próxima página">›</button>
+        <button class="btool" id="lv-go" type="button">Ir</button>
+        <button class="btool active" id="lv-save" type="button">★ Salvar página</button>
+        <button class="btool" id="lv-mode" type="button" title="Alternar entre página única e rolagem contínua">Modo rolagem</button>
+        <button class="btool" id="lv-read" type="button" title="Ler em tela cheia">⛶ Ler</button>
+        <span class="board-hint">Marcações salvas podem ser vinculadas a campos da ficha — 1 clique no selo abre a página, 2 cliques editam</span>
+      </div>
+      <div class="lv-main">
+        <div class="lv-view" id="lv-view"><img id="lv-frame" alt="Página do livro"></div>
+        <aside class="lv-side">
+          <div class="lv-tabs">
+            <button class="lv-tab active" id="lv-tab-saved" type="button">Páginas salvas</button>
+            <button class="lv-tab" id="lv-tab-search" type="button">Buscar no livro</button>
+          </div>
+          <div class="lv-pane" id="lv-pane-saved">
+            <div class="lv-marks" id="lv-marks"></div>
+          </div>
+          <div class="lv-pane hide" id="lv-pane-search">
+            <div class="lv-searchbar">
+              <input type="text" id="lv-q" placeholder="Ex.: fuzil de assalto, trauma team…" aria-label="Texto da busca">
+              <button class="btool" id="lv-qgo" type="button">Buscar</button>
+            </div>
+            <label class="lv-allbooks"><input type="checkbox" id="lv-qall"> buscar em todos os livros</label>
+            <div class="lv-results" id="lv-results"></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </div>
+
+</main>
+
+<div class="qedit" id="qedit" role="group" aria-label="Editar campo da ficha">
+  <button class="qe-nav" id="qe-prev" type="button" aria-label="Campo anterior">‹</button>
+  <div class="qe-main"><span class="qe-lbl" id="qe-lbl"></span><span class="qe-box" id="qe-box"></span></div>
+  <button class="qe-nav" id="qe-next" type="button" aria-label="Próximo campo">›</button>
+  <button class="qe-ok" id="qe-ok" type="button">OK</button>
+</div>
+<div class="p6 lvreader" id="lvreader">
+<div class="lvbar" id="lvbar" role="toolbar" aria-label="Leitura do livro">
+  <button type="button" id="lvb-app" aria-label="Menu principal da ficha" title="Menu principal">☰</button>
+  <button type="button" id="lvb-prev" aria-label="Página anterior">‹</button>
+  <span class="lvb-pgbox"><input class="lvb-pg" id="lvb-pg" type="number" inputmode="numeric" min="1" aria-label="Ir para a página"><span class="lvb-tot" id="lvb-tot"></span></span>
+  <button type="button" id="lvb-next" aria-label="Próxima página">›</button>
+  <button type="button" id="lvb-menos" aria-label="Diminuir letra">A−</button>
+  <button type="button" id="lvb-mais" aria-label="Aumentar letra">A+</button>
+  <button type="button" id="lvb-menu" aria-label="Livros, páginas salvas e busca" title="Livros, páginas salvas e busca">📖</button>
+  <button type="button" class="lvb-x" id="lvb-sair" aria-label="Sair da leitura">✕</button>
+</div>
+<div class="lvdrawer" id="lvdrawer" aria-label="Livros, páginas salvas e busca"></div>
+</div>
+<div class="linkbar" id="linkbar">Modo vincular — clique no campo da ficha que vai apontar pra essa página (Esc cancela)</div>
+
+<div class="bkmodal" id="bkmodal" role="dialog" aria-label="Editar página salva">
+  <div class="bkbox">
+    <h3>Página salva</h3>
+    <label>Título<input type="text" id="bk-title"></label>
+    <div class="bkrow">
+      <label>Livro<select id="bk-book">
+        <option value="regras">CEMK — Livro de Regras</option>
+        <option value="jacket">CEMK — The Jacket</option>
+        <option value="red">Cyberpunk RED — Livro Básico</option>
+      </select></label>
+      <label>Página<input type="number" id="bk-page" min="1"></label>
+    </div>
+    <label>Nota<textarea id="bk-note" placeholder="Lembretes, resumo da página…"></textarea></label>
+    <div class="bklinkinfo" id="bk-linkinfo"></div>
+    <div class="bkbtns">
+      <button id="bk-save" type="button">Salvar</button>
+      <button id="bk-unlink" type="button">Desvincular</button>
+      <button id="bk-del" class="danger" type="button">Excluir</button>
+      <button id="bk-close" type="button">Fechar</button>
+    </div>
+  </div>
+</div>
+<input type="file" id="portrait-file" accept="image/*" hidden>
+<input type="file" id="board-file" accept="image/*" hidden>
+<input type="file" id="notes-file" accept="image/*" hidden>
+<input type="file" id="backup-file" accept="application/json,.json" hidden>
+<script>{{> scripts/livros/fila-pdf.js}}</script>
+<script type="module" src="livros_local.js"></script>
+<script>{{> scripts/livros/primeiro-livro.js}}</script>
+<script>{{> scripts/ficha/paginas-pdf-inicio.js}}const FIELDMAP = {{> sistemas/cpr/ficha/campos.json}}{{> scripts/ficha/paginas-pdf.js}}{{> scripts/celular/em-pe.js}}{{> scripts/nucleo/persistencia.js}}{{> scripts/ficha/calculo.js}}{{> scripts/nucleo/menu-abas.js}}{{> scripts/nucleo/backup.js}}{{> scripts/ficha/retrato.js}}{{> scripts/celular/deitado.js}}{{> scripts/nucleo/inicio.js}}{{> scripts/historia/quadro.js}}{{> scripts/anotacoes/janelas.js}}{{> scripts/anotacoes/editor.js}}{{> scripts/livros/marcacoes.js}}{{> scripts/nucleo/impressao.js}}</script>
+<script>{{> scripts/ficha/neon.js}}</script>
+<script>
+{{> scripts/comunidade/estado.js}}{{> scripts/comunidade/utilidades.js}}{{> scripts/comunidade/avisos.js}}{{> scripts/comunidade/imagens.js}}{{> scripts/comunidade/cifra.js}}{{> scripts/comunidade/painel.js}}{{> scripts/comunidade/moldura.js}}{{> scripts/comunidade/secoes.js}}{{> scripts/comunidade/novidades.js}}{{> scripts/comunidade/conta.js}}{{> scripts/comunidade/destaque.js}}{{> scripts/comunidade/mural.js}}{{> scripts/comunidade/historia.js}}{{> scripts/comunidade/mapa-antigo.js}}{{> scripts/comunidade/npcs.js}}{{> scripts/comunidade/pistas.js}}{{> scripts/comunidade/missoes.js}}{{> scripts/comunidade/perfis.js}}{{> scripts/comunidade/dados.js}}{{> scripts/comunidade/acesso.js}}{{> scripts/comunidade/convites.js}}{{> scripts/comunidade/assinaturas.js}}{{> scripts/comunidade/livros-mesa.js}}{{> scripts/comunidade/lobby.js}}{{> scripts/comunidade/cidade-exemplo.js}}{{> scripts/comunidade/limpeza-v67.js}}{{> scripts/comunidade/menu-principal.js}}{{> scripts/comunidade/senha-mestre.js}}{{> scripts/comunidade/fichas-players.js}}{{> scripts/comunidade/marca-canto.js}}{{> scripts/comunidade/mesa.js}}{{> scripts/comunidade/modo-ajuda.js}}{{> scripts/comunidade/holofote.js}}{{> scripts/comunidade/ferramentas.js}}{{> scripts/comunidade/ataque.js}}{{> scripts/comunidade/alerta.js}}{{> scripts/comunidade/ordem.js}}{{> scripts/comunidade/player-avisos.js}}{{> scripts/comunidade/demonstracao.js}}{{> scripts/comunidade/fichas-ocultas.js}}{{> scripts/comunidade/combate.js}}{{> scripts/comunidade/combate-menu.js}}
+{{> scripts/nucleo/nitidez.js}}
+</script>
+</body>
+</html>

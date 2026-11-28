@@ -1,0 +1,3 @@
+/* "Configuração" saiu do menu: a cor do site fica no menu da conta (Aparência) */
+#menu [data-fold="fold-config"],#fold-config{display:none!important}
+body.land #menu .m-body{grid-template-columns:1.5fr 1fr}

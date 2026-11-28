@@ -1,0 +1,112 @@
+/* ============ MODO LEITURA dos livros: tela cheia, página na largura toda, letra ajustável ============ */
+.lv-view.reading{position:fixed!important;inset:0;z-index:140;background:#262626;border:0!important;overflow:auto!important;display:block!important;
+  -webkit-overflow-scrolling:touch}
+.lv-view.reading .lv-stack{align-items:flex-start;padding:52px 0 30px;gap:8px}
+.lv-view.reading .lv-stack img{width:calc(var(--lvz,1) * 100%);max-width:none;margin:0 auto;box-shadow:0 2px 10px rgba(0,0,0,.5)}
+.lvbar{display:none;position:fixed;top:6px;right:6px;z-index:150;align-items:center;gap:4px;background:rgba(0,0,0,.88);border:2px solid var(--red);padding:4px}
+body.reading .lvbar{display:flex}
+.lvbar button{background:#1c1c1c;border:2px solid var(--red);color:#fff;font-family:var(--font);font-weight:700;font-size:17px;min-width:38px;height:34px;padding:0 8px}
+.lvbar button:active{background:var(--red)}
+.lvbar .lvb-x{background:var(--red)}
+.lvbar .lvb-pg{color:#fff;font-weight:700;font-size:14px;min-width:70px;text-align:center;white-space:nowrap}
+#lv-read{background:var(--red);color:#fff}
+/* no celular deitado a página de livros fica compacta (o título sai, sobra mais tela) */
+body.land .p6 .phead{display:none}
+body.mob .p6 .phead{display:none}
+body.reading .lvbar.oculta{opacity:0;pointer-events:none}
+.lvbar{transition:opacity .2s}
+.lvbar input.lvb-pg{width:58px;height:34px;background:#1c1c1c;border:2px solid #555;color:#fff;font:700 15px var(--font);text-align:center;padding:0;-moz-appearance:textfield}
+.lvbar input.lvb-pg::-webkit-inner-spin-button{display:none}
+.lvbar .lvb-tot{color:#bbb;font:700 13px var(--font);margin-right:2px}
+/* o leitor fica dentro de um .p6 próprio (herda os estilos do livro), mas sem caixa: os filhos são fixos na tela */
+.p6.lvreader{display:contents!important;padding:0}
+.lvdrawer .lv-side{flex-direction:column!important}
+.lvdrawer .lv-tabs{display:flex!important;flex-direction:row!important}
+.lvdrawer .lv-tab{flex:1 1 50%}
+.lvdrawer{display:none;position:fixed;top:52px;right:6px;bottom:6px;width:min(380px,calc(100vw - 12px));z-index:155;background:#fff;border:3px solid var(--red);flex-direction:column;gap:6px;padding:6px;box-shadow:0 4px 18px rgba(0,0,0,.6)}
+body.reading .lvdrawer.aberta{display:flex}
+.lvdrawer #lv-book{width:100%;font-size:16px;height:40px}
+.lvdrawer #lv-save{width:100%;height:40px;font-size:15px}
+.lvdrawer .lv-side{flex:1 1 auto!important;min-height:0;border:0!important;display:flex!important}
+.lvdrawer .lv-tab{font-size:14px!important;padding:10px 6px!important}
+.lvdrawer .lv-marks,.lvdrawer .lv-results{font-size:15px}
+.lvdrawer #lv-q{font-size:16px}
+/* barra mais folgada: ocupa a largura toda e reparte o espaço entre os botões */
+.lvbar{left:6px;gap:6px;padding:5px}
+.lvbar button{flex:1 1 0;min-width:0;padding:0;height:40px}
+.lvbar .lvb-pgbox{flex:0 0 auto;display:flex;align-items:center;gap:3px}
+.lvbar input.lvb-pg{height:40px;width:52px}
+.lvbar .lvb-tot{white-space:nowrap;margin:0}
+@media (min-width:700px){.lvbar{left:auto}.lvbar button{flex:0 0 auto;min-width:44px;padding:0 10px}}
+@media (max-width:380px){.lvbar{gap:4px;padding:4px}.lvbar input.lvb-pg{width:44px}.lvbar .lvb-tot{font-size:12px}}
+.lvdrawer{top:62px}
+.lv-view.reading .lv-stack{padding-top:62px}
+/* painel do ☰ divide a tela: livro à esquerda, painel à direita (dá pra continuar lendo) */
+:root{--gw:min(380px,46vw)}
+.lvdrawer{top:62px!important;right:0!important;bottom:0!important;width:var(--gw)!important;border-width:0 0 0 3px!important;box-shadow:-4px 0 14px rgba(0,0,0,.45)!important;padding:5px!important}
+body.reading.gaveta .lv-view.reading{right:var(--gw)!important}
+body.reading.gaveta #lvb-menu{background:var(--red)}
+@media (max-width:520px){
+  .lvdrawer #lv-book{font-size:13px;height:36px;padding:0 4px}
+  .lvdrawer #lv-save{font-size:12px;height:36px;padding:0 4px}
+  .lvdrawer .lv-tab{font-size:11px!important;padding:8px 2px!important;letter-spacing:.3px!important}
+  .lvdrawer .lv-marks,.lvdrawer .lv-results{font-size:13px}
+  .lvdrawer #lv-q{font-size:14px;min-width:0}
+  .lvdrawer .lv-searchbar{flex-direction:column;gap:4px}
+  .lvdrawer .lv-searchbar .btool{width:100%}
+  .lvdrawer .lv-allbooks{font-size:12px}
+  .lvdrawer .lv-marks .board-hint,.lvdrawer .lv-empty{font-size:13px}
+}
+/* painel fino: altura toda, largura estreita (sobra mais espaço pro livro) */
+:root{--gw:min(250px,40vw)}
+@media (orientation:landscape){:root{--gw:min(260px,32vw)}}
+.lvdrawer{gap:5px!important}
+.lvdrawer .lv-tabs{flex-direction:column!important}
+.lvdrawer .lv-tab{flex:0 0 auto!important;text-align:left}
+.p6.lvreader .lvdrawer .lv-empty{font-size:13px!important;padding:10px 6px!important}
+.p6.lvreader .lvdrawer .lv-tab{font-size:12px!important;padding:8px 8px!important;line-height:1.2!important}
+.p6.lvreader .lvdrawer #lv-book{font-size:13px!important;height:34px!important;padding:0 2px!important;min-width:0!important}
+.p6.lvreader .lvdrawer #lv-save{font-size:13px!important;height:34px!important}
+.p6.lvreader .lvdrawer .lv-results,.p6.lvreader .lvdrawer .lv-marks,.p6.lvreader .lvdrawer .lv-results *,.p6.lvreader .lvdrawer .lv-marks *{font-size:13px!important}
+.p6.lvreader .lvdrawer .lv-searchbar{flex-direction:column!important;gap:4px!important}
+.p6.lvreader .lvdrawer .lv-searchbar>*{width:100%!important;min-width:0!important}
+.p6.lvreader .lvdrawer #lv-q{font-size:14px!important;height:34px!important}
+.p6.lvreader .lvdrawer .lv-searchbar .btool{height:34px!important;font-size:13px!important}
+.p6.lvreader .lvdrawer .lv-allbooks{font-size:12px!important}
+/* janela de salvar/editar página: no meio da tela, por cima do leitor */
+.bkmodal{z-index:200!important}
+.linkbar{z-index:205!important}
+.bkmodal .bkbox{box-sizing:border-box;max-height:calc(100vh - 20px);overflow:auto}
+.bkmodal .bkrow > *{min-width:0}
+@media (max-width:520px){
+  .bkmodal .bkrow{flex-direction:column;gap:8px}
+  .bkmodal .bkbtns{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .bkmodal .bkbtns button{font-size:13px;padding:10px 4px}
+}
+.p6.lvreader .lvdrawer .lv-marks button{font-size:12px!important;padding:5px 8px!important;min-height:0!important}
+/* ---- busca do painel: mais limpa ---- */
+/* o Chrome do celular aumenta sozinho o texto de colunas estreitas ("font boosting"); aqui não */
+.lvreader,.lvreader *,.bkmodal,.bkmodal *,.jn-bg,.jn-bg *,.cfm-bg,.cfm-bg *{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+.p6.lvreader .lvdrawer .lv-searchbar{flex-direction:row!important;gap:4px!important;padding:6px 6px 2px!important}
+.p6.lvreader .lvdrawer .lv-searchbar>*{width:auto!important}
+.p6.lvreader .lvdrawer #lv-q{flex:1 1 auto!important;border-width:2px!important;padding:0 8px!important;height:36px!important}
+.p6.lvreader .lvdrawer #lv-qgo{flex:0 0 38px!important;width:38px!important;height:36px!important;padding:0!important;font-size:0!important;border-width:2px!important;background:var(--red)!important;color:#fff!important}
+.p6.lvreader .lvdrawer #lv-qgo::before{content:"🔍";font-size:15px}
+.p6.lvreader .lvdrawer .lv-allbooks{padding:2px 8px 6px!important;font-size:11px!important;color:#666!important;letter-spacing:.2px}
+.p6.lvreader .lvdrawer .lv-allbooks input{width:14px;height:14px}
+.p6.lvreader .lvdrawer .lv-results{gap:6px!important;padding:6px 6px 10px!important;border-top:2px solid #e6e6e6}
+.p6.lvreader .lvdrawer .bres{border:0!important;border-left:4px solid var(--red)!important;background:#f4f4f4!important;padding:6px 8px 7px!important;border-radius:0 3px 3px 0}
+.p6.lvreader .lvdrawer .bres:active{background:var(--tint)!important}
+.p6.lvreader .lvdrawer .bres .bp{font-size:10.5px!important;letter-spacing:.6px!important;margin-bottom:3px!important;line-height:1.25!important}
+.p6.lvreader .lvdrawer .bres .bs{font-size:12px!important;line-height:1.38!important;color:#333!important;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.p6.lvreader .lvdrawer .bres .bs b{font-size:12px!important;background:color-mix(in srgb,var(--red) 28%,#fff)!important;color:#111;padding:0 2px;border-radius:2px}
+.p6.lvreader .lvdrawer .lv-empty{font-size:12px!important;color:#888!important}
+/* ---- cartão de página salva: × pequeno em cima à esquerda, seta (vincular) em cima à direita ---- */
+.bmark{position:relative;padding-top:34px!important}
+.p6 .lv-marks .bmark button.bm-del{position:absolute;top:5px;left:5px;width:22px;height:22px;min-width:0!important;padding:0!important;font-size:14px!important;line-height:1!important;border:2px solid #000;background:#fff;color:#000;display:flex;align-items:center;justify-content:center}
+.p6 .lv-marks .bmark button.bm-del:hover{background:#000;color:#fff}
+.p6 .lv-marks .bmark button.bm-link{position:absolute;top:4px;right:4px;width:30px;height:26px;min-width:0!important;padding:0!important;border:2px solid var(--red);background:#fff;font-size:0!important}
+.p6 .lv-marks .bmark button.bm-link::before{content:"";position:absolute;inset:3px 5px;background:var(--red);-webkit-mask:url(data:image/png;base64,{{base64 imagens/vincular.png}}) center/contain no-repeat;mask:url(data:image/png;base64,{{base64 imagens/vincular.png}}) center/contain no-repeat}
+.p6 .lv-marks .bmark.ligado button.bm-link{background:var(--red)}
+.p6 .lv-marks .bmark.ligado button.bm-link::before{background:#fff}
+.p6 .lv-marks .bmark .bbtns button{flex:1 1 auto}

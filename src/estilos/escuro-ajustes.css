@@ -1,0 +1,16 @@
+/* modo escuro: grafite em vez de preto puro */
+html.cpr-escuro{color-scheme:dark;--paper:#1c1d20;--ink:#e7e4df;--bg:#111214;
+  --tint:color-mix(in srgb,var(--red) 14%,#1c1d20);--tint2:color-mix(in srgb,var(--red) 24%,#1c1d20);--tint3:color-mix(in srgb,var(--red) 42%,#1c1d20);
+  --dark-text:color-mix(in srgb,var(--red) 55%,#fff);--salmao:color-mix(in srgb,var(--red) 10%,#1c1d20);--salmao2:color-mix(in srgb,var(--red) 18%,#1c1d20)}
+/* ficha escura: uma superfície só (sem xadrez de caixas), traço da cor do site mais baixo
+   e as faixas de título na cor do site escurecida, com o texto branco */
+html.cpr-escuro .sheet.pdfpage{background:#1c1d20}
+html.cpr-escuro .pdfart{color:color-mix(in srgb,var(--red) 56%,#1c1d20)}
+html.cpr-escuro .pdfbg path[fill="#fff"],html.cpr-escuro .pdfbg circle[fill="#fff"]{fill:#1c1d20}
+html.cpr-escuro .pdfbg path[fill="#000"]{fill:color-mix(in srgb,var(--red) 34%,#131416)}
+html.cpr-escuro .pdfbg g[fill="#000"]{fill:#ece8e2}
+html.cpr-escuro .pdfbg g[fill="currentColor"]{fill:color-mix(in srgb,var(--red) 70%,#fff)}
+html.cpr-escuro .sheet{box-shadow:0 10px 40px rgba(0,0,0,.5)}
+html.cpr-escuro .sheet input,html.cpr-escuro .sheet textarea{color:var(--ink)}
+html.cpr-escuro img{color-scheme:light}
+html.cpr-escuro #board-canvas{filter:invert(.9) hue-rotate(180deg)}

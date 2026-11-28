@@ -1,0 +1,62 @@
+/* ============ CELULAR DEITADO (tela baixa e de toque): ficha inteira na tela, barra lateral, editor grande ============ */
+body.land .toolbar{position:fixed;left:0;top:0;bottom:0;width:46px;flex-direction:column;align-items:center;justify-content:flex-start;gap:10px;
+  padding:6px 0;border-bottom:0;border-right:3px solid var(--red);z-index:60}
+body.land .toolbar .brand,body.land .toolbar .spacer{display:none}
+body.land .hamb{width:36px;height:34px;font-size:19px}
+body.land .savestatus{writing-mode:vertical-rl;transform:rotate(180deg);font-size:11px;max-width:none;max-height:calc(100vh - 60px);color:#888}
+body.land .stage{padding:5px 5px 5px 51px}
+body.land.qe-open .stage{padding-top:80px}
+body.land .rotatehint{display:none!important}
+body.land .linkbar{top:8px;left:calc(50% + 23px);font-size:13px;padding:8px 14px}
+body.land .scaler.fl .sheet{position:relative;transform:none!important;width:100%;height:calc(100vh - 10px);min-height:300px;border-width:3px;padding:6px;
+  clip-path:polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px)}
+body.land .scaler.fl .phead{font-size:18px;min-width:0;padding:4px 20px 4px 10px}
+body.land .notes-tools{flex-wrap:wrap!important}
+body.land .board-hint{display:none}
+body.land .btool{padding:4px 10px;font-size:14px}
+body.land .npedit{font-size:18px;padding:10px 14px}
+body.land .p6 .lv-side{flex:0 0 300px}
+body.land .p6 .lv-tools{gap:6px}
+body.land .p6 .lvpage{width:70px}
+.qedit{display:none;position:fixed;left:52px;right:6px;top:6px;z-index:110;background:#111;border:3px solid var(--red);padding:6px;gap:6px;
+  align-items:stretch;box-shadow:0 6px 24px rgba(0,0,0,.6)}
+.qedit.open{display:flex}
+.qe-main{flex:1 1 auto;display:flex;flex-direction:column;gap:3px;min-width:0}
+.qe-lbl{color:#fff;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qe-box input,.qe-box textarea{display:block;width:100%;font-family:var(--font);font-size:17px;font-weight:700;padding:5px 8px;border:2px solid var(--red);
+  border-radius:0;background:#fff;color:#0d0d0d;outline:none;margin:0}
+.qe-box textarea{height:62px;resize:none;line-height:1.25}
+.qe-nav,.qe-ok{flex:0 0 auto;background:#1c1c1c;border:2px solid var(--red);color:#fff;font-weight:700;font-size:22px;min-width:42px;padding:0 6px;
+  font-family:var(--font)}
+.qe-ok{background:var(--red);font-size:15px;padding:0 14px;text-transform:uppercase}
+.fx.qe-on{outline:4px solid var(--red);outline-offset:2px;background:var(--tint);z-index:2}
+@media print{.qedit{display:none!important}}
+
+/* menu do celular deitado: painel largo em 3 colunas, tudo cabe na altura */
+body.land #menu{width:min(calc(100vw - 10px),760px);max-width:none}
+body.land #menu .m-head{padding:6px 10px;font-size:15px;border-bottom-width:2px}
+body.land #menu .m-head button{width:30px;height:30px;font-size:14px}
+body.land #menu .m-body{display:grid;grid-template-columns:1.5fr 1fr 1fr;grid-template-rows:auto auto;align-content:start;align-items:start;
+  column-gap:10px;padding:0 10px 8px;overflow-y:auto}
+/* cada seção fica presa na sua coluna e sempre aberta (no celular deitado tudo cabe, não precisa recolher) */
+body.land #menu [data-fold="fold-paginas"]{grid-column:1;grid-row:1}
+body.land #fold-paginas{grid-column:1;grid-row:2}
+body.land #menu [data-fold="fold-ficha"]{grid-column:2;grid-row:1}
+body.land #fold-ficha{grid-column:2;grid-row:2}
+body.land #menu [data-fold="fold-config"]{grid-column:3;grid-row:1}
+body.land #fold-config{grid-column:3;grid-row:2}
+body.land #menu .m-sec.fold{pointer-events:none}
+body.land #menu .m-sec .chev{display:none}
+body.land #menu .m-sec.fold{padding:8px 2px 5px;font-size:11px}
+body.land #menu .fold-body{display:flex;flex-direction:column;gap:5px;align-content:start}
+body.land #fold-paginas{display:grid!important;grid-template-columns:1fr 1fr;gap:5px}
+body.land #menu .fold-body.closed{display:flex!important}
+body.land #menu #fold-paginas.closed{display:grid!important}
+body.land #menu .m-item{width:auto;margin:0;padding:7px 8px;font-size:12px;letter-spacing:.3px;line-height:1.15;border-width:2px}
+body.land #menu .cfg-txt{padding:2px 0 4px;font-size:11px}
+body.land #menu .cfg-swatches{padding:0 0 6px;gap:5px;display:flex;flex-wrap:wrap}
+body.land #menu .csw{width:26px;height:26px}
+body.land #menu .m-status{display:none}
+body.land .zoomfab{width:46px;height:46px;right:10px;bottom:10px;border-width:2px}
+body.land .zoomfab svg{width:22px;height:22px}
+body.land .zoompop{right:10px;bottom:64px;min-width:180px;padding:8px;gap:6px}

@@ -1,0 +1,16 @@
+/* =================================================================
+   MODO AJUDA: a ficha escurece e só o campo aberto fica aceso
+   ================================================================= */
+.cm-foco-moldura{position:fixed;z-index:45;overflow:hidden;pointer-events:none;left:0;top:0;width:0;height:0}
+.cm-foco-luz{position:absolute;pointer-events:none;border:3px solid var(--red);border-radius:3px;box-sizing:border-box;
+  box-shadow:0 0 0 9999px rgba(0,0,0,.92),0 0 26px 5px var(--red),inset 0 0 16px color-mix(in srgb,var(--red) 45%,transparent)}
+.cm-foco-luz[hidden]{display:none}
+.cm-foco-marca{position:absolute;pointer-events:none;visibility:hidden}
+.pdflayer.cm-foco-on .fx.cm-foco-alvo>input,.pdflayer.cm-foco-on .fx.cm-foco-alvo>textarea{background:color-mix(in srgb,var(--red) 10%,#fff)}
+.cm-foco-leg{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:300;background:#0d0d0d;color:#fff;border:2px solid var(--red);padding:10px 18px;
+  font:800 14px var(--font);letter-spacing:.1em;text-transform:uppercase;box-shadow:0 8px 24px rgba(0,0,0,.6),0 0 18px color-mix(in srgb,var(--red) 50%,transparent);max-width:calc(100vw - 30px);text-align:center}
+.cm-foco-leg[hidden]{display:none}
+.cm-ml-ajuda{margin:2px 0 4px;font-size:13px;color:#fff}
+.cm-ml-ajuda span{text-align:left}
+@media print{.cm-foco-moldura,.cm-foco-leg{display:none!important}}
+

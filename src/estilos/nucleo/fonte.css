@@ -1,0 +1,3 @@
+
+/* fonte embutida (offline): substituta da Myriad Pro usada na ficha oficial — Source Sans 3, OFL */
+@font-face{font-family:"Ficha Sans";src:url("data:font/woff;base64,{{base64 fontes/ficha-sans.woff}}") format("woff");font-weight:200 900;font-style:normal;font-display:swap}

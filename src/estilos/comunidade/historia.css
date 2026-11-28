@@ -1,0 +1,83 @@
+/* =================================================================
+   HISTÓRIA: quadro com grade (mural + mapa juntos) — visual de mapa tático
+   ================================================================= */
+.cm-qcena{position:relative;width:100%;aspect-ratio:16/10;max-height:78vh;min-height:360px;--q-fundo:#0d1016;--q-grade:color-mix(in srgb,var(--red) 45%,transparent);
+  background:var(--q-fundo);border:2px solid var(--red);clip-path:polygon(0 0,calc(100% - 22px) 0,100% 22px,100% 100%,22px 100%,0 calc(100% - 22px));overflow:hidden}
+.cm-qvista{position:absolute;inset:0;overflow:auto;touch-action:pan-x pan-y;outline:none;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--red) transparent}
+.cm-qvista.cm-qpuxando{cursor:grabbing}
+.cm-qvinheta{position:absolute;inset:0;pointer-events:none;z-index:7;box-shadow:inset 0 0 90px rgba(0,0,0,.55);
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.018) 0 1px,transparent 1px 3px)}
+.cm-qtabua{position:relative;--q-fundo:#0d1016;user-select:none;-webkit-user-select:none}
+.cm-qtabua[data-ferr="lapis"],.cm-qtabua[data-ferr="borracha"]{touch-action:none}
+.cm-qtabua[data-ferr="lapis"]{cursor:crosshair}
+.cm-qtabua[data-ferr="texto"]{cursor:text}
+.cm-qtabua[data-ferr="borracha"]{cursor:cell}
+.cm-qtabua[data-ferr="mover"]{cursor:grab}
+.cm-qbase{position:absolute;inset:0;background:var(--q-fundo);z-index:0}
+.cm-qgrade,.cm-qprev{background-image:
+  linear-gradient(to right,var(--q-grade) 0 4px,transparent 4px),linear-gradient(to bottom,var(--q-grade) 0 4px,transparent 4px),
+  linear-gradient(to right,color-mix(in srgb,var(--q-grade) 40%,transparent) 0 2px,transparent 2px),linear-gradient(to bottom,color-mix(in srgb,var(--q-grade) 40%,transparent) 0 2px,transparent 2px);
+  background-size:200px 200px,200px 200px,40px 40px,40px 40px}
+.cm-qgrade{position:absolute;inset:0;z-index:2;pointer-events:none}
+.cm-qcx,.cm-qcy{position:absolute;font:800 40px var(--font);letter-spacing:.1em;color:var(--q-grade);opacity:.9}
+.cm-qcx{top:8px}
+.cm-qcy{left:12px}
+.cm-qprev{height:120px;border:2px solid var(--red);background-color:var(--q-fundo);background-size:100px 100px,100px 100px,20px 20px,20px 20px}
+.cm-qtracos{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none;overflow:visible}
+.cm-qtracos path{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.cm-qtabua[data-ferr="borracha"] .cm-qtracos path.cm-qmeu,.cm-qtabua[data-ferr="mover"] .cm-qtracos path.cm-qmeu{pointer-events:visibleStroke}
+.cm-qtracos path.cm-qsel{filter:drop-shadow(0 0 10px var(--red))}
+.cm-qit{position:absolute;z-index:1}
+.cm-q-texto{z-index:4;padding:8px 12px}
+.cm-q-imagem img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.cm-qtexto{white-space:pre-wrap;word-break:break-word;line-height:1.2;font-family:var(--font);font-weight:700;text-shadow:0 2px 10px color-mix(in srgb,var(--q-fundo) 80%,transparent)}
+.cm-qautor{display:block;font:700 16px var(--font);letter-spacing:.14em;text-transform:uppercase;color:var(--red);opacity:.85;margin-top:4px}
+.cm-qtabua[data-ferr="mover"] .cm-qit.cm-qmeu:hover{outline:3px dashed color-mix(in srgb,var(--red) 70%,transparent);outline-offset:6px}
+.cm-qit.cm-qsel{outline:4px solid var(--red)!important;outline-offset:6px}
+.cm-q-imagem.cm-qsel{z-index:2}
+.cm-qalca{position:absolute;right:-20px;bottom:-20px;width:30px;height:30px;background:var(--red);border:4px solid #fff;cursor:nwse-resize;touch-action:none}
+.cm-qeditor{position:absolute;z-index:6;min-height:90px;background:rgba(255,255,255,.95);color:#111!important;border:4px solid var(--red);font-family:var(--font);font-weight:700;line-height:1.2;padding:8px 12px;resize:both;outline:none}
+.cm-qvazio{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);z-index:5;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;pointer-events:none;
+  padding:40px 70px;border:4px solid var(--q-grade);background:color-mix(in srgb,var(--q-fundo) 82%,transparent)}
+.cm-qvazio b{font:800 78px var(--font);letter-spacing:.18em;text-transform:uppercase;color:var(--red)}
+.cm-qvazio span{font:600 34px var(--font);color:color-mix(in srgb,var(--q-grade) 70%,#fff)}
+/* doca de ferramentas (esquerda) */
+.cm-qdoca{position:absolute;left:12px;top:50%;transform:translateY(-50%);z-index:8;display:flex;flex-direction:column;gap:4px;padding:6px;background:rgba(8,9,12,.88);border:1px solid color-mix(in srgb,var(--red) 60%,transparent);box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.cm-qdb{position:relative;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:transparent;border:0;color:#cfcfcf;cursor:pointer}
+.cm-qdb:hover{color:#fff;background:rgba(255,255,255,.07)}
+.cm-qdb.on{color:#fff;background:var(--red);box-shadow:0 0 14px color-mix(in srgb,var(--red) 70%,transparent)}
+.cm-qico svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.cm-qdb[data-f="mover"] .cm-qico svg,.cm-qdb[data-f="texto"] .cm-qico svg{fill:currentColor;stroke:none}
+.cm-qdl{position:absolute;left:calc(100% + 10px);top:50%;transform:translateY(-50%);white-space:nowrap;background:#0d0d0d;color:#fff;border:1px solid var(--red);padding:4px 8px;
+  font:800 11px var(--font);letter-spacing:.14em;text-transform:uppercase;opacity:0;pointer-events:none;transition:opacity .12s}
+.cm-qdb:hover .cm-qdl,.cm-qdb:focus-visible .cm-qdl{opacity:1}
+/* opções da ferramenta (cores e tamanhos), ao lado da doca */
+.cm-qopc{position:absolute;left:72px;top:50%;transform:translateY(-50%);z-index:8;display:flex;flex-direction:column;gap:10px;padding:10px;background:rgba(8,9,12,.88);border:1px solid color-mix(in srgb,var(--red) 60%,transparent)}
+.cm-qopc[hidden],.cm-qselb[hidden]{display:none}
+.cm-qcores{display:grid;grid-template-columns:repeat(3,26px);gap:6px}
+.cm-qcor{width:26px;height:26px;border:2px solid rgba(255,255,255,.25);background:var(--c);cursor:pointer;padding:0}
+.cm-qcor.on{outline:2px solid #fff;outline-offset:2px}
+.cm-qcor.cm-qauto{background:linear-gradient(135deg,#111 0 50%,#fff 50% 100%)}
+.cm-qtams{display:flex;flex-direction:column;gap:4px}
+.cm-qtam{height:30px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid rgba(255,255,255,.2);color:#fff;cursor:pointer}
+.cm-qtam.on{border-color:var(--red);background:color-mix(in srgb,var(--red) 30%,transparent)}
+.cm-qtam i{display:block;width:60%;background:#fff;border-radius:3px}
+.cm-qtam b{font-family:var(--font)}
+/* ações do selecionado (em cima, no meio) */
+.cm-qselb{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:8;display:flex;gap:4px;padding:5px;background:rgba(8,9,12,.9);border:1px solid var(--red)}
+.cm-qsb{height:32px;padding:0 14px;background:transparent;border:0;color:#fff;font:800 12px var(--font);letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
+.cm-qsb:hover{background:rgba(255,255,255,.08)}
+.cm-qsb-x{color:#ff8a80}
+/* zoom (embaixo, à direita) */
+.cm-qzoomb{position:absolute;right:14px;bottom:14px;z-index:8;display:flex;align-items:stretch;background:rgba(8,9,12,.88);border:1px solid color-mix(in srgb,var(--red) 60%,transparent)}
+.cm-qzb{min-width:38px;height:36px;padding:0 10px;background:transparent;border:0;color:#fff;font:800 16px var(--font);cursor:pointer}
+.cm-qzb:hover{background:rgba(255,255,255,.08)}
+.cm-qzpct{font-size:12px;letter-spacing:.08em;min-width:58px}
+.cm-qzfundo{border-left:1px solid color-mix(in srgb,var(--red) 60%,transparent);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase}
+/* escolha de fundo */
+.cm-qfps{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.cm-qfp{display:flex;flex-direction:column;gap:6px;padding:6px;background:transparent;border:2px solid var(--tint3);cursor:pointer;color:var(--ink);font:700 12px var(--font);text-align:left}
+.cm-qfp i{display:block;height:46px;background-color:var(--f);background-image:linear-gradient(to right,var(--g) 0 1.5px,transparent 1.5px),linear-gradient(to bottom,var(--g) 0 1.5px,transparent 1.5px);background-size:12px 12px}
+.cm-qfp.on{border-color:var(--red)}
+.cm-qlug{margin-top:18px;align-items:center}
+@media (max-width:640px){.cm-qcena{aspect-ratio:auto;height:68vh}.cm-qdoca{left:6px}.cm-qdb{width:40px;height:40px}.cm-qopc{left:60px}.cm-qdl{display:none}}

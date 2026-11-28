@@ -1,0 +1,39 @@
+name: Site
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  conferir:
+    name: Site em dia com src/
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node tools/build.mjs --conferir
+
+  testes:
+    name: Testes de ponta a ponta
+    needs: conferir
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install playwright pillow
+      - run: python -m playwright install --with-deps chromium
+      - run: python tests/rodar.py
+        env:
+          TESTES_JUNTOS: '2'
+          MOSTRAR: '1'
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: capturas-dos-testes
+          path: tests/saida/

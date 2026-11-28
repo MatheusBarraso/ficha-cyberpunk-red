@@ -1,0 +1,10 @@
+/* ============ palco e escala ============ */
+.stage{padding:18px 8px 40px}
+.scaler{position:relative;margin:0 auto;overflow:visible}
+.sheet{position:absolute;top:0;left:0;width:1920px;height:1080px;background:var(--paper);
+  transform-origin:top left;display:none;
+  border:5px solid var(--red);
+  clip-path:polygon(28px 0,100% 0,100% calc(100% - 28px),calc(100% - 28px) 100%,0 100%,0 28px)}
+.sheet.active{display:grid}
+.sheet.p4.active,.sheet.p5.active,.sheet.p6.active{display:flex}
+

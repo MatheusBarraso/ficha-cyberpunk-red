@@ -1,0 +1,62 @@
+/* ============ Anotações (dossiê) e História (mural) ============ */
+.pgsel{font:700 15px var(--font);height:38px;border:3px solid var(--red);background:#fff;color:#111;max-width:280px;padding:0 6px;color-scheme:light}
+.pgtitle{font:700 16px var(--font);height:38px;border:3px solid var(--red);padding:0 10px;width:260px;background:#fff;color:#111}
+.pgtitle:focus{outline:none;background:var(--tint)}
+.jn-bg{position:fixed;inset:0;z-index:290;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:12px}
+.jn{background:#fff;border:3px solid var(--red);width:min(560px,100%);max-height:calc(100vh - 24px);display:flex;flex-direction:column;font-family:var(--font);box-shadow:0 6px 24px rgba(0,0,0,.5)}
+.jn-hd{display:flex;align-items:center;background:#000;color:#fff;padding:8px 8px 8px 14px;font:700 17px var(--font);letter-spacing:1.5px;text-transform:uppercase}
+.jn-hd span{flex:1}
+.jn-hd button{background:var(--red);border:0;color:#fff;font:700 20px var(--font);width:40px;height:36px}
+.jn-bd{padding:12px;overflow:auto;display:flex;flex-direction:column;gap:8px}
+.jn-op{display:block;text-align:left;border:3px solid var(--red);background:#fff;padding:10px 12px;font-family:var(--font);color:#111}
+.jn-op b{display:block;font-size:17px;text-transform:uppercase;letter-spacing:.5px}
+.jn-op small{font-size:14px;color:#555}
+.jn-op:active,.jn-op:focus-visible{background:var(--tint)}
+.jn-q{font:700 17px var(--font);height:44px;border:3px solid var(--red);padding:0 10px}
+.jn-q:focus{outline:none;background:var(--tint)}
+.jn-res{border-left:5px solid var(--red);background:#f6f6f6;padding:8px 10px;text-align:left;font-family:var(--font);border-top:0;border-right:0;border-bottom:0;color:#111}
+.jn-res b{display:block;font-size:15px;color:var(--red);text-transform:uppercase}
+.jn-res span{font-size:15px}
+.jn-res mark{background:color-mix(in srgb,var(--red) 30%,#fff);color:#111}
+.jn-vazio{color:#666;font-size:15px;text-align:center;padding:10px}
+/* nota adesiva do mural */
+.btxt.nota .bedit{font-size:24px;font-weight:700;line-height:1.3;background:color-mix(in srgb,var(--red) 16%,#fffdf5);box-shadow:4px 5px 0 rgba(0,0,0,.22);padding:26px 18px 16px;min-height:120px;color:#111}
+.btxt.nota::before{content:"";position:absolute;top:6px;left:50%;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:var(--red);box-shadow:0 2px 3px rgba(0,0,0,.4);z-index:2;pointer-events:none}
+#bt-cor-lbl{position:relative}
+#bt-cor-lbl input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}
+#bt-cor-lbl i{background:conic-gradient(#e33,#fd3,#3d6,#3cf,#86f,#f4c,#e33)}
+.btool.on-swatch{outline:3px solid #000;outline-offset:-6px}
+
+/* ---- anotações organizadas ---- */
+.p4 .nt-barras{display:flex;align-items:center;gap:8px;flex:0 0 auto;min-width:0}
+.p4 .nt-barras .notes-tools{display:flex;align-items:center;gap:6px;flex-wrap:nowrap}
+.p4 .nt-acoes{flex:1 1 auto;min-width:0}
+.p4 .nt-fmt{padding-right:10px;border-right:3px solid #ddd}
+.p4 .sh{display:none}
+.p4 .nt-titulo{flex:0 0 auto;font:700 24px var(--font);border:0;border-bottom:3px solid var(--red);padding:4px 6px;background:transparent;color:#111;min-width:0;width:100%}
+.p4 .nt-titulo:focus{outline:none;background:var(--tint)}
+.p4 .nt-titulo::placeholder{color:#aaa}
+.p4 .nt-pgbar{flex-wrap:nowrap}
+.p4 .nt-pgbar .pgsel{max-width:420px;min-width:0;flex:0 1 auto}
+/* celular (em pé e deitado): duas barras limpas, título em cima, rodapé numa linha */
+body.mob .p4,body.land .p4{gap:6px}
+body.mob .p4 .nt-barras,body.land .p4 .nt-barras{flex-direction:column;align-items:stretch;gap:6px}
+body.mob .p4 .nt-barras .notes-tools,body.land .p4 .nt-barras .notes-tools{flex-wrap:nowrap!important;gap:4px}
+body.mob .p4 .nt-fmt,body.land .p4 .nt-fmt{border-right:0;padding-right:0}
+body.mob .p4 .nt-barras .btool,body.land .p4 .nt-barras .btool{flex:1 1 0;min-width:0;height:38px;padding:0 2px;font-size:14px;display:flex;align-items:center;justify-content:center;white-space:nowrap;overflow:hidden}
+body.mob .p4 .nt-barras .btool.swatch i,body.land .p4 .nt-barras .btool.swatch i{width:16px;height:16px}
+body.mob .p4 .lg{display:none}
+body.mob .p4 .sh{display:inline}
+body.mob .p4 .nt-acoes .board-hint,body.land .p4 .nt-acoes .board-hint{display:none}
+body.mob .p4 .nt-titulo,body.land .p4 .nt-titulo{font-size:19px;padding:2px 4px}
+body.mob .p4 .nt-pgbar,body.land .p4 .nt-pgbar{gap:4px;justify-content:stretch}
+body.mob .p4 .nt-pgbar .btool,body.land .p4 .nt-pgbar .btool{height:40px;min-width:40px;padding:0 8px;font-size:15px;flex:0 0 auto}
+body.mob .p4 .nt-pgbar .pgsel,body.land .p4 .nt-pgbar .pgsel{flex:1 1 auto;max-width:none;height:40px;font-size:15px}
+body.land .p4 .nt-barras{flex-direction:row}
+body.land .p4 .nt-fmt{flex:0 0 auto}
+body.land .p4 .nt-fmt .btool{flex:0 0 38px}
+body.land .p4 .nt-acoes{flex:1 1 auto}
+body.land .p4 .nt-acoes .btool{flex:1 1 auto;padding:0 6px;font-size:13px}
+body.land .p4 .lg{display:none}
+body.land .p4 .sh{display:inline}
+body.mob .p4 .nt-acoes .btool{font-size:13px;letter-spacing:0}

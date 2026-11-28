@@ -1,0 +1,9 @@
+/* ================= COMUNIDADE =================
+   mesmo visual da ficha: barra escura em cima, folha branca com borda vermelha,
+   faixas pretas de título, campos com borda na cor do tema */
+#comu{--ln:2px;--corte:12px;position:fixed;inset:0;z-index:200;background:var(--bg);color:var(--ink);display:flex;flex-direction:column;font-family:var(--font)}
+#comu[hidden],#comu [hidden]{display:none!important}
+body.comu-on{overflow:hidden}
+body.comu-on #menu{z-index:280}
+body.comu-on #backdrop{z-index:275}
+
