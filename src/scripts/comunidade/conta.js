@@ -11,7 +11,9 @@
     const { nome, foto } = dadosConta();
     const el = h('span', { class: 'cm-av' + (grande ? ' cm-av-g' : '') });
     const ini = () => { el.textContent = S.me ? ((nome.trim()[0] || '?').toUpperCase()) : '?'; };
-    if (foto && S.me) { const im = h('img', { src: foto, alt: '', referrerpolicy: 'no-referrer' }); im.onerror = () => { im.remove(); ini(); }; el.append(im); } else ini();
+    const minha = S.me && S.d.perfis[S.me] && S.d.perfis[S.me].foto; // a foto que a pessoa escolheu vale mais que a do Google
+    if (minha) el.append(h('img', { src: imgSrc(minha), alt: '' }));
+    else if (foto && S.me) { const im = h('img', { src: foto, alt: '', referrerpolicy: 'no-referrer' }); im.onerror = () => { im.remove(); ini(); }; el.append(im); } else ini();
     return el;
   }
   function pintarChips() {

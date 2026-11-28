@@ -14,8 +14,8 @@
 .cm-entra{animation:cmEntra .25s ease-out}
 .cm-entra .cm-sessao-nome{font-size:22px}
 
-/* portão: nada da ficha aparece antes da escolha */
-html.cm-gate body > :not(#comu):not(#sk-rpg):not(.cm-toasts):not(.jn-bg):not(.cfm-bg):not(#cpr-nova):not(.cm-modal-fundo){visibility:hidden!important}
+/* portão: nada da ficha aparece antes da escolha (o menu da conta e o sino, sim) */
+html.cm-gate body > :not(#comu):not(#sk-rpg):not(.cm-pop):not(.cm-toasts):not(.jn-bg):not(.cfm-bg):not(#cpr-nova):not(.cm-modal-fundo){visibility:hidden!important}
 html.cm-gate body{background:var(--bg)}
 html.cm-gate .cm-tabs{display:none}
 .cm-tag-sis{margin-right:6px;border-color:var(--red);color:var(--red-dark)}

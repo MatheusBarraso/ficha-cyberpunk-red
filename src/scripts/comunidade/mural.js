@@ -30,7 +30,7 @@
   function cartaoPost(p) {
     const npc = p.npc && npcDe(p.npc);
     const quem = npc ? h('span', { class: 'cm-nome', text: npc.nome }) : spanNome(p.autor);
-    const head = h('div', { class: 'cm-npc cm-ph' }, npc ? avatar(npc.nome, npc.img) : avatar(nome(p.autor)),
+    const head = h('div', { class: 'cm-npc cm-ph' }, npc ? avatar(npc.nome, npc.img) : avatarDe(p.autor),
       h('div', { style: 'display:flex;flex-direction:column;gap:3px;min-width:0' }, h('div', { class: 'cm-row', style: 'gap:6px' }, quem, npc ? h('span', { class: 'cm-tag cm-red', text: 'NPC' }) : null, !npc && p.mestre ? h('span', { class: 'cm-tag cm-red', text: 'Mestre' }) : null),
         h('div', { class: 'cm-meta' }, quando(p.ts), p.local && localDe(p.local) ? h('span', { text: localDe(p.local).nome }) : null)));
     const reac = p.reacoes || {};

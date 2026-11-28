@@ -31,11 +31,11 @@ window.claude = { use: (n) => window.__fbPronto.then((a) => (a ? a[n] || null : 
 </script>
 <script src="firebase-config.js"></script>
 <script type="module" src="fb.js"></script>
-<meta name="cpr-build" content="af5780011305">
+<meta name="cpr-build" content="53dceab81e43">
 <script>
 // avisa quando sai uma versão nova do site (o navegador pode ficar horas com a antiga aberta)
 (function () {
-  var atual = 'af5780011305', avisou = false;
+  var atual = '53dceab81e43', avisou = false;
   function mostrar() {
     if (avisou || !document.body) return; avisou = true;
     var b = document.createElement('div'); b.id = 'cpr-nova'; b.setAttribute('role', 'alert');
@@ -1067,8 +1067,8 @@ body.comu-on #backdrop{z-index:275}
 .cm-entra{animation:cmEntra .25s ease-out}
 .cm-entra .cm-sessao-nome{font-size:22px}
 
-/* portão: nada da ficha aparece antes da escolha */
-html.cm-gate body > :not(#comu):not(#sk-rpg):not(.cm-toasts):not(.jn-bg):not(.cfm-bg):not(#cpr-nova):not(.cm-modal-fundo){visibility:hidden!important}
+/* portão: nada da ficha aparece antes da escolha (o menu da conta e o sino, sim) */
+html.cm-gate body > :not(#comu):not(#sk-rpg):not(.cm-pop):not(.cm-toasts):not(.jn-bg):not(.cfm-bg):not(#cpr-nova):not(.cm-modal-fundo){visibility:hidden!important}
 html.cm-gate body{background:var(--bg)}
 html.cm-gate .cm-tabs{display:none}
 .cm-tag-sis{margin-right:6px;border-color:var(--red);color:var(--red-dark)}
@@ -1587,6 +1587,10 @@ body.land .toolbar .cm-sino svg{width:18px;height:18px}
 .cm-volta-txt{display:flex;flex-direction:column;flex:1 1 180px;min-width:0}
 .cm-volta-txt small{font:700 11px var(--font);letter-spacing:.16em;text-transform:uppercase;color:var(--red)}
 .cm-volta-txt b{font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* meu perfil: a foto escolhida (ou a do Google) e os botões ao lado */
+.cm-perfil-foto{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.cm-perfil-foto .cm-npc-big{width:96px;height:96px;flex:0 0 96px;font-size:34px}
+.cm-perfil-foto-bts{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
 /* =================================================================
    MARCA NO CANTO: em qual ficha o mestre está
    ================================================================= */
@@ -4680,6 +4684,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     return await new Promise((r) => c.toBlob(r, 'image/jpeg', 0.86));
   }
   async function enviarImagem(file, max = 1600) {
+    if (!S.assets && S.me) { try { S.assets = await claude.use('assets'); } catch { /* sem servidor */ } } // fora da sala (foto do perfil)
     if (!S.assets) throw { code: 'invalid_argument' };
     const r = await S.assets.upload(await reduzir(file, max));
     return r.id;
@@ -5002,7 +5007,9 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const { nome, foto } = dadosConta();
     const el = h('span', { class: 'cm-av' + (grande ? ' cm-av-g' : '') });
     const ini = () => { el.textContent = S.me ? ((nome.trim()[0] || '?').toUpperCase()) : '?'; };
-    if (foto && S.me) { const im = h('img', { src: foto, alt: '', referrerpolicy: 'no-referrer' }); im.onerror = () => { im.remove(); ini(); }; el.append(im); } else ini();
+    const minha = S.me && S.d.perfis[S.me] && S.d.perfis[S.me].foto; // a foto que a pessoa escolheu vale mais que a do Google
+    if (minha) el.append(h('img', { src: imgSrc(minha), alt: '' }));
+    else if (foto && S.me) { const im = h('img', { src: foto, alt: '', referrerpolicy: 'no-referrer' }); im.onerror = () => { im.remove(); ini(); }; el.append(im); } else ini();
     return el;
   }
   function pintarChips() {
@@ -5080,6 +5087,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const sec = (tit, ...filhos) => h('div', { class: 'cm-conta-sec' }, tit ? h('div', { class: 'cm-conta-rot', text: tit }) : null, ...filhos);
     const out = [h('div', { class: 'cm-conta-hd' }, avatarConta(true), h('div', { class: 'cm-conta-id' },
       h('b', { text: S.me ? (nome || 'Sua conta') : 'Sem conta' }), h('small', { text: S.me ? (email || (window.__cmLogout ? '' : 'Conta do Claude')) : 'Entre com o Google pra criar ou entrar em sessões.' })))];
+    if (S.me && S.escreve) out.push(sec(null, btn('Meu perfil e foto', abrirMeuPerfil, 'cm-mini cm-largo')));
     if (!S.me) {
       if (window.__cmLogin && (S.db || S.erro)) out.push(sec(null, btn('Entrar com Google', () => { try { sessionStorage.setItem('cpr-com-poslogin', S.lob.papel || ''); } catch { /* ok */ } window.__cmLogin(); }, 'cm-pri cm-largo')));
     } else {
@@ -5139,7 +5147,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   function cartaoPost(p) {
     const npc = p.npc && npcDe(p.npc);
     const quem = npc ? h('span', { class: 'cm-nome', text: npc.nome }) : spanNome(p.autor);
-    const head = h('div', { class: 'cm-npc cm-ph' }, npc ? avatar(npc.nome, npc.img) : avatar(nome(p.autor)),
+    const head = h('div', { class: 'cm-npc cm-ph' }, npc ? avatar(npc.nome, npc.img) : avatarDe(p.autor),
       h('div', { style: 'display:flex;flex-direction:column;gap:3px;min-width:0' }, h('div', { class: 'cm-row', style: 'gap:6px' }, quem, npc ? h('span', { class: 'cm-tag cm-red', text: 'NPC' }) : null, !npc && p.mestre ? h('span', { class: 'cm-tag cm-red', text: 'Mestre' }) : null),
         h('div', { class: 'cm-meta' }, quando(p.ts), p.local && localDe(p.local) ? h('span', { text: localDe(p.local).nome }) : null)));
     const reac = p.reacoes || {};
@@ -5947,29 +5955,79 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
           : h('div', { class: 'cm-vazio', text: 'Ninguém na mesa ainda.' }));
     },
   };
-  function formPerfil() {
+  // ----- meu perfil: apelido, foto, personagem. Também fora da sala — é a primeira tela depois de entrar com a
+  // conta, enquanto a pessoa não tiver perfil. A foto é escolhida pela pessoa (imagem no banco, em assets);
+  // sem ela vale a do Google, e sem as duas, as iniciais.
+  function avatarDe(uid, cls = 'cm-av', foto) {
+    const p = (uid && S.d.perfis[uid]) || {};
+    const f = foto === undefined ? p.foto : foto;
+    if (f) return avatar(nome(uid), f, cls);
+    const a = avatar(nome(uid), null, cls);
+    const g = uid && uid === S.me && window.__cmConta && window.__cmConta.foto;
+    if (g) { const im = h('img', { src: g, alt: '', referrerpolicy: 'no-referrer' }); im.onerror = () => { im.remove(); a.textContent = iniciais(nome(uid)); }; a.textContent = ''; a.append(im); }
+    return a;
+  }
+  // op.inicio: a tela "Seu perfil" fora da sala (salva e segue pra escolha de Mestre / Player)
+  function formPerfil(op = {}) {
     const p = (S.me && S.d.perfis[S.me]) || {};
     const ap = h('input', { class: 'cm-in', value: p.apelido || '', maxlength: 40, placeholder: 'Seu apelido na comunidade' });
     const pj = h('input', { class: 'cm-in', value: p.personagem || '', maxlength: 60, placeholder: 'Nome do personagem' });
-    const pp = h('input', { class: 'cm-in', value: p.papelPj || '', maxlength: 40, placeholder: 'Papel (Solo, Netrunner…)' });
-    const bio = h('textarea', { class: 'cm-ta', maxlength: 1000, placeholder: 'Quem é o seu personagem nas ruas' }); bio.value = p.bio || '';
+    const pp = h('input', { class: 'cm-in', value: p.papelPj || '', maxlength: 40, placeholder: SISTEMA.id === 'cpr' ? 'Papel (Solo, Netrunner…)' : 'Papel / classe' });
+    const bio = h('textarea', { class: 'cm-ta', maxlength: 1000, placeholder: 'Quem é o seu personagem' }); bio.value = p.bio || '';
+    // foto
+    let foto = p.foto || null;
+    const arq = h('input', { type: 'file', accept: 'image/*', hidden: true });
+    const stFoto = h('span', { class: 'cm-sub' });
+    const caixaFoto = h('div', { class: 'cm-perfil-foto' });
+    const pintaFoto = () => rc(caixaFoto, avatarDe(S.me, 'cm-npc-big', foto),
+      h('div', { class: 'cm-perfil-foto-bts' },
+        btn(foto ? 'Trocar foto' : 'Escolher foto', () => arq.click(), 'cm-mini'),
+        foto ? btn((window.__cmConta && window.__cmConta.foto) ? 'Usar a do Google' : 'Remover foto', () => { foto = null; pintaFoto(); }, 'cm-mini') : null,
+        stFoto, arq));
+    arq.addEventListener('change', async () => {
+      const f = arq.files && arq.files[0]; arq.value = ''; if (!f) return;
+      stFoto.textContent = 'Enviando…';
+      try { foto = await enviarImagem(f, 400); stFoto.textContent = ''; pintaFoto(); } catch (e) { stFoto.textContent = ''; falhou(e); }
+    });
+    pintaFoto();
     const puxar = btn('Puxar da ficha', () => {
       const v = (sel) => { const e = document.querySelector(sel); return e ? (e.value || '').trim() : ''; };
       const n = v('[data-f="NOME"]'), r = v('[data-f="PAPEL"]');
       if (n) pj.value = n; if (r) pp.value = r;
-      if (!n && !r) toast('Perfil', 'Os campos Nome e Papel da ficha estão vazios.');
+      if (!n && !r) toast('Perfil', 'O nome do personagem na ficha está vazio.');
     }, 'cm-mini');
     const lbl = (t, e) => h('label', { class: 'cm-lbl' }, t, e);
+    const gravar = () => salvar(() => dok('perfis', S.me).set({ apelido: ap.value.trim(), personagem: pj.value.trim(), papelPj: pp.value.trim(), bio: bio.value.trim(), foto: foto || null, ts: agora() }));
+    const sair = () => { S.lob.editarPerfil = false; S.lob.perfilForm = null; atualizarLobby(); corpo.scrollTop = 0; };
+    const acoes = op.inicio
+      ? [btn(S.lob.editarPerfil ? 'Voltar' : 'Agora não', () => { try { sessionStorage.setItem('cpr-com-perfil-depois', S.me); } catch { /* ok */ } sair(); }, 'cm-mini'), h('span', { style: 'flex:1' }),
+        btn('Salvar e continuar', async () => { if (await gravar()) { toast('Perfil', 'Perfil salvo.'); sair(); } }, 'cm-pri')]
+      : [puxar, h('span', { style: 'flex:1' }), btn('Salvar perfil', () => gravar().then((ok) => ok && toast('Perfil', 'Perfil salvo.')), 'cm-pri')];
     return h('div', { class: 'cm-caixa' }, h('div', { class: 'cm-faixa', text: 'Meu perfil' }),
+      lbl('Foto', caixaFoto),
       h('div', { class: 'cm-grid', style: 'grid-template-columns:repeat(auto-fill,minmax(200px,1fr))' }, lbl('Apelido', ap), lbl('Personagem', pj), lbl('Papel', pp)), lbl('Bio', bio),
-      h('div', { class: 'cm-sub', text: 'Todo mundo da mesa vê o seu perfil.' }),
-      h('div', { class: 'cm-row' }, puxar, h('span', { style: 'flex:1' }), btn('Salvar perfil', () => salvar(() => dok('perfis', S.me).set({ apelido: ap.value.trim(), personagem: pj.value.trim(), papelPj: pp.value.trim(), bio: bio.value.trim(), ts: agora() })).then((ok) => ok && toast('Perfil', 'Perfil salvo.')), 'cm-pri')));
+      h('div', { class: 'cm-sub', text: 'Todo mundo das suas mesas vê o seu perfil.' }),
+      h('div', { class: 'cm-row' }, acoes));
+  }
+  // fora da sala: a tela "Seu perfil" (o formulário fica guardado pra não perder o que já foi digitado quando a tela se refaz)
+  const perfilDepois = () => { try { return sessionStorage.getItem('cpr-com-perfil-depois') === S.me; } catch { return false; } };
+  const precisaPerfil = () => !!S.me && S.escreve && S.carregou.has('perfis') && !S.d.perfis[S.me] && !perfilDepois();
+  function telaPerfil() {
+    if (!S.lob.perfilForm) S.lob.perfilForm = formPerfil({ inicio: true });
+    return [h('div', { class: 'cm-h' }, h('h2', { text: 'Seu perfil' })),
+      h('div', { class: 'cm-txt', text: S.lob.editarPerfil ? 'É assim que a mesa te vê.' : 'Antes de começar: é assim que a mesa vai te ver. Dá pra mudar depois no menu da conta.' }),
+      S.lob.perfilForm];
+  }
+  function abrirMeuPerfil() {
+    fecharPops();
+    if (S.sess) { abrir('perfil'); return; }
+    S.lob.editarPerfil = true; S.lob.perfilForm = null; irLobby();
   }
   function viewPerfil(u) {
     const p = S.d.perfis[u] || {}, r = S.d.rep[u] || {};
     const minhas = S.d.aceites.filter((a) => a.autor === u).map((a) => byId(S.d.missoes, a.missao)).filter(Boolean);
     const card = h('div', { class: 'cm-caixa' },
-      h('div', { class: 'cm-npc' }, avatar(nome(u), null, 'cm-npc-big'), h('div', { style: 'display:flex;flex-direction:column;gap:6px;min-width:0' },
+      h('div', { class: 'cm-npc' }, avatarDe(u, 'cm-npc-big'), h('div', { style: 'display:flex;flex-direction:column;gap:6px;min-width:0' },
         h('div', { class: 'cm-nome', style: 'font-size:22px' }, spanNome(u)), p.personagem ? h('div', { class: 'cm-sub', text: `${p.personagem}${p.papelPj ? ' · ' + p.papelPj : ''}` }) : null,
         h('div', null, h('span', { class: 'cm-num', text: r.pontos || 0 }), h('span', { class: 'cm-sub', text: ` reputação · ${nivel(r.pontos || 0)}` })))),
       p.bio ? h('div', { class: 'cm-txt', text: p.bio }) : null);
@@ -6346,6 +6404,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   }
   function atualizarLobby() {
     const L = S.ui.lob; if (!L) return;
+    if (S.me && (S.lob.editarPerfil || precisaPerfil())) { rc(L, telaPerfil()); return; } // primeira tela depois de entrar com a conta
     if (!S.lob.papel) { rc(L, telaEscolha()); return; }
     if (!S.me) {
       if (window.__cmLogin && (S.db || S.erro)) { rc(L, h('div', { class: 'cm-h' }, h('h2', { text: S.lob.papel === 'mestre' ? 'Mestre' : 'Player' }), btn('Trocar', () => trocarPapel(null), 'cm-mini')), h('div', { class: 'cm-caixa cm-login' }, h('div', { class: 'cm-txt', text: 'Entre com a conta Google pra ' + (S.lob.papel === 'mestre' ? 'criar sessões.' : 'entrar numa sessão.') }), btn('Entrar com Google', () => { try { sessionStorage.setItem('cpr-com-poslogin', S.lob.papel || ''); } catch { /* ok */ } window.__cmLogin(); }, 'cm-pri'))); return; }
@@ -6460,7 +6519,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const pend = ps.filter((x) => x.estado === 'pendente');
     const dentro = ps.filter((x) => x.estado === 'ok');
     const fora = ps.filter((x) => x.estado === 'removido' || x.estado === 'recusado');
-    const linha = (x, ...acoes) => h('div', { class: 'cm-jog' }, avatar(nome(x.uid)), h('div', { style: 'flex:1;min-width:0;display:flex;flex-direction:column' }, spanNome(x.uid), h('span', { class: 'cm-sub', text: (S.d.perfis[x.uid] && S.d.perfis[x.uid].personagem) || (x.it ? `pediu ${quando(x.it.ts)}` : '') })), ...acoes);
+    const linha = (x, ...acoes) => h('div', { class: 'cm-jog' }, avatarDe(x.uid), h('div', { style: 'flex:1;min-width:0;display:flex;flex-direction:column' }, spanNome(x.uid), h('span', { class: 'cm-sub', text: (S.d.perfis[x.uid] && S.d.perfis[x.uid].personagem) || (x.it ? `pediu ${quando(x.it.ts)}` : '') })), ...acoes);
     const marca = (x, estado) => salvar(() => membroRef(S.me, s.id, x.uid).set({ estado, ts: agora() }));
     if (pend.length) out.push(h('div', { class: 'cm-caixa' }, h('div', { class: 'cm-faixa', text: `Pedidos de entrada (${pend.length})` }),
       lotada ? h('div', { class: 'cm-err', text: `Lotada (${ocup}/${s.limite}). Aumente o limite ou remova alguém.` }) : null,
@@ -6605,7 +6664,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     if (!S.me) { if (S.aberto) montar(); return; }
     limparSalvoAntigo();
     retomarEntrada(); // veio de outro sistema pra entrar numa sessão deste
-    sub(S.db.collection('perfis'), (s) => { S.d.perfis = Object.fromEntries(s.docs.map((d) => [d.id, d.data()])); }, 'perfis', null);
+    sub(S.db.collection('perfis'), (s) => { S.d.perfis = Object.fromEntries(s.docs.map((d) => [d.id, d.data()])); pintarChips(); }, 'perfis', null);
     assinarLobby();
     conferirAcessoMestre();
     if (S.aberto) montar();

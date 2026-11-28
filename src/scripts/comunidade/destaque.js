@@ -42,6 +42,7 @@
     const sec = (tit, ...filhos) => h('div', { class: 'cm-conta-sec' }, tit ? h('div', { class: 'cm-conta-rot', text: tit }) : null, ...filhos);
     const out = [h('div', { class: 'cm-conta-hd' }, avatarConta(true), h('div', { class: 'cm-conta-id' },
       h('b', { text: S.me ? (nome || 'Sua conta') : 'Sem conta' }), h('small', { text: S.me ? (email || (window.__cmLogout ? '' : 'Conta do Claude')) : 'Entre com o Google pra criar ou entrar em sessões.' })))];
+    if (S.me && S.escreve) out.push(sec(null, btn('Meu perfil e foto', abrirMeuPerfil, 'cm-mini cm-largo')));
     if (!S.me) {
       if (window.__cmLogin && (S.db || S.erro)) out.push(sec(null, btn('Entrar com Google', () => { try { sessionStorage.setItem('cpr-com-poslogin', S.lob.papel || ''); } catch { /* ok */ } window.__cmLogin(); }, 'cm-pri cm-largo')));
     } else {

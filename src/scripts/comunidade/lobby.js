@@ -74,6 +74,7 @@
   }
   function atualizarLobby() {
     const L = S.ui.lob; if (!L) return;
+    if (S.me && (S.lob.editarPerfil || precisaPerfil())) { rc(L, telaPerfil()); return; } // primeira tela depois de entrar com a conta
     if (!S.lob.papel) { rc(L, telaEscolha()); return; }
     if (!S.me) {
       if (window.__cmLogin && (S.db || S.erro)) { rc(L, h('div', { class: 'cm-h' }, h('h2', { text: S.lob.papel === 'mestre' ? 'Mestre' : 'Player' }), btn('Trocar', () => trocarPapel(null), 'cm-mini')), h('div', { class: 'cm-caixa cm-login' }, h('div', { class: 'cm-txt', text: 'Entre com a conta Google pra ' + (S.lob.papel === 'mestre' ? 'criar sessões.' : 'entrar numa sessão.') }), btn('Entrar com Google', () => { try { sessionStorage.setItem('cpr-com-poslogin', S.lob.papel || ''); } catch { /* ok */ } window.__cmLogin(); }, 'cm-pri'))); return; }
@@ -188,7 +189,7 @@
     const pend = ps.filter((x) => x.estado === 'pendente');
     const dentro = ps.filter((x) => x.estado === 'ok');
     const fora = ps.filter((x) => x.estado === 'removido' || x.estado === 'recusado');
-    const linha = (x, ...acoes) => h('div', { class: 'cm-jog' }, avatar(nome(x.uid)), h('div', { style: 'flex:1;min-width:0;display:flex;flex-direction:column' }, spanNome(x.uid), h('span', { class: 'cm-sub', text: (S.d.perfis[x.uid] && S.d.perfis[x.uid].personagem) || (x.it ? `pediu ${quando(x.it.ts)}` : '') })), ...acoes);
+    const linha = (x, ...acoes) => h('div', { class: 'cm-jog' }, avatarDe(x.uid), h('div', { style: 'flex:1;min-width:0;display:flex;flex-direction:column' }, spanNome(x.uid), h('span', { class: 'cm-sub', text: (S.d.perfis[x.uid] && S.d.perfis[x.uid].personagem) || (x.it ? `pediu ${quando(x.it.ts)}` : '') })), ...acoes);
     const marca = (x, estado) => salvar(() => membroRef(S.me, s.id, x.uid).set({ estado, ts: agora() }));
     if (pend.length) out.push(h('div', { class: 'cm-caixa' }, h('div', { class: 'cm-faixa', text: `Pedidos de entrada (${pend.length})` }),
       lotada ? h('div', { class: 'cm-err', text: `Lotada (${ocup}/${s.limite}). Aumente o limite ou remova alguém.` }) : null,

@@ -9,6 +9,7 @@
     return await new Promise((r) => c.toBlob(r, 'image/jpeg', 0.86));
   }
   async function enviarImagem(file, max = 1600) {
+    if (!S.assets && S.me) { try { S.assets = await claude.use('assets'); } catch { /* sem servidor */ } } // fora da sala (foto do perfil)
     if (!S.assets) throw { code: 'invalid_argument' };
     const r = await S.assets.upload(await reduzir(file, max));
     return r.id;

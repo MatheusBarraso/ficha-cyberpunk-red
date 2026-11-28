@@ -41,8 +41,9 @@ async def lancar(p, **kw):
     """Abre o Chrome do sistema (se houver) ou o Chromium do Playwright.
 
     Os contextos saem com o service worker bloqueado (ele buscaria o site de teste na internet de verdade)
-    e já com um RPG escolhido (Cyberpunk RED), pra tela de escolha da primeira visita não cobrir a página.
-    Pra testar a primeira visita: b.new_context(primeira_visita=True).
+    e já com um RPG escolhido (Cyberpunk RED), pra tela de escolha da primeira visita não cobrir a página,
+    e com a tela "Seu perfil" (primeira tela depois de entrar com a conta) deixada pra depois.
+    Pra testar a primeira visita: b.new_context(primeira_visita=True); pra ver a tela do perfil: #perfil=1 no endereço.
     """
     if CHROME:
         b = await p.chromium.launch(executable_path=CHROME, args=['--no-sandbox'], **kw)
@@ -55,6 +56,7 @@ async def lancar(p, **kw):
         ctx = await original(**opcoes)
         if not primeira_visita:
             await ctx.add_init_script("try{if(!localStorage.getItem('sk-sistema'))localStorage.setItem('sk-sistema','cpr')}catch(e){}")
+            await ctx.add_init_script("try{var m=/[#&]u=([^&]+)/.exec(location.hash);if(m&&!/perfil=1/.test(location.hash))sessionStorage.setItem('cpr-com-perfil-depois',m[1])}catch(e){}")
         return ctx
     b.new_context = novo_contexto
     return b

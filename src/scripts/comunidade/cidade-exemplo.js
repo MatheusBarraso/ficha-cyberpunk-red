@@ -41,7 +41,7 @@
     if (!S.me) { if (S.aberto) montar(); return; }
     limparSalvoAntigo();
     retomarEntrada(); // veio de outro sistema pra entrar numa sessão deste
-    sub(S.db.collection('perfis'), (s) => { S.d.perfis = Object.fromEntries(s.docs.map((d) => [d.id, d.data()])); }, 'perfis', null);
+    sub(S.db.collection('perfis'), (s) => { S.d.perfis = Object.fromEntries(s.docs.map((d) => [d.id, d.data()])); pintarChips(); }, 'perfis', null);
     assinarLobby();
     conferirAcessoMestre();
     if (S.aberto) montar();
