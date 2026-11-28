@@ -74,7 +74,7 @@
   }
   function atualizarLobby() {
     const L = S.ui.lob; if (!L) return;
-    if (S.me && (S.lob.editarPerfil || precisaPerfil())) { rc(L, telaPerfil()); return; } // primeira tela depois de entrar com a conta
+    if (S.me && S.lob.editarPerfil) { rc(L, telaPerfil()); return; } // "Meu perfil e foto" fora da sala
     if (!S.lob.papel) { rc(L, telaEscolha()); return; }
     if (!S.me) {
       if (window.__cmLogin && (S.db || S.erro)) { rc(L, h('div', { class: 'cm-h' }, h('h2', { text: S.lob.papel === 'mestre' ? 'Mestre' : 'Player' }), btn('Trocar', () => trocarPapel(null), 'cm-mini')), h('div', { class: 'cm-caixa cm-login' }, h('div', { class: 'cm-txt', text: 'Entre com a conta Google pra ' + (S.lob.papel === 'mestre' ? 'criar sessões.' : 'entrar numa sessão.') }), btn('Entrar com Google', () => { try { sessionStorage.setItem('cpr-com-poslogin', S.lob.papel || ''); } catch { /* ok */ } window.__cmLogin(); }, 'cm-pri'))); return; }

@@ -19,9 +19,9 @@
           : h('div', { class: 'cm-vazio', text: 'Ninguém na mesa ainda.' }));
     },
   };
-  // ----- meu perfil: apelido, foto, personagem. Também fora da sala — é a primeira tela depois de entrar com a
-  // conta, enquanto a pessoa não tiver perfil. A foto é escolhida pela pessoa (imagem no banco, em assets);
-  // sem ela vale a do Google, e sem as duas, as iniciais.
+  // ----- meu perfil: apelido, foto, personagem. É a primeira aba ao entrar na sala, e fora dela abre pelo menu
+  // da conta. A foto é escolhida pela pessoa (imagem no banco, em assets); sem ela vale a do Google, e sem as
+  // duas, as iniciais.
   function avatarDe(uid, cls = 'cm-av', foto) {
     const p = (uid && S.d.perfis[uid]) || {};
     const f = foto === undefined ? p.foto : foto;
@@ -31,7 +31,7 @@
     if (g) { const im = h('img', { src: g, alt: '', referrerpolicy: 'no-referrer' }); im.onerror = () => { im.remove(); a.textContent = iniciais(nome(uid)); }; a.textContent = ''; a.append(im); }
     return a;
   }
-  // op.inicio: a tela "Seu perfil" fora da sala (salva e segue pra escolha de Mestre / Player)
+  // op.inicio: a tela "Seu perfil" fora da sala (salva e volta)
   function formPerfil(op = {}) {
     const p = (S.me && S.d.perfis[S.me]) || {};
     const ap = h('input', { class: 'cm-in', value: p.apelido || '', maxlength: 40, placeholder: 'Seu apelido na comunidade' });
@@ -64,8 +64,8 @@
     const gravar = () => salvar(() => dok('perfis', S.me).set({ apelido: ap.value.trim(), personagem: pj.value.trim(), papelPj: pp.value.trim(), bio: bio.value.trim(), foto: foto || null, ts: agora() }));
     const sair = () => { S.lob.editarPerfil = false; S.lob.perfilForm = null; atualizarLobby(); corpo.scrollTop = 0; };
     const acoes = op.inicio
-      ? [btn(S.lob.editarPerfil ? 'Voltar' : 'Agora não', () => { try { sessionStorage.setItem('cpr-com-perfil-depois', S.me); } catch { /* ok */ } sair(); }, 'cm-mini'), h('span', { style: 'flex:1' }),
-        btn('Salvar e continuar', async () => { if (await gravar()) { toast('Perfil', 'Perfil salvo.'); sair(); } }, 'cm-pri')]
+      ? [btn('Voltar', sair, 'cm-mini'), h('span', { style: 'flex:1' }),
+        btn('Salvar perfil', async () => { if (await gravar()) { toast('Perfil', 'Perfil salvo.'); sair(); } }, 'cm-pri')]
       : [puxar, h('span', { style: 'flex:1' }), btn('Salvar perfil', () => gravar().then((ok) => ok && toast('Perfil', 'Perfil salvo.')), 'cm-pri')];
     return h('div', { class: 'cm-caixa' }, h('div', { class: 'cm-faixa', text: 'Meu perfil' }),
       lbl('Foto', caixaFoto),
@@ -74,13 +74,9 @@
       h('div', { class: 'cm-row' }, acoes));
   }
   // fora da sala: a tela "Seu perfil" (o formulário fica guardado pra não perder o que já foi digitado quando a tela se refaz)
-  const perfilDepois = () => { try { return sessionStorage.getItem('cpr-com-perfil-depois') === S.me; } catch { return false; } };
-  const precisaPerfil = () => !!S.me && S.escreve && S.carregou.has('perfis') && !S.d.perfis[S.me] && !perfilDepois();
   function telaPerfil() {
     if (!S.lob.perfilForm) S.lob.perfilForm = formPerfil({ inicio: true });
-    return [h('div', { class: 'cm-h' }, h('h2', { text: 'Seu perfil' })),
-      h('div', { class: 'cm-txt', text: S.lob.editarPerfil ? 'É assim que a mesa te vê.' : 'Antes de começar: é assim que a mesa vai te ver. Dá pra mudar depois no menu da conta.' }),
-      S.lob.perfilForm];
+    return [h('div', { class: 'cm-h' }, h('h2', { text: 'Seu perfil' })), h('div', { class: 'cm-txt', text: 'É assim que a mesa te vê.' }), S.lob.perfilForm];
   }
   function abrirMeuPerfil() {
     fecharPops();

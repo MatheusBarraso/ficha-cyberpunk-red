@@ -48,8 +48,9 @@
     try { localStorage.setItem(SALA_KEY, JSON.stringify({ gm, sid })); localStorage.setItem(ULTIMA_KEY, JSON.stringify({ gm, sid, nome: (dados && dados.nome) || '', papel: gm === S.me ? 'mestre' : 'player', me: S.me, sistema: SISTEMA.id })); } catch { /* ok */ }
     if (!S.assets) claude.use('assets').then((a) => { S.assets = a; }).catch(() => {});
     assinarSala();
-    S.sec = 'historia';
-    abrir('historia');
+    // a sala abre em Perfis: a primeira coisa é a pessoa ver e acertar o próprio perfil (apelido, foto, personagem)
+    S.sec = 'perfil';
+    abrir('perfil');
   }
   function sairSala() {
     S.verLobby = false;

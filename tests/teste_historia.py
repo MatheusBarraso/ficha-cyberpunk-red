@@ -35,6 +35,7 @@ async def main():
         await gm.bring_to_front()
         await gm.bring_to_front()
         await gm.locator("#comu button").filter(has_text="Abrir sala").first.click(); await gm.wait_for_timeout(1500)
+        await gm.evaluate("__comuAbrir('historia')"); await gm.wait_for_timeout(500)  # a sala abre em Perfis
         print('aba:', await gm.evaluate("[__comuEstado.sec, [...document.querySelectorAll('.cm-tabs button')].map(b=>b.textContent.trim()).join('|')]"))
         await gm.wait_for_timeout(600); await gm.screenshot(path='tests/saida/h_vazio.png')
         v = await gm.evaluate("(()=>{const r=document.querySelector('.cm-qvista').getBoundingClientRect();return [r.x,r.y,r.width,r.height]})()")
