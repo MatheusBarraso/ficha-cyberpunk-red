@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:">
-<title>Ficha Cyberpunk RED — sem conexão</title>
+<title>Sketcher — sem conexão</title>
 <style>
   html,body{height:100%;margin:0;background:#0b0b0d;color:#ece8e2;font:16px/1.5 system-ui,"Segoe UI",sans-serif}
   main{height:100%;display:grid;place-content:center;text-align:center;padding:24px}
@@ -19,15 +19,15 @@
 <body>
 <main>
   <h1>SEM <b>CONEXÃO</b></h1>
-  <p>O app abre a Ficha Cyberpunk RED pela internet. Confira sua conexão e tente de novo.</p>
+  <p>O app abre o Sketcher pela internet. Confira sua conexão e tente de novo.</p>
   <div><button id="tentar" type="button">Tentar de novo</button></div>
   <small id="erro"></small>
 </main>
 <script>
   var e = new URLSearchParams(location.search).get('erro');
   if (e) document.getElementById('erro').textContent = 'Detalhe: ' + e;
-  document.getElementById('tentar').onclick = function () { location.href = 'https://matheusbarraso.github.io/ficha-cyberpunk-red/'; };
-  addEventListener('online', function () { location.href = 'https://matheusbarraso.github.io/ficha-cyberpunk-red/'; });
+  document.getElementById('tentar').onclick = function () { location.href = 'https://matheusbarraso.github.io/sketcher/'; };
+  addEventListener('online', function () { location.href = 'https://matheusbarraso.github.io/sketcher/'; });
 </script>
 </body>
 </html>

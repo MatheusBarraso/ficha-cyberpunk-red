@@ -1,10 +1,15 @@
-// Ficha Cyberpunk RED — app do Electron.
+// Sketcher — app do Electron (até a versão 1.0 se chamava Ficha Cyberpunk RED).
 // Abre o site online numa janela própria: cada versão nova do site já aparece no app, sem reinstalar.
 const { app, BrowserWindow, shell, Menu } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
-const SITE = 'https://matheusbarraso.github.io/ficha-cyberpunk-red/';
+const SITE = 'https://matheusbarraso.github.io/sketcher/';
+// o endereço de antes do nome Sketcher: os dois são do site, e se um não existir (404) o app abre o outro
+const SITE_ANTIGO = 'https://matheusbarraso.github.io/ficha-cyberpunk-red/';
+const PASTAS = ['/sketcher/', '/ficha-cyberpunk-red/'];
+// os dados (fichas, anotações) ficam na pasta do app: continua a mesma de quando ele se chamava Ficha Cyberpunk RED
+app.setPath('userData', path.join(app.getPath('appData'), 'Ficha Cyberpunk RED'));
 // login com o Google (Firebase): precisa abrir dentro do app pra voltar logado
 const LOGIN = [
   /^https:\/\/accounts\.google\.com\//,
@@ -14,14 +19,16 @@ const LOGIN = [
   /^https:\/\/apis\.google\.com\//,
   /^https:\/\/www\.google\.com\/recaptcha\//,
 ];
-const doSite = (url) => url.startsWith(SITE) || url === SITE.slice(0, -1);
+const doSite = (url) => {
+  try { const u = new URL(url); return u.origin === new URL(SITE).origin && PASTAS.some((p) => u.pathname === p.slice(0, -1) || u.pathname.startsWith(p)); } catch { return false; }
+};
 const ehLogin = (url) => LOGIN.some((r) => r.test(url));
 
 // o Google recusa login em "navegador embutido": o app se apresenta como um Chrome comum
 app.userAgentFallback = app.userAgentFallback
   .replace(/\sElectron\/\S+/i, '')
-  .replace(/\sficha-cyberpunk-red\/\S+/i, '')
-  .replace(/\sFicha Cyberpunk RED\/\S+/i, '');
+  .replace(/\s(?:sketcher|ficha-cyberpunk-red)\/\S+/i, '')
+  .replace(/\s(?:Sketcher|Ficha Cyberpunk RED)\/\S+/i, '');
 
 if (!app.requestSingleInstanceLock()) { app.quit(); }
 
@@ -43,7 +50,7 @@ function criarJanela() {
     width: j.width || 1366, height: j.height || 860, x: j.x, y: j.y,
     minWidth: 360, minHeight: 480,
     backgroundColor: '#0b0b0d',
-    title: 'Ficha Cyberpunk RED',
+    title: 'Sketcher',
     icon: path.join(__dirname, 'build', 'icon.png'),
     autoHideMenuBar: true,
     show: false,
@@ -67,6 +74,14 @@ function criarJanela() {
     if (doSite(url) || url.startsWith('blob:')) return { action: 'allow', overrideBrowserWindowOptions: { autoHideMenuBar: true } };
     if (/^https?:/.test(url)) shell.openExternal(url);
     return { action: 'deny' };
+  });
+
+  // endereço que não existe (o site mudou de pasta): tenta o outro uma vez
+  let tentouOutro = false;
+  win.webContents.on('did-navigate', (e, url, codigo) => {
+    if (codigo !== 404 || tentouOutro || !doSite(url)) return;
+    tentouOutro = true;
+    win.loadURL(url.includes('/sketcher') ? SITE_ANTIGO : SITE);
   });
 
   // sem internet: mostra uma tela com "tentar de novo"

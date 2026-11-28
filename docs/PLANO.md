@@ -98,4 +98,8 @@ Passos:
       conta (`comunidade/acesso-mestre.js`; a senha é só o jeito de liberar hoje — ver `FIREBASE.md` pra compra).
       As listas de livros saem do registro (corrigiu a janela da página salva, que não listava PDFs adicionados)
       — com teste (`teste_livre_comunidade.py`).
-- [ ] 3e. Nome Sketcher no site, app do Windows e PWA; endereço `/sketcher` (renomear o repositório) e app novo.
+- [x] 3e. Nome Sketcher no site e no app instalável (feito junto com a 3b); app do Windows 1.1 "Sketcher": instala
+      por cima da 1.0, continua com os mesmos dados (mesma pasta) e abre o endereço novo ou o antigo, o que existir.
+- [ ] 3e (endereço). Renomear o repositório pra `sketcher` (endereço `/sketcher/`) e pôr o redirecionamento do
+      endereço antigo — precisa ser feito pelo Matheus no GitHub: passo a passo em `docs/endereco-antigo/LEIA-ME.md`.
+      O site não depende do nome da pasta (usa endereços relativos) e os dados ficam, porque são por domínio.

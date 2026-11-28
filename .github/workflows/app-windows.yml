@@ -38,7 +38,7 @@ jobs:
       - name: Guardar os arquivos
         uses: actions/upload-artifact@v4
         with:
-          name: Ficha-CPR-Windows-${{ steps.v.outputs.versao }}
+          name: Sketcher-Windows-${{ steps.v.outputs.versao }}
           path: app/dist/*.exe
 
       - name: Publicar na página de downloads (Releases)
@@ -52,5 +52,5 @@ jobs:
             gh release upload "$TAG" dist/*.exe --clobber
           else
             gh release create "$TAG" dist/*.exe --title "App Windows ${{ steps.v.outputs.versao }}" \
-              --notes "App da Ficha Cyberpunk RED pra Windows. **Instalador**: instala e cria atalhos. **Portátil**: roda direto, sem instalar. Se o Windows avisar \"O Windows protegeu o computador\", clique em Mais informações → Executar assim mesmo."
+              --notes "App do Sketcher pra Windows. **Instalador**: instala e cria atalhos. **Portátil**: roda direto, sem instalar. Se o Windows avisar \"O Windows protegeu o computador\", clique em Mais informações → Executar assim mesmo."
           fi

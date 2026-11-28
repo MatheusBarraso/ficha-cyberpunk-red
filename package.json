@@ -1,7 +1,7 @@
 {
   "name": "sketcher",
   "private": true,
-  "description": "Sketcher — plataforma de RPG no navegador (Ficha Cyberpunk RED + comunidade).",
+  "description": "Sketcher — plataforma de RPG no navegador: fichas, livros e sessões (Cyberpunk RED e Sistema livre).",
   "type": "module",
   "engines": { "node": ">=18" },
   "scripts": {

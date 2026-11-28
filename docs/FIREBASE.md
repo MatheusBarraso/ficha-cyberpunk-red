@@ -1,4 +1,4 @@
-# Ficha Cyberpunk RED — versão GitHub + Firebase
+# Sketcher — versão GitHub + Firebase
 
 Esta pasta é o site inteiro: ficha, anotações, história, leitor de livros e Comunidade (Mestre/Player).
 Ele fica de graça no **GitHub Pages**, e a Comunidade guarda os dados no **Firebase** (também grátis).
@@ -68,7 +68,7 @@ Esses valores **não são senha** (eles aparecem pra qualquer um que abrir o sit
 
 1. Entre em **github.com** (crie a conta se não tiver).
 2. Canto de cima → **+** → **New repository**.
-   - Nome: `ficha-cyberpunk-red` (ou o que quiser)
+   - Nome: `sketcher` (ou o que quiser)
    - Deixe **Public** → **Create repository**.
 3. Na página do repositório: **uploading an existing file**.
 4. Arraste **todo o conteúdo desta pasta** (os arquivos **e** as pastas `lib` e `exemplo`) → **Commit changes**.
@@ -76,7 +76,7 @@ Esses valores **não são senha** (eles aparecem pra qualquer um que abrir o sit
    - Em **Source**: **Deploy from a branch**
    - Branch: **main** e pasta **/ (root)** → **Save**.
 6. Espere 1–2 minutos e recarregue essa tela: aparece o link, tipo
-   `https://SEU-USUARIO.github.io/ficha-cyberpunk-red/`
+   `https://SEU-USUARIO.github.io/sketcher/`
 
 ## Passo 6 — Autorizar o endereço do site no Firebase
 
