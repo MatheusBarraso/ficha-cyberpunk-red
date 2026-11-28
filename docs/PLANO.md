@@ -51,8 +51,12 @@ Decisões do Matheus (28/11/2026):
       a seção saiu do HTML e o menu deitado ficou em duas colunas, com a posição das seções num lugar só.
 - [x] Peças de tela reaproveitáveis no núcleo: moldura de folha (`criarMoldura()`) e cartão de escolha
       (`.sk-escolha`), usados pela Comunidade e pela escolha de RPG.
-- [ ] Juntar CSS repetido; cores do modo escuro por variáveis onde der.
-- [ ] Padronizar nomes e cabeçalhos dos arquivos.
+- [x] Padronizar nomes e cabeçalhos: todo arquivo de `src/` começa dizendo o que faz; peças do núcleo saíram
+      das pastas de recurso (moldura, cartão de escolha, cor do site, retrato, neon) e o que é de um sistema foi
+      pra `src/sistemas/<id>/`.
+- [ ] CSS: os `:root` que sobraram são variáveis de cada módulo (leitor, cor de destaque, seta, estilo do livro)
+      e ficam onde estão. Falta: diminuir os `!important` (179) e fazer o modo escuro por variáveis em vez de
+      copiar regras — mexe em quase toda tela, então fica pra uma etapa própria, com a comparação visual.
 
 ## Etapa 3 — Sketcher
 

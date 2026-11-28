@@ -1,3 +1,4 @@
+/* ---------- livros: adicionar / tirar PDF, enviar pra mesa e o aviso de livro que falta (publico/livros_local.js) ---------- */
 
 .lv-addrow{display:flex;gap:6px;margin-top:6px}
 .lv-addrow .btool{flex:1;white-space:nowrap}

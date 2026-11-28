@@ -1,3 +1,5 @@
+// confirmar(mensagem, sim, não): janela de confirmação no visual do site, no lugar do confirm() do navegador.
+// Devolve uma Promise<boolean>; Esc ou clicar fora = não.
 
 window.confirmar = function (msg, sim = 'Sim', nao = 'Cancelar') {
   return new Promise((resolve) => {

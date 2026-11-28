@@ -1,3 +1,4 @@
+// Livros: ao abrir a aba pela primeira vez, já começa a desenhar a 1ª página do primeiro livro do sistema.
 
 document.addEventListener('DOMContentLoaded', () => {
   const f = document.getElementById('lv-frame');
