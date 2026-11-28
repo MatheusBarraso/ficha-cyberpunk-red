@@ -12,6 +12,8 @@ Estes três arquivos resolvem isso. Eles vão num repositório **separado**, o s
 | `index.html` | `matheusbarraso.github.io/` abre o Sketcher |
 | `ficha-cyberpunk-red/index.html` | o endereço antigo leva pro novo, mantendo o `#…` (RPG do convite) |
 | `404.html` | qualquer página antiga (`/ficha-cyberpunk-red/…`) também vai pro Sketcher |
+| `.well-known/assetlinks.json` | confirma que o app do Android é deste site: o app abre sem a barra de endereço |
+| `_config.yml` | faz o GitHub publicar a pasta `.well-known` (ela começa com ponto) |
 
 Os dados de quem já usava (fichas, anotações) continuam: ficam no navegador por **domínio**, e o domínio
 (`matheusbarraso.github.io`) é o mesmo nos dois endereços.
@@ -20,8 +22,8 @@ Os dados de quem já usava (fichas, anotações) continuam: ficam no navegador p
 1. **Renomear este repositório**: Settings → General → Repository name → `sketcher` → Rename.
    O site passa a abrir em `https://matheusbarraso.github.io/sketcher/`.
 2. **Criar o redirecionamento**: no GitHub, **+ → New repository** → nome exatamente
-   `matheusbarraso.github.io` → Public → Create. Envie os três arquivos desta pasta (com a pasta
-   `ficha-cyberpunk-red`) por **uploading an existing file** → Commit.
+   `matheusbarraso.github.io` → Public → Create. Envie os arquivos desta pasta (com as pastas
+   `ficha-cyberpunk-red` e `.well-known`) por **uploading an existing file** → Commit.
 3. Nesse repositório novo: **Settings → Pages** → Source **Deploy from a branch** → **main** / **(root)** → Save.
 4. Em 1–2 minutos, `https://matheusbarraso.github.io/ficha-cyberpunk-red/` já manda pro Sketcher.
 

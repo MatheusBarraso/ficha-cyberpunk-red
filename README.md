@@ -7,7 +7,7 @@ livre** (a ficha que você monta, pra qualquer RPG). Começou como a Ficha Cyber
 - Site: https://matheusbarraso.github.io/ficha-cyberpunk-red/ — vai pra `/sketcher/` quando este repositório for
   renomeado (passo a passo e redirecionamento do endereço antigo em [`docs/endereco-antigo/`](docs/endereco-antigo/LEIA-ME.md))
 - App do Windows: página **Releases** deste repositório (pasta [`app/`](app/))
-- Android: abra o site no Chrome → ⋮ → **Instalar app**
+- App do Android: `Sketcher-Android-x.y.z.apk` na página **Releases** (pasta [`app-android/`](app-android/)); ou abra o site no Chrome → ⋮ → **Instalar app**
 
 ## Antes de mexer
 

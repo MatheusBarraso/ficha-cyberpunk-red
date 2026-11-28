@@ -1,0 +1,79 @@
+name: App Android
+
+on:
+  push:
+    branches: [main]
+    paths: ['app-android/**', '.github/workflows/app-android.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app-android
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.11.1'
+
+      # a chave de assinar fica nos segredos do repositório; sem ela, sai só um APK de teste (sem Release)
+      - name: Chave de assinar
+        id: chave
+        env:
+          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+        run: |
+          if [ -n "$ANDROID_KEYSTORE" ]; then
+            echo "$ANDROID_KEYSTORE" | base64 -d > "$RUNNER_TEMP/sketcher.jks"
+            echo "tem=1" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::Sem os segredos ANDROID_KEYSTORE e ANDROID_SENHA: o APK sai só de teste, sem Release."
+            echo "tem=0" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Montar o APK
+        env:
+          ANDROID_KEYSTORE_ARQUIVO: ${{ runner.temp }}/sketcher.jks
+          ANDROID_SENHA: ${{ secrets.ANDROID_SENHA }}
+        run: |
+          if [ "${{ steps.chave.outputs.tem }}" = "1" ]; then
+            gradle --no-daemon assembleRelease
+            mkdir -p saida && cp app/build/outputs/apk/release/app-release.apk "saida/Sketcher-Android-$(grep -oP "versionName '\K[^']+" app/build.gradle).apk"
+          else
+            gradle --no-daemon assembleDebug
+            mkdir -p saida && cp app/build/outputs/apk/debug/app-debug.apk saida/Sketcher-Android-teste.apk
+          fi
+
+      - name: Versão
+        id: v
+        run: echo "versao=$(grep -oP "versionName '\K[^']+" app/build.gradle)" >> "$GITHUB_OUTPUT"
+
+      - name: Guardar o APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Sketcher-Android-${{ steps.v.outputs.versao }}
+          path: app-android/saida/*.apk
+
+      - name: Publicar na página de downloads (Releases)
+        if: steps.chave.outputs.tem == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          TAG="android-v${{ steps.v.outputs.versao }}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" saida/*.apk --clobber
+          else
+            gh release create "$TAG" saida/*.apk --title "App Android ${{ steps.v.outputs.versao }}" \
+              --notes "App do Sketcher pra Android. Baixe o .apk no celular e abra; se o Android pedir, permita instalar apps desta fonte (o app não está na Play Store). Precisa do Chrome instalado (é nele que o site roda; o login do Google funciona igual)."
+          fi

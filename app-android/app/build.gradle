@@ -1,0 +1,41 @@
+// Sketcher pra Android: abre o site no motor do Chrome em tela cheia (Trusted Web Activity).
+// Pra lançar uma versão nova do app: suba versionCode e versionName e envie pro GitHub.
+plugins { id 'com.android.application' }
+
+def SITE = 'https://matheusbarraso.github.io/ficha-cyberpunk-red/' // muda pra /sketcher/ quando o repositório for renomeado
+
+android {
+    namespace 'io.github.matheusbarraso.sketcher'
+    compileSdk 35
+    defaultConfig {
+        applicationId 'io.github.matheusbarraso.sketcher'
+        minSdk 23
+        targetSdk 35
+        versionCode 1
+        versionName '1.0.0'
+        resValue 'string', 'launch_url', SITE
+    }
+    signingConfigs {
+        // a chave fica nos segredos do repositório (ANDROID_KEYSTORE / ANDROID_SENHA), nunca no código
+        release {
+            storeFile file(System.getenv('ANDROID_KEYSTORE_ARQUIVO') ?: 'sem-chave.jks')
+            storePassword System.getenv('ANDROID_SENHA')
+            keyAlias 'sketcher'
+            keyPassword System.getenv('ANDROID_SENHA')
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.5.0'
+}

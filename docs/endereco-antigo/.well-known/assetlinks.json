@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "io.github.matheusbarraso.sketcher",
+    "sha256_cert_fingerprints": ["37:89:89:F4:51:63:1C:14:53:F4:D7:D5:92:26:70:BE:1B:AC:82:D0:A7:56:A1:8F:A6:47:0E:2F:40:03:B6:28"]
+  }
+}]
