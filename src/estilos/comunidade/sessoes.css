@@ -15,9 +15,10 @@
 .cm-entra .cm-sessao-nome{font-size:22px}
 
 /* portão: nada da ficha aparece antes da escolha */
-html.cm-gate body > :not(#comu):not(.cm-toasts):not(.jn-bg):not(.cfm-bg):not(#cpr-nova):not(.cm-modal-fundo){visibility:hidden!important}
+html.cm-gate body > :not(#comu):not(#sk-rpg):not(.cm-toasts):not(.jn-bg):not(.cfm-bg):not(#cpr-nova):not(.cm-modal-fundo){visibility:hidden!important}
 html.cm-gate body{background:var(--bg)}
 html.cm-gate .cm-tabs{display:none}
+.cm-esc-topo{display:flex;align-items:center;justify-content:space-between;gap:8px 12px;flex-wrap:wrap}
 
 /* janelas (formulários do mestre) */
 .jn .cm-lbl{color:var(--ink)}

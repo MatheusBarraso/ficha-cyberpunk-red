@@ -26,14 +26,14 @@ async def main():
             return pg
 
         # 1) primeira visita: ninguém escolheu
-        ctx = await b.new_context(); await ctx.route('**/*', handler)
+        ctx = await b.new_context(primeira_visita=True); await ctx.route('**/*', handler)
         pg = await abrir(ctx)
         checar(await pg.evaluate("document.documentElement.classList.contains('sk-escolher')"), 'primeira visita pede a escolha de RPG')
         checar(await pg.evaluate("SK.SISTEMA.id") == 'cpr', 'por baixo carrega o Cyberpunk RED')
         await ctx.close()
 
         # 2) quem já tinha ficha do CPR continua nele, sem tela de escolha
-        ctx = await b.new_context(); await ctx.route('**/*', handler)
+        ctx = await b.new_context(primeira_visita=True); await ctx.route('**/*', handler)
         await ctx.add_init_script("if (!sessionStorage.getItem('x')) { sessionStorage.setItem('x', 1); localStorage.setItem('cpr-ficha-v1', JSON.stringify({ NOME: 'Kira' })); }")
         pg = await abrir(ctx)
         checar(not await pg.evaluate("document.documentElement.classList.contains('sk-escolher')"), 'quem já usava o CPR não vê a escolha')

@@ -1,7 +1,7 @@
 {
-  "name": "Ficha Cyberpunk RED",
-  "short_name": "Ficha CPR",
-  "description": "Ficha de personagem, livros e comunidade de Cyberpunk RED.",
+  "name": "Sketcher",
+  "short_name": "Sketcher",
+  "description": "Fichas, livros e sessões de RPG: Cyberpunk RED e Sistema livre.",
   "lang": "pt-BR",
   "start_url": "./",
   "scope": "./",

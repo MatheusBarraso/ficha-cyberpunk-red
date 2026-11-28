@@ -45,7 +45,11 @@ Herança do jeito que o site cresceu — a refatoração vai trocando isso por m
 
 - **Script principal** (ficha, celular, leitor, anotações, história): os arquivos de `src/scripts/` que
   entram no mesmo `<script>` dividem o escopo global. Funções globais usadas pelo resto:
-  `showPage(i)`, `applyScale()`, `openMenu(abrir)`, `save()`, `load()`, `recalc()`, `setMob()`, `setLand()`.
+  `showPage(i)`, `applyScale()`, `openMenu(abrir)`, `save()`, `load()`, `recalc()`, `setMob()`, `setLand()`,
+  `aoEsc()`, `abrirEscolhaRpg()`, `applyTheme(cor)` / `corDaFicha()` (cor do site, `nucleo/cores.js`).
+- **Peças de tela do núcleo**: `criarMoldura()` (`nucleo/moldura.js`, a moldura de folha com cantos
+  cortados) e o cartão de escolha `.sk-escolha` / `.sk-esc-*` (`estilos/nucleo/escolha.css`). A Comunidade
+  e a escolha de RPG usam as mesmas.
 - **Comunidade** (`src/scripts/comunidade/`): é uma função só, cortada em arquivos por recurso —
   `estado.js` abre a função e declara o estado `S`; `combate-menu.js` fecha. Usa as globais acima e
   expõe pontes `window.__cm*`.
@@ -59,11 +63,29 @@ Herança do jeito que o site cresceu — a refatoração vai trocando isso por m
 - **Eventos**: `cm-fechou` (Comunidade fechou), `cm-asset` (imagem chegou), `livros-mudaram`,
   `cpr-escuro` (tema trocou), `cm-gate-fim` (Comunidade liberou a ficha).
 
+## Sistemas de RPG
+
+O Sketcher roda **um sistema por carregamento** — trocar recarrega a página.
+
+1. `scripts/cabeca/sistema.js` (no `<head>`, antes de tudo) decide qual: `#rpg=<id>` no endereço →
+   última escolha (`sk-sistema`) → quem já tinha ficha do Cyberpunk RED fica nele → senão é a primeira
+   visita (`html.sk-escolher`). Anota em `<html data-sistema="…">`.
+2. `scripts/nucleo/sistemas.js` é o registro: `SISTEMAS` (id, nome, descrição e itens da tela de escolha,
+   páginas da ficha, `recursos` = ferramentas da Comunidade que valem pro sistema), `SISTEMA` (o aberto),
+   `chaveLocal(nome)` / `chaveDe(sistema, nome)` (chave no navegador) e `trocarSistema(id)`.
+3. `scripts/nucleo/escolha-rpg.js` é a tela de escolha: abre sozinha na primeira visita (por cima da
+   entrada da Comunidade, sem fechar até escolher) e por `abrirEscolhaRpg()`.
+
+Pra acrescentar um sistema: uma entrada em `SISTEMAS`, o id na lista `conhecidos` de `cabeca/sistema.js`
+(o `<head>` roda antes do registro) e o conteúdo próprio em `src/sistemas/<id>/`.
+
 ## Dados
 
-**No navegador** (por aparelho): ficha `cpr-ficha-v1`, anotações `cpr-notas-v2`, quadro `cpr-quadro-v2`,
-livros/marcações `cpr-livros-v1`, aparência `cpr-tema-v2`/`cpr-escuro`/`cpr-destaque`; PDFs dos livros
-no IndexedDB `cpr-livros` (nunca saem do aparelho). Backup completo pelo menu (arquivo .json).
+**No navegador** (por aparelho): RPG escolhido `sk-sistema`; do Cyberpunk RED, ficha `cpr-ficha-v1`,
+anotações `cpr-notas-v2`, quadro `cpr-quadro-v2`, livros/marcações `cpr-livros-v1` (as chaves de antes do
+Sketcher); dos outros sistemas, `sk-<id>-ficha`, `sk-<id>-notas`, `sk-<id>-quadro`, `sk-<id>-livros`;
+aparência `cpr-tema-v2`/`cpr-escuro`/`cpr-destaque`; PDFs dos livros no IndexedDB `cpr-livros` (nunca saem
+do aparelho). Backup completo pelo menu (arquivo .json, com o sistema de onde saiu).
 
 **No Firestore** (Comunidade), em resumo:
 
@@ -88,4 +110,5 @@ python3 tests/visual.py comparar  # depois de mexer: mostra o que mudou na tela
 ```
 
 Os testes usam um Firebase falso (`tests/fake_firebase.js`) com as mesmas regras de acesso, então
-mestre e players rodam em abas do mesmo navegador de teste.
+mestre e players rodam em abas do mesmo navegador de teste. Os navegadores de teste já começam com o
+Cyberpunk RED escolhido; pra testar a primeira visita, `b.new_context(primeira_visita=True)`.

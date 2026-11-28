@@ -41,7 +41,13 @@ CENAS = [
     ('celular-ficha-escuro', EM_PE, True, ['showPage(0)']),
     ('celular-anotacoes', EM_PE, False, ['showPage(3)']),
     ('deitado-ficha', DEITADO, False, ['showPage(0)']),
+    ('deitado-menu', DEITADO, False, ['showPage(0)', 'openMenu(true)']),
+    ('rpg', PC, False, []),
+    ('rpg-escuro', PC, True, []),
+    ('celular-rpg', EM_PE, False, []),
+    ('rpg-trocar', PC, False, ['abrirEscolhaRpg()']),
 ]
+PRIMEIRA_VISITA = {'rpg', 'rpg-escuro', 'celular-rpg'}  # sem RPG escolhido: abre na tela de escolha
 
 
 async def capturar(p, destino):
@@ -49,7 +55,7 @@ async def capturar(p, destino):
     b = await lancar(p)
     for nome, tela, escuro, passos in CENAS:
         cel = tela is not PC
-        ctx = await b.new_context(viewport=tela, is_mobile=cel, has_touch=cel, user_agent=UA_CEL if cel else None)
+        ctx = await b.new_context(viewport=tela, is_mobile=cel, has_touch=cel, user_agent=UA_CEL if cel else None, primeira_visita=nome in PRIMEIRA_VISITA)
         await ctx.route('**/*', handler)
         await ctx.add_init_script("try{localStorage.setItem('cpr-escuro','%s')}catch(e){}" % ('1' if escuro else '0'))
         pg = await ctx.new_page()

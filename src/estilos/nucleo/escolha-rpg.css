@@ -1,0 +1,20 @@
+/* ---------- escolha de RPG (nucleo/escolha-rpg.js): folha por cima de tudo, no visual da entrada da Comunidade ---------- */
+.sk-rpg{--ln:2px;--corte:12px;position:fixed;inset:0;z-index:380;background:var(--bg);color:var(--ink);font-family:var(--font);
+  overflow-y:auto;overscroll-behavior:contain;padding:clamp(14px,4vh,48px) 10px 30px}
+.sk-rpg[hidden]{display:none}
+.sk-rpg:focus{outline:none}
+.sk-rpg-folha{position:relative;max-width:1100px;margin:0 auto}
+.sk-rpg-wrap{position:relative;padding:22px 24px 26px;display:flex;flex-direction:column;gap:12px}
+.sk-rpg-topo{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.sk-rpg .sk-esc-logo{margin:0;flex-wrap:wrap}
+.sk-rpg-x{flex:0 0 auto;width:38px;height:38px;background:#fff;border:var(--ln) solid var(--red);color:var(--ink);font:700 16px var(--font);cursor:pointer}
+.sk-rpg-x:hover{background:var(--red);color:#fff}
+.sk-rpg-sub{margin:0 0 4px;font-size:16px;line-height:1.45;color:#555}
+.sk-rpg-itens{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px}
+.sk-rpg-itens span{border:1px solid var(--red);padding:2px 8px;font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--ink)}
+.sk-rpg-pe{margin:auto 16px 0;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sk-rpg-pe .sk-esc-ir{margin:0}
+.sk-rpg-aqui{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 8px}
+@media (max-width:640px){
+  .sk-rpg-wrap{padding:18px 14px 22px}
+}

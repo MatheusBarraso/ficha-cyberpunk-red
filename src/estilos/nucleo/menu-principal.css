@@ -26,6 +26,8 @@
 #menu .m-item.danger{color:var(--red-dark);border-color:var(--red)}
 #menu .m-item.danger:hover{background:var(--tint2)}
 #menu .m-item .cm-n{margin-left:auto}
+#menu .m-rpg small{margin-left:auto;font-size:12px;letter-spacing:1px;color:var(--red-dark)}
+#menu .m-rpg:hover small{color:var(--ink)}
 
 /* rodapé curto */
 #menu .m-status{background:var(--paper);color:#555;border-top:1px solid var(--red);font-size:13px;padding:10px 14px}

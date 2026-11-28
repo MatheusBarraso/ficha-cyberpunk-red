@@ -20,7 +20,7 @@
     toast('Copiar', ok ? rot : `Copie à mão: ${t}`);
   }
   async function compartilhar(sess) {
-    const txt = `Sessão “${sess.nome}” na Ficha Cyberpunk RED. Abra a ficha, escolha Player e use o código ${sess.codigo}${FB ? ` — ${location.origin}${location.pathname}` : ''}`;
+    const txt = `Sessão “${sess.nome}” de ${SISTEMA.nome} no Sketcher. Abra o Sketcher, escolha Player e use o código ${sess.codigo}${FB ? ` — ${location.origin}${location.pathname}` : ''}`;
     if (navigator.share) { try { await navigator.share({ title: sess.nome, text: txt }); return; } catch (e) { if (e && e.name === 'AbortError') return; } }
     copiar(txt, 'Convite copiado.');
   }

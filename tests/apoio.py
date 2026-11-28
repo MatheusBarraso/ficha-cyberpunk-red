@@ -40,7 +40,9 @@ async def handler(route):
 async def lancar(p, **kw):
     """Abre o Chrome do sistema (se houver) ou o Chromium do Playwright.
 
-    Os contextos saem com o service worker bloqueado: ele buscaria o site de teste na internet de verdade.
+    Os contextos saem com o service worker bloqueado (ele buscaria o site de teste na internet de verdade)
+    e já com um RPG escolhido (Cyberpunk RED), pra tela de escolha da primeira visita não cobrir a página.
+    Pra testar a primeira visita: b.new_context(primeira_visita=True).
     """
     if CHROME:
         b = await p.chromium.launch(executable_path=CHROME, args=['--no-sandbox'], **kw)
@@ -48,9 +50,12 @@ async def lancar(p, **kw):
         b = await p.chromium.launch(**kw)
     original = b.new_context
 
-    async def novo_contexto(**opcoes):
+    async def novo_contexto(primeira_visita=False, **opcoes):
         opcoes.setdefault('service_workers', 'block')
-        return await original(**opcoes)
+        ctx = await original(**opcoes)
+        if not primeira_visita:
+            await ctx.add_init_script("try{if(!localStorage.getItem('sk-sistema'))localStorage.setItem('sk-sistema','cpr')}catch(e){}")
+        return ctx
     b.new_context = novo_contexto
     return b
 

@@ -59,6 +59,8 @@
           : h('div', { class: 'cm-sub', text: !S.carregou.has('lob:minhas') && !S.carregou.has('lob:meus') ? 'Carregando…' : S.sess ? 'Você só está nesta sessão por enquanto.' : 'Nenhuma sessão ainda.' }),
         btn('Todas as sessões e códigos', () => { fecharPops(); irLobby(); }, 'cm-mini cm-largo')));
     }
+    out.push(sec('RPG', h('div', { class: 'cm-conta-atual' }, h('b', { text: SISTEMA.nome }), h('small', { text: 'Cada RPG tem a sua ficha neste navegador' })),
+      btn('Trocar de RPG', () => { fecharPops(); abrirEscolhaRpg(); }, 'cm-mini cm-largo')));
     out.push(sec('Aparência', chaveEscuro(), coresConta(), destaqueConta()));
     if (S.me && window.__cmLogout) out.push(sec(null, h('div', { class: 'cm-row' },
       btn('Trocar de conta', () => { try { sessionStorage.setItem('cpr-com-poslogin', S.lob.papel || ''); } catch { /* ok */ } (window.__cmTrocarConta || window.__cmLogout)(); }, 'cm-mini'),

@@ -1,4 +1,4 @@
-// Ficha Cyberpunk RED — service worker mínimo: permite instalar como app no Android/PC.
+// Sketcher — service worker mínimo: permite instalar como app no Android/PC.
 // Sempre busca a versão nova na internet; só usa a cópia guardada da página se estiver sem conexão.
 const CACHE = 'cpr-app-v1';
 self.addEventListener('install', () => self.skipWaiting());

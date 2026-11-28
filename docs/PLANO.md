@@ -45,6 +45,12 @@ Decisões do Matheus (28/11/2026):
 - [x] Troca de página por eventos (`sk:trocando-pagina` / `sk:pagina`) em vez de 4 embrulhos em `showPage` — com teste (`teste_troca_pagina.py`).
 - [x] Um zoom só: `nucleo/zoom.js` (encaixe, zoom do navegador, `applyScale`); `nitidez.js` ficou só com as interações. Limite mínimo unificado em 20% (os botões do menu paravam em 30%).
 - [x] Um controle de Esc (`nucleo/esc.js`): fecha só a camada de cima. Antes um Esc fechava, por exemplo, a janela de página salva e a gaveta do leitor juntas — com teste (`teste_tecla_esc.py`).
+- [x] "Configuração" do menu ☰ estava só escondida por CSS: o menu da conta trocava a cor do site
+      clicando nos botões escondidos dela (com um "clique de mentira" pra o painel não fechar), e no
+      celular deitado o corpo da seção aparecia solto numa terceira coluna. A cor foi pra `nucleo/cores.js`,
+      a seção saiu do HTML e o menu deitado ficou em duas colunas, com a posição das seções num lugar só.
+- [x] Peças de tela reaproveitáveis no núcleo: moldura de folha (`criarMoldura()`) e cartão de escolha
+      (`.sk-escolha`), usados pela Comunidade e pela escolha de RPG.
 - [ ] Juntar CSS repetido; cores do modo escuro por variáveis onde der.
 - [ ] Padronizar nomes e cabeçalhos dos arquivos.
 
@@ -76,7 +82,7 @@ Desenho (decidido na análise da etapa 2):
 Passos:
 
 - [x] 3a. Registro de sistemas (`nucleo/sistemas.js`, `cabeca/sistema.js`) + chaves por sistema + backup sabendo o sistema — com teste (`teste_sistemas.py`).
-- [ ] 3b. Tela de escolha de RPG + "Trocar de RPG".
+- [x] 3b. Tela de escolha de RPG (`nucleo/escolha-rpg.js`) + "Trocar de RPG" no menu ☰, no menu da conta e na entrada da Comunidade; nome Sketcher e o RPG aberto na barra, na aba e na entrada — com teste (`teste_escolha_rpg.py`) e 5 telas novas na comparação visual.
 - [ ] 3c. Ficha do Sistema livre (uso local: criar, editar, salvar, backup).
 - [ ] 3d. Comunidade com sistema na sessão; Sistema livre nas sessões (ficha do player, mestre abrindo, modo ajuda).
 - [ ] 3e. Nome Sketcher no site, app do Windows e PWA; endereço `/sketcher` (renomear o repositório) e app novo.

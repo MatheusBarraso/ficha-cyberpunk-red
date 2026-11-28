@@ -92,7 +92,8 @@
       ? h('button', { type: 'button', class: 'cm-continuar', onclick: () => entrarComo(u.papel, u.gm, u.sid, null) },
         h('span', { class: 'sk-esc-tit', text: 'Continuar' }), h('span', { class: 'sk-esc-txt' }, h('b', { text: u.nome || 'Última sessão' }), ' · como ' + (u.papel === 'mestre' ? 'Mestre' : 'Player')), h('span', { class: 'sk-esc-ir', text: 'Entrar ›' }))
       : null;
-    return [h('div', { class: 'sk-esc-logo' }, h('span', { text: 'FICHA' }), h('b', { text: 'CYBERPUNK RED' })), cont,
+    return [h('div', { class: 'cm-esc-topo' }, h('div', { class: 'sk-esc-logo' }, h('span', { text: 'Sketcher' }), h('b', { text: SISTEMA.nome })),
+      btn('Trocar de RPG', () => abrirEscolhaRpg(), 'cm-mini')), cont,
       h('div', { class: 'sk-esc-grid' },
         cartao('mestre', 'Mestre', 'Cria a sessão, convida a mesa e cuida da cidade. Precisa da senha.', 'mestre'),
         cartao('player vermelha', 'Player', 'Entra na sessão com o código do mestre.', 'player'))];

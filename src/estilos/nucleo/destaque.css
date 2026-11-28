@@ -27,6 +27,7 @@ body.cm-vez-ficha .cm-tb-ficha{box-shadow:inset 0 -3px 0 var(--acc2)}
 .cm-marca-olho::after{background:var(--acc2)}
 .cm-tb-ficha{border-left-color:var(--acc2)}
 #menu .m-item.active{box-shadow:inset 5px 0 0 var(--acc2)}
+.sk-rpg-aqui{background:var(--acc2);color:var(--acc2-ink)}
 /* campo que você está editando */
 :focus-visible{outline-color:var(--acc2)}
 .fx>input:focus,.fx>textarea:focus{box-shadow:inset 0 -3px 0 var(--acc2)}
