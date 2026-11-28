@@ -9,7 +9,6 @@
     // contador no botão ☰ da ficha e no ☰ do leitor de livros
     ['#btn-menu', '#lvb-app'].forEach((s) => { const b = document.querySelector(s); if (b) b.append(h('b', { class: 'cm-dot', 'data-total': '' })); });
     // trocar de página da ficha fecha a comunidade
-    const anterior = showPage;
-    showPage = function (i) { fechar(); anterior(i); };
+    addEventListener('sk:trocando-pagina', () => fechar());
   }
 

@@ -42,7 +42,7 @@ Decisões do Matheus (28/11/2026):
 - [x] Remover código morto: cartões do celular em pé (montados a cada carregamento e escondidos) e a
       tela do mapa antigo (com o botão "Mover no mapa", que não fazia mais nada). −29 KB.
 - [ ] Tirar a limpeza da v67 depois que todo mundo tiver entrado uma vez (fim de dezembro).
-- [ ] Troca de página por evento (`sk:pagina`) em vez de 3 embrulhos em `showPage`.
+- [x] Troca de página por eventos (`sk:trocando-pagina` / `sk:pagina`) em vez de 4 embrulhos em `showPage` — com teste (`teste_troca_pagina.py`).
 - [ ] Um zoom só (tirar a `applyScale` original e os remendos dela).
 - [ ] Um controle de Esc (fecha só a camada de cima: modal → gaveta → menu).
 - [ ] Juntar CSS repetido; cores do modo escuro por variáveis onde der.

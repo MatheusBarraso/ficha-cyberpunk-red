@@ -248,12 +248,8 @@ function setupLivros() {
   // tocar na página esconde/mostra a barra (mais espaço pra ler)
   view.addEventListener('click', () => { if (!lendo || drawer.classList.contains('aberta')) return; const s = getSelection(); if (s && !s.isCollapsed && view.contains(s.anchorNode)) return; $('#lvbar').classList.toggle('oculta'); });
   // a aba Livros agora é sempre o modo leitura (celular e PC); sair da aba sai da leitura
-  const _showPage = showPage;
-  showPage = function (i) {
-    if (i !== 5) sairLeitura();
-    _showPage(i);
-    if (i === 5) entrarLeitura();
-  };
+  addEventListener('sk:trocando-pagina', (e) => { if (e.detail.pagina !== 5) sairLeitura(); });
+  addEventListener('sk:pagina', (e) => { if (e.detail.pagina === 5) entrarLeitura(); });
   $('#lvb-app').addEventListener('click', () => openMenu(true));
   $('#lvb-menos').addEventListener('click', () => mudarZoom(-1));
   $('#lvb-mais').addEventListener('click', () => mudarZoom(1));

@@ -52,6 +52,8 @@ Herança do jeito que o site cresceu — a refatoração vai trocando isso por m
 - **Pontes `window.__*`**: a ficha expõe `__fichaColetar`, `__fichaAplicar`, `__fichaLocal`,
   `__fichaRemota`, `__fichaVoltarLocal`; anotações e quadro expõem `__notes*`/`__board*`; o leitor expõe
   `__livro*`; o modo escuro, `__cprEscuro`; o Firebase, `__cmLogin`, `__cmLogout`, `__cmConta`.
+- **Troca de página**: `showPage(i)` avisa antes (`sk:trocando-pagina`) e depois (`sk:pagina`), com
+  `{ detail: { pagina } }`. Quem precisa reagir escuta o evento — não embrulhe a função.
 - **Eventos**: `cm-fechou` (Comunidade fechou), `cm-asset` (imagem chegou), `livros-mudaram`,
   `cpr-escuro` (tema trocou), `cm-gate-fim` (Comunidade liberou a ficha).
 

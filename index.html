@@ -17,11 +17,11 @@ window.claude = { use: (n) => window.__fbPronto.then((a) => (a ? a[n] || null : 
 </script>
 <script src="firebase-config.js"></script>
 <script type="module" src="fb.js"></script>
-<meta name="cpr-build" content="d10b71af97e2">
+<meta name="cpr-build" content="bbac6a3df346">
 <script>
 // avisa quando sai uma versão nova do site (o navegador pode ficar horas com a antiga aberta)
 (function () {
-  var atual = 'd10b71af97e2', avisou = false;
+  var atual = 'bbac6a3df346', avisou = false;
   function mostrar() {
     if (avisou || !document.body) return; avisou = true;
     var b = document.createElement('div'); b.id = 'cpr-nova'; b.setAttribute('role', 'alert');
@@ -2196,7 +2196,13 @@ function applyScale() {
   }
   $('#zoom-pct').textContent = `${Math.round(s * 100)}%`;
 }
+// Troca a página visível (0–2 ficha, 3 anotações, 4 história, 5 livros).
+// Quem precisa reagir escuta os eventos em window, em vez de embrulhar esta função:
+//   'sk:trocando-pagina' — antes da troca (fechar a Comunidade, sair da leitura…)
+//   'sk:pagina'          — depois da troca (brilho das linhas, entrar na leitura, ajustar o zoom…)
+// Os dois levam { detail: { pagina } }.
 function showPage(i) {
+  dispatchEvent(new CustomEvent('sk:trocando-pagina', { detail: { pagina: i } }));
   document.querySelectorAll('.tab').forEach((t, k) => t.classList.toggle('active', k === i));
   document.querySelectorAll('.sheet').forEach((s, k) => s.classList.toggle('active', k === i));
   document.querySelectorAll('.scaler').forEach((sc, k) => { sc.style.display = k === i ? 'block' : 'none'; });
@@ -2204,6 +2210,7 @@ function showPage(i) {
   applyScale();
   window.scrollTo({ top: 0 });
   if (i === 4 && window.__boardShow) window.__boardShow();
+  dispatchEvent(new CustomEvent('sk:pagina', { detail: { pagina: i } }));
 }
 function openMenu(o) {
   $('#menu').classList.toggle('open', o);
@@ -3465,12 +3472,8 @@ function setupLivros() {
   // tocar na página esconde/mostra a barra (mais espaço pra ler)
   view.addEventListener('click', () => { if (!lendo || drawer.classList.contains('aberta')) return; const s = getSelection(); if (s && !s.isCollapsed && view.contains(s.anchorNode)) return; $('#lvbar').classList.toggle('oculta'); });
   // a aba Livros agora é sempre o modo leitura (celular e PC); sair da aba sai da leitura
-  const _showPage = showPage;
-  showPage = function (i) {
-    if (i !== 5) sairLeitura();
-    _showPage(i);
-    if (i === 5) entrarLeitura();
-  };
+  addEventListener('sk:trocando-pagina', (e) => { if (e.detail.pagina !== 5) sairLeitura(); });
+  addEventListener('sk:pagina', (e) => { if (e.detail.pagina === 5) entrarLeitura(); });
   $('#lvb-app').addEventListener('click', () => openMenu(true));
   $('#lvb-menos').addEventListener('click', () => mudarZoom(-1));
   $('#lvb-mais').addEventListener('click', () => mudarZoom(1));
@@ -3855,8 +3858,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     }
     setTimeout(() => fim.forEach((f) => f()), 2900);
   }
-  const anterior = showPage;
-  showPage = function (i) { anterior(i); brilhar(i); };
+  addEventListener('sk:pagina', (e) => brilhar(e.detail.pagina));
   const ativa = [...document.querySelectorAll('.sheet')].findIndex((s) => s.classList.contains('active'));
   const comecar = () => {
     if (document.documentElement.classList.contains('cm-gate')) { addEventListener('cm-gate-fim', () => setTimeout(comecar, 150), { once: true }); return; }
@@ -5937,8 +5939,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     // contador no botão ☰ da ficha e no ☰ do leitor de livros
     ['#btn-menu', '#lvb-app'].forEach((s) => { const b = document.querySelector(s); if (b) b.append(h('b', { class: 'cm-dot', 'data-total': '' })); });
     // trocar de página da ficha fecha a comunidade
-    const anterior = showPage;
-    showPage = function (i) { fechar(); anterior(i); };
+    addEventListener('sk:trocando-pagina', () => fechar());
   }
 
   // ===================== SENHA DO MESTRE =====================
@@ -7171,8 +7172,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   // girou o celular ou mudou de página: volta pro encaixe automático
   let larg = innerWidth;
   addEventListener('resize', () => { if (Math.abs(innerWidth - larg) > 80 && ampliada() && celular()) { larg = innerWidth; aplicar(null); } else { larg = innerWidth; pintar(); } });
-  const mostrar = window.showPage;
-  if (typeof mostrar === 'function') window.showPage = function (i) { const r = mostrar.apply(this, arguments); setTimeout(pintar, 0); return r; };
+  addEventListener('sk:pagina', () => setTimeout(pintar, 0));
   new MutationObserver(pintar).observe(document.body, { attributes: true, attributeFilter: ['class'] });
   const mn = document.getElementById('menu'); if (mn) new MutationObserver(pintar).observe(mn, { attributes: true, attributeFilter: ['class'] });
   pintar();

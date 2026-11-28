@@ -41,8 +41,7 @@
     }
     setTimeout(() => fim.forEach((f) => f()), 2900);
   }
-  const anterior = showPage;
-  showPage = function (i) { anterior(i); brilhar(i); };
+  addEventListener('sk:pagina', (e) => brilhar(e.detail.pagina));
   const ativa = [...document.querySelectorAll('.sheet')].findIndex((s) => s.classList.contains('active'));
   const comecar = () => {
     if (document.documentElement.classList.contains('cm-gate')) { addEventListener('cm-gate-fim', () => setTimeout(comecar, 150), { once: true }); return; }

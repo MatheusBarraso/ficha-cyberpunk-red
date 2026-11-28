@@ -90,8 +90,7 @@
   // girou o celular ou mudou de página: volta pro encaixe automático
   let larg = innerWidth;
   addEventListener('resize', () => { if (Math.abs(innerWidth - larg) > 80 && ampliada() && celular()) { larg = innerWidth; aplicar(null); } else { larg = innerWidth; pintar(); } });
-  const mostrar = window.showPage;
-  if (typeof mostrar === 'function') window.showPage = function (i) { const r = mostrar.apply(this, arguments); setTimeout(pintar, 0); return r; };
+  addEventListener('sk:pagina', () => setTimeout(pintar, 0));
   new MutationObserver(pintar).observe(document.body, { attributes: true, attributeFilter: ['class'] });
   const mn = document.getElementById('menu'); if (mn) new MutationObserver(pintar).observe(mn, { attributes: true, attributeFilter: ['class'] });
   pintar();
