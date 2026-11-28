@@ -77,8 +77,25 @@ O Sketcher roda **um sistema por carregamento** — trocar recarrega a página.
 3. `scripts/nucleo/escolha-rpg.js` é a tela de escolha: abre sozinha na primeira visita (por cima da
    entrada da Comunidade, sem fechar até escolher) e por `abrirEscolhaRpg()`.
 
+4. `scripts/nucleo/ficha.js` põe na tela as páginas de ficha do sistema aberto (`<template id="paginas-<id>">`,
+   de `src/sistemas/<id>/ficha/paginas.html`) e completa com vagas escondidas as que ele não usa: as abas
+   1–3 são da ficha e Anotações, História e Livros são sempre as páginas 3, 4 e 5 (contando do 0).
+   A ficha do sistema se registra com `registrarFicha(id, { montar(dados), remontar(dados),
+   recalcular(), gatilhoCalculo })` — ver `nucleo/sistemas.js`.
+
 Pra acrescentar um sistema: uma entrada em `SISTEMAS`, o id na lista `conhecidos` de `cabeca/sistema.js`
-(o `<head>` roda antes do registro) e o conteúdo próprio em `src/sistemas/<id>/`.
+(o `<head>` roda antes do registro) e o conteúdo próprio em `src/sistemas/<id>/` (`ficha.js`, `ficha.css`,
+`ficha/paginas.html`), incluído em `src/pagina.html` ao lado dos outros.
+
+**Sistema livre** (`src/sistemas/livre/`): a ficha é HTML. O modelo (seções e campos) fica no campo
+escondido `__layout` dentro dos próprios dados da ficha — por isso salvar, backup e a Comunidade levam o
+modelo junto sem saber que ele existe. Cada campo guarda o valor na sua chave (`id`, que não muda quando o
+rótulo muda; o recurso guarda o máximo em `<id>:max`); o nome é o campo fixo `NOME`. Modelo vindo de fora
+passa por `ler()`, que só aceita ids `[a-z0-9-]`, tipos conhecidos e sem repetição.
+
+**Livros por sistema**: os livros que o sistema já conhece ficam no registro (`livros`; no Sistema livre a
+estante começa vazia). PDFs guardados no aparelho levam o sistema (`sistema` no IndexedDB); os de antes do
+Sketcher são do Cyberpunk RED.
 
 ## Dados
 

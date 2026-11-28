@@ -46,8 +46,14 @@ CENAS = [
     ('rpg-escuro', PC, True, []),
     ('celular-rpg', EM_PE, False, []),
     ('rpg-trocar', PC, False, ['abrirEscolhaRpg()']),
+    ('livre-ficha', PC, False, ['showPage(0)']),
+    ('livre-editar', PC, False, ['showPage(0)', "document.querySelector('.sl-editar').click()"]),
+    ('livre-ficha-escuro', PC, True, ['showPage(0)']),
+    ('celular-livre', EM_PE, False, ['showPage(0)']),
+    ('deitado-livre', DEITADO, False, ['showPage(0)']),
 ]
 PRIMEIRA_VISITA = {'rpg', 'rpg-escuro', 'celular-rpg'}  # sem RPG escolhido: abre na tela de escolha
+LIVRE = {'livre-ficha', 'livre-editar', 'livre-ficha-escuro', 'celular-livre', 'deitado-livre'}  # no Sistema livre
 
 
 async def capturar(p, destino):
@@ -58,6 +64,8 @@ async def capturar(p, destino):
         ctx = await b.new_context(viewport=tela, is_mobile=cel, has_touch=cel, user_agent=UA_CEL if cel else None, primeira_visita=nome in PRIMEIRA_VISITA)
         await ctx.route('**/*', handler)
         await ctx.add_init_script("try{localStorage.setItem('cpr-escuro','%s')}catch(e){}" % ('1' if escuro else '0'))
+        if nome in LIVRE:
+            await ctx.add_init_script("try{localStorage.setItem('sk-sistema','livre')}catch(e){}")
         pg = await ctx.new_page()
         await pg.goto('https://ficha.test/index.html')
         await pg.wait_for_timeout(1800)

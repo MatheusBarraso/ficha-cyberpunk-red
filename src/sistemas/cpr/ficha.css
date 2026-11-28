@@ -17,11 +17,6 @@
 .fx.chk>input:focus-visible{outline:3px solid var(--red);outline-offset:-3px}
 .calc{position:absolute;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--ink);pointer-events:none;line-height:1}
 .pdfpage .portrait{position:absolute;cursor:pointer;overflow:hidden;display:flex;align-items:center;justify-content:center}
-.portrait img{width:100%;height:100%;object-fit:cover;display:none}
-.portrait.hasimg img{display:block}
-.portrait .ph{color:var(--red);font-size:17px;font-weight:700;text-align:center;padding:20px;text-transform:uppercase;opacity:0;transition:opacity .15s}
-.portrait:hover .ph,.portrait:focus-visible .ph{opacity:.8}
-.portrait.hasimg .ph{display:none}
 @media print{
   .sheet.pdfpage{display:block!important;position:relative!important;width:1920px;height:1080px;border:0}
   .fx>input:focus,.fx>textarea:focus{background:transparent}

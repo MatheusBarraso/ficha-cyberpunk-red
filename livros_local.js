@@ -3,8 +3,13 @@
 try {
   const pdfjsLib = await import('./lib/pdf.js');
   pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('./lib/pdf.worker.js', location.href).href;
-  // livros que a ficha já conhece (pelo número de páginas): as marcações salvas continuam valendo
-  const CONHECIDOS = { 71: 'regras', 62: 'jacket', 458: 'red' };
+  // livros que o sistema já conhece (pelo número de páginas): as marcações salvas continuam valendo
+  const FIXOS = SISTEMA.livros || {};
+  const CONHECIDOS = Object.fromEntries(Object.entries(FIXOS).map(([id, l]) => [l.paginas, id]));
+  const fixo = (id) => Object.prototype.hasOwnProperty.call(FIXOS, id);
+  // cada sistema tem a sua estante; os PDFs guardados antes do Sketcher são do Cyberpunk RED
+  const doSistema = (m) => (m.sistema || 'cpr') === SISTEMA.id;
+  const prefixo = SISTEMA.id === 'cpr' ? 'pdf' : `pdf-${SISTEMA.id}`; // o CPR mantém os ids de antes
   const LARGURA = 1600;
 
   // ---------- banco local ----------
@@ -102,8 +107,8 @@ try {
     if (!sel) return;
     const v = sel.value;
     const ids = Object.keys(LIVROS).filter(visivel);
-    if (!ids.length) { // player sem livro da mesa: o leitor mostra o aviso
-      const o = document.createElement('option'); o.value = Object.keys(LIVROS)[0]; o.textContent = 'Nenhum livro na mesa';
+    if (!ids.length) { // player sem livro da mesa (ou estante vazia): o leitor mostra o aviso
+      const o = document.createElement('option'); o.value = Object.keys(LIVROS)[0] || ''; o.textContent = Object.keys(LIVROS).length ? 'Nenhum livro na mesa' : 'Nenhum livro ainda';
       sel.replaceChildren(o); sel.value = o.value; return;
     }
     sel.replaceChildren(...ids.map((id) => {
@@ -115,7 +120,7 @@ try {
   }
   const registrar = (m) => { LIVROS[m.id] = { nome: m.nome, paginas: m.paginas, dim: m.dim, local: true, origem: m.origem }; };
   const metas = await op('meta', 'readonly', (s) => s.getAll()).catch(() => []);
-  (metas || []).forEach(registrar);
+  (metas || []).filter(doSistema).forEach(registrar);
 
   // ---------- adicionar / tirar PDFs ----------
   const arquivo = Object.assign(document.createElement('input'), { type: 'file', accept: 'application/pdf,.pdf', multiple: true, hidden: true });
@@ -125,9 +130,9 @@ try {
     const doc = await pdfjsLib.getDocument({ data: new Uint8Array(bytes.slice(0)), isEvalSupported: false }).promise;
     const n = doc.numPages;
     const v = (await doc.getPage(1)).getViewport({ scale: 1 });
-    const id = (forca && forca.id) || CONHECIDOS[n] || `pdf-${n}-${hash(nomeArq)}`;
+    const id = (forca && forca.id) || CONHECIDOS[n] || `${prefixo}-${n}-${hash(nomeArq)}`;
     const nome = (forca && forca.nome) || ((LIVROS[id] && CONHECIDOS[n]) ? LIVROS[id].nome : nomeArq.replace(/\.pdf$/i, '').slice(0, 60));
-    const meta = { id, nome, paginas: n, dim: [Math.round(v.width), Math.round(v.height)] };
+    const meta = { id, nome, paginas: n, dim: [Math.round(v.width), Math.round(v.height)], sistema: SISTEMA.id };
     if (forca && forca.origem) meta.origem = forca.origem;
     await op('pdfs', 'readwrite', (s) => s.put({ id, bytes }));
     await op('meta', 'readwrite', (s) => s.put(meta));
@@ -164,7 +169,7 @@ try {
     await op('idx', 'readwrite', (s) => s.delete(id)).catch(() => {});
     delete docs[id];
     for (const k in prontas) if (k.startsWith(id + ':')) delete prontas[k];
-    if (['regras', 'jacket', 'red'].includes(id) || LIVROS[id].mesa) LIVROS[id].local = false; else delete LIVROS[id];
+    if (fixo(id) || LIVROS[id].mesa) LIVROS[id].local = false; else delete LIVROS[id];
     opcoes();
     dispatchEvent(new CustomEvent('livros-mudaram', { detail: { ids: [id] } }));
   };
@@ -213,9 +218,10 @@ try {
     const l = LIVROS[b], mesa = l && l.mesa, mestre = ehMestre();
     const sala = window.__cmLivros && window.__cmLivros.sala();
     const nenhum = !mestre && !Object.keys(LIVROS).some(visivel);
-    c.dataset.livro = b;
-    c.querySelector('b').textContent = nenhum ? 'Livros da mesa' : l ? l.nome : 'Livro';
-    c.querySelector('p').textContent = mesa
+    c.dataset.livro = b || '';
+    c.querySelector('b').textContent = nenhum ? 'Livros da mesa' : l ? l.nome : 'Livros';
+    c.querySelector('p').textContent = !l && mestre ? 'Nenhum livro ainda. Adicione o PDF de um livro do jogo pra ler aqui e, se quiser, mandar pra mesa.'
+      : mesa
       ? `O mestre compartilhou este livro com a mesa (${mb(mesa.tamanho)}). Depois de baixar, ele fica guardado neste aparelho.`
       : mestre ? 'Este livro não está neste aparelho. Adicione o PDF e use “Enviar pra mesa” pros jogadores verem.'
         : sala ? (nenhum ? 'O mestre ainda não compartilhou nenhum livro com a mesa.' : 'O mestre ainda não compartilhou este livro com a mesa.')
@@ -249,7 +255,7 @@ try {
     } finally { baixando = false; }
   }
   addEventListener('livros-mesa', () => {
-    for (const k in LIVROS) if (LIVROS[k].mesa && !LIVROS[k].local && !(window.__cmLivrosLista || []).some((x) => x.id === k) && !['regras', 'jacket', 'red'].includes(k)) delete LIVROS[k];
+    for (const k in LIVROS) if (LIVROS[k].mesa && !LIVROS[k].local && !(window.__cmLivrosLista || []).some((x) => x.id === k) && !fixo(k)) delete LIVROS[k];
     for (const k in LIVROS) delete LIVROS[k].mesa;
     for (const m of window.__cmLivrosLista || []) {
       if (!LIVROS[m.id]) LIVROS[m.id] = { nome: m.nome, paginas: m.paginas, dim: m.dim || [1000, 1400], local: false };

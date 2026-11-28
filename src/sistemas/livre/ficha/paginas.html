@@ -1,0 +1,22 @@
+<!-- PÁGINA 1 — a ficha que o jogador monta (seções e campos: sistemas/livre/ficha.js) -->
+<div class="scaler fl" data-sheet="0">
+  <section class="sheet livre p1 active" aria-label="Página 1 — Ficha">
+    <div class="sl-topo">
+      <div class="portrait sl-retrato" id="portrait" role="button" tabindex="0" aria-label="Enviar imagem do personagem">
+        <span class="ph">Imagem do personagem</span><img id="portrait-img" alt="Imagem do personagem">
+      </div>
+      <div class="sl-id">
+        <div class="phead sl-faixa">Ficha</div>
+        <label class="sl-nome"><small>Nome do personagem</small><input data-f="NOME" type="text" maxlength="80" autocomplete="off"></label>
+      </div>
+      <div class="sl-acoes">
+        <button class="btool sl-editar" type="button" aria-pressed="false">✎ Editar ficha</button>
+      </div>
+      <input type="hidden" data-f="__layout" data-estrutura>
+    </div>
+    <div class="sl-corpo">
+      <div class="sl-secoes"></div>
+      <div class="sl-mais"><button class="btool sl-nova-secao" type="button">＋ Seção</button></div>
+    </div>
+  </section>
+</div>

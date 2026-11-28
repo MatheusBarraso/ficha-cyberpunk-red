@@ -1,0 +1,135 @@
+/* ============ Sistema livre: a ficha que o jogador monta (sistemas/livre/ficha.js) ============
+   A mesma folha das outras páginas (borda e cantos cortados do palco); as seções correm em colunas,
+   como num jornal, e rolam dentro da folha. */
+.sheet.livre{padding:16px 18px;flex-direction:column;gap:14px;--sl-rotulo:var(--red-dark)}
+html.cpr-escuro .sheet.livre{--sl-rotulo:color-mix(in srgb,var(--red) 62%,#fff)} /* rótulo legível no escuro */
+.sheet.livre.active{display:flex}
+
+/* topo: retrato, faixa "FICHA" com o nome do personagem e o botão de editar */
+.sl-topo{display:flex;align-items:flex-end;gap:18px;flex:0 0 auto}
+.sl-retrato{position:relative;flex:0 0 132px;width:132px;height:132px;border:3px solid var(--red);background:var(--tint);cursor:pointer;
+  overflow:hidden;display:flex;align-items:center;justify-content:center}
+.sl-retrato .ph{opacity:.8;font-size:15px;padding:10px}
+.sl-id{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:10px}
+.sl-faixa{align-self:flex-start;background:#000;color:#fff;font-weight:700;font-size:26px;letter-spacing:2px;text-transform:uppercase;
+  padding:8px 34px 8px 12px;min-width:320px;clip-path:polygon(0 0,100% 0,calc(100% - 16px) 100%,0 100%)}
+.sl-nome{display:flex;flex-direction:column;border-bottom:3px solid var(--red)}
+.sl-nome small{font-size:16px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--sl-rotulo)}
+.sl-nome input{border:0;background:transparent;font:700 44px var(--font);letter-spacing:1px;color:var(--ink);padding:2px 4px;width:100%;min-width:0;outline:none}
+.sl-nome input:focus{background:var(--tint)}
+.sl-acoes{flex:0 0 auto;display:flex;gap:8px}
+.sl-editar[aria-pressed="true"],.sl-editar[aria-pressed="true"]:hover{background:var(--red);color:#fff}
+
+/* corpo: seções em colunas, rolando dentro da folha */
+.sl-corpo{flex:1 1 auto;min-height:0;overflow-y:auto;padding:2px 8px 10px 2px;scrollbar-width:thin;scrollbar-color:var(--red) transparent}
+.sl-secoes{columns:3 420px;column-gap:22px}
+.sl-secao{break-inside:avoid;margin:0 0 22px;border:3px solid var(--red);background:var(--paper);position:relative;--c:16px;
+  clip-path:polygon(0 0,100% 0,100% calc(100% - var(--c)),calc(100% - var(--c)) 100%,0 100%)}
+.sl-secao::after{content:'';position:absolute;right:-3px;bottom:-3px;width:calc(var(--c) + 3px);height:calc(var(--c) + 3px);pointer-events:none;
+  background:linear-gradient(to bottom right,transparent calc(50% - 1.5px),var(--red) calc(50% - 1.5px),var(--red) calc(50% + 1.5px),transparent calc(50% + 1.5px))}
+.sl-sec-tit{margin:0;background:#000;color:#fff;font-size:22px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:6px 12px;overflow-wrap:anywhere}
+.sl-campos{display:flex;flex-wrap:wrap;gap:12px 16px;padding:12px 14px 18px}
+.sl-vazia{margin:0;padding:12px 14px 18px;font-size:18px;color:#777}
+
+/* campos: rótulo pequeno em cima e a linha da cor do site embaixo, como na ficha de papel */
+.sl-campo{position:relative;display:flex;flex-direction:column;gap:2px;flex:1 1 100%;min-width:0}
+.sl-rot{font-size:16px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--sl-rotulo);overflow-wrap:anywhere}
+.sl-campo input,.sl-campo textarea{font:700 24px var(--font);color:var(--ink);border:0;border-bottom:2px solid var(--red);background:transparent;
+  padding:3px 4px;width:100%;min-width:0;outline:none;border-radius:0}
+.sl-campo textarea{border:2px solid var(--red);resize:vertical;min-height:120px;line-height:1.35;font-size:22px;padding:6px 8px;
+  scrollbar-width:thin;scrollbar-color:var(--red) transparent}
+.sl-campo input:focus,.sl-campo textarea:focus{background:var(--tint)}
+.sl-campo.t-numero{flex:1 1 140px}
+/* atributo: caixa com o número grande e o nome embaixo */
+.sl-campo.t-atributo{flex:0 0 124px;align-items:center;gap:4px}
+.sl-campo.t-atributo input{height:76px;border:3px solid var(--red);font-size:40px;text-align:center;padding:0}
+.sl-campo.t-atributo .sl-rot{font-size:15px;letter-spacing:.4px;text-align:center;line-height:1.15;overflow-wrap:normal}
+/* recurso: atual / máximo */
+.sl-par{display:flex;align-items:center;gap:10px}
+.sl-par input{flex:1 1 0;text-align:center;font-size:30px}
+.sl-de{font-size:30px;font-weight:700;color:var(--red)}
+/* marcar: caixinha, como as de marcar da ficha do CPR */
+.sl-campo.t-marcar{flex:0 1 auto;flex-direction:row;align-items:center;gap:8px;cursor:pointer}
+.sl-campo.t-marcar input{-webkit-appearance:none;appearance:none;width:26px;height:26px;flex:0 0 26px;border:3px solid var(--red);padding:0;margin:0;cursor:pointer}
+.sl-campo.t-marcar input:checked{box-shadow:inset 0 0 0 4px var(--paper),inset 0 0 0 20px var(--red)}
+.sl-campo.t-marcar input:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.sl-campo.t-marcar .sl-rot{font-size:19px;color:var(--ink);letter-spacing:.5px}
+
+/* modo de edição: no lugar dos campos, o rótulo, o tipo e os botões de cada um */
+.sl-sec-ed,.sl-campos-ed,.sl-mais{display:none}
+.sheet.livre.editando .sl-sec-tit,.sheet.livre.editando .sl-campos,.sheet.livre.editando .sl-vazia{display:none}
+.sheet.livre.editando .sl-sec-ed{display:flex;gap:6px;align-items:center;background:#000;padding:6px 8px}
+.sheet.livre.editando .sl-campos-ed{display:flex;flex-direction:column;gap:8px;padding:12px 14px 18px}
+.sheet.livre.editando .sl-mais{display:block;padding:0 0 10px}
+.sl-ed-titulo{flex:1 1 auto;min-width:0;font:700 20px var(--font);letter-spacing:1px;text-transform:uppercase;color:#fff;background:#1d1d1d;border:2px solid #555;padding:4px 8px}
+.sl-ed-titulo:focus{border-color:#fff;outline:none}
+.sl-campo-ed{display:flex;gap:6px;align-items:center}
+.sl-ed-rot{flex:1 1 auto;min-width:0;font:700 18px var(--font);border:2px solid var(--red);padding:5px 8px;color:var(--ink);background:#fff}
+.sl-ed-tipo{flex:0 0 220px;min-width:0;font:700 15px var(--font);border:2px solid var(--red);padding:6px;background:#fff;color:var(--ink)}
+.sl-ed-b{flex:0 0 auto;width:36px;height:36px;border:2px solid var(--red);background:#fff;color:var(--ink);font:700 18px var(--font);cursor:pointer;padding:0}
+.sl-ed-b:hover:not(:disabled){background:var(--red);color:#fff}
+.sl-ed-b:disabled{opacity:.3;cursor:default}
+.sl-ed-b.perigo{color:var(--sl-rotulo)}
+.sl-sec-ed .sl-ed-b{border-color:#555;background:#1d1d1d;color:#fff}
+.sl-sec-ed .sl-ed-b:hover:not(:disabled){background:var(--red);border-color:var(--red)}
+.sl-ed-mais{align-self:flex-start}
+
+/* celular em pé: uma coluna, letras menores */
+body.mob .sheet.livre{gap:10px}
+body.mob .sl-topo{gap:10px;align-items:center;flex-wrap:wrap}
+body.mob .sl-retrato{flex-basis:64px;width:64px;height:64px;border-width:2px}
+body.mob .sl-retrato .ph{font-size:9px;padding:2px}
+body.mob .sl-id{gap:6px;flex-basis:calc(100% - 74px)}
+body.mob .sl-faixa{min-width:0}
+body.mob .sl-nome small{font-size:11px}
+body.mob .sl-nome input{font-size:22px}
+body.mob .sl-acoes{flex:1 1 100%}
+body.mob .sl-acoes .btool{flex:1 1 auto;padding:6px 10px;font-size:15px}
+body.mob .sl-corpo{padding-right:2px}
+body.mob .sl-secoes{columns:1}
+body.mob .sl-secao{margin-bottom:14px}
+body.mob .sl-sec-tit{font-size:16px;padding:5px 10px}
+body.mob .sl-campos,body.mob .sheet.livre.editando .sl-campos-ed{padding:10px 10px 16px;gap:10px 12px}
+body.mob .sl-rot{font-size:12px}
+body.mob .sl-campo input,body.mob .sl-campo textarea{font-size:18px}
+body.mob .sl-campo.t-atributo{flex:1 0 84px;max-width:110px}
+body.mob .sl-campo.t-atributo input{height:54px;font-size:28px;border-width:2px}
+body.mob .sl-campo.t-atributo .sl-rot{font-size:10.5px;letter-spacing:0}
+body.mob .sl-par input,body.mob .sl-de{font-size:22px}
+body.mob .sl-campo-ed{flex-wrap:wrap}
+body.mob .sl-ed-rot{flex-basis:100%;font-size:16px}
+body.mob .sl-ed-tipo{flex:1 1 auto;font-size:14px}
+body.mob .sl-ed-titulo{font-size:16px}
+body.mob .sl-ed-b{width:34px;height:34px}
+
+/* celular deitado: duas colunas */
+body.land .sl-topo{gap:10px;align-items:center}
+body.land .sl-retrato{flex-basis:56px;width:56px;height:56px;border-width:2px}
+body.land .sl-retrato .ph{font-size:8px;padding:2px}
+body.land .sl-id{gap:4px}
+body.land .sl-faixa{min-width:0}
+body.land .sl-nome small{font-size:10px}
+body.land .sl-nome input{font-size:20px}
+body.land .sl-acoes .btool{padding:5px 10px;font-size:13px}
+body.land .sl-secoes{columns:2 280px;column-gap:12px}
+body.land .sl-secao{margin-bottom:12px}
+body.land .sl-sec-tit{font-size:14px;padding:4px 8px}
+body.land .sl-campos,body.land .sheet.livre.editando .sl-campos-ed{padding:8px 8px 14px;gap:8px 10px}
+body.land .sl-rot{font-size:11px}
+body.land .sl-campo input,body.land .sl-campo textarea{font-size:16px}
+body.land .sl-campo.t-atributo{flex:1 0 76px;max-width:100px}
+body.land .sl-campo.t-atributo .sl-rot{font-size:10px;letter-spacing:0}
+body.land .sl-campo.t-atributo input{height:46px;font-size:24px;border-width:2px}
+body.land .sl-par input,body.land .sl-de{font-size:20px}
+body.land .sl-ed-tipo{flex-basis:130px;font-size:13px}
+body.land .sl-ed-rot,body.land .sl-ed-titulo{font-size:14px}
+body.land .sl-ed-b{width:30px;height:30px;font-size:15px}
+
+@media print{
+  .sheet.livre{display:flex!important;height:auto!important;min-height:1080px}
+  .sl-corpo{overflow:visible}
+  .sl-acoes,.sl-mais,.sl-sec-ed,.sl-campos-ed{display:none!important}
+  .sheet.livre .sl-sec-tit{display:block!important}
+  .sheet.livre .sl-campos{display:flex!important}
+  .sl-campo input:focus,.sl-campo textarea:focus,.sl-nome input:focus{background:transparent}
+}

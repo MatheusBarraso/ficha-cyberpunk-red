@@ -83,6 +83,11 @@ Passos:
 
 - [x] 3a. Registro de sistemas (`nucleo/sistemas.js`, `cabeca/sistema.js`) + chaves por sistema + backup sabendo o sistema — com teste (`teste_sistemas.py`).
 - [x] 3b. Tela de escolha de RPG (`nucleo/escolha-rpg.js`) + "Trocar de RPG" no menu ☰, no menu da conta e na entrada da Comunidade; nome Sketcher e o RPG aberto na barra, na aba e na entrada — com teste (`teste_escolha_rpg.py`) e 5 telas novas na comparação visual.
-- [ ] 3c. Ficha do Sistema livre (uso local: criar, editar, salvar, backup).
+- [x] 3c. Ficha do Sistema livre (uso local): seções e campos que a pessoa monta (texto, número, texto
+      longo, atributo, recurso atual/máximo, marcar), modelo inicial, editar / mover / apagar, salvar,
+      backup, "Limpar ficha" mantendo o modelo, celular em pé e deitado, impressão. Antes, a ficha do CPR
+      virou módulo do sistema (`src/sistemas/cpr/`) e o núcleo passou a montar "a ficha do sistema aberto".
+      Livros por sistema: a estante do Sistema livre começa vazia (o mestre adiciona os PDFs) e o leitor
+      ganhou o estado "nenhum livro ainda" — com teste (`teste_livre.py`) e 5 telas novas na comparação.
 - [ ] 3d. Comunidade com sistema na sessão; Sistema livre nas sessões (ficha do player, mestre abrindo, modo ajuda).
 - [ ] 3e. Nome Sketcher no site, app do Windows e PWA; endereço `/sketcher` (renomear o repositório) e app novo.

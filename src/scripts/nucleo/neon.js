@@ -34,8 +34,9 @@
         cor.append(copia); bg.append(cor);
         fim.push(() => cor.remove());
       } else {
-        // Anotações e História: a luz corre pelas bordas dos botões, do texto e do quadro
-        acender(sheet.querySelectorAll('.notepad,.board,.btool,.pgsel,.pgtitle'), 0.9, 0.6);
+        // páginas em HTML (Anotações, História, ficha do Sistema livre): a luz corre pelas bordas dos botões,
+        // do texto, do quadro e de quem pedir com data-neon
+        acender(sheet.querySelectorAll('.notepad,.board,.btool,.pgsel,.pgtitle,[data-neon]'), 0.9, 0.6);
       }
       sheet.classList.add('brilha'); fim.push(() => sheet.classList.remove('brilha'));
     }

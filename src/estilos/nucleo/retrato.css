@@ -1,0 +1,6 @@
+/* ---------- retrato do personagem (nucleo/retrato.js): a caixa fica onde a ficha de cada sistema quiser ---------- */
+.portrait img{width:100%;height:100%;object-fit:cover;display:none}
+.portrait.hasimg img{display:block}
+.portrait .ph{color:var(--red);font-size:17px;font-weight:700;text-align:center;padding:20px;text-transform:uppercase;opacity:0;transition:opacity .15s}
+.portrait:hover .ph,.portrait:focus-visible .ph{opacity:.8}
+.portrait.hasimg .ph{display:none}

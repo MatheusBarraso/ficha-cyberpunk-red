@@ -1,10 +1,7 @@
 /* ================= livros + marcações vinculadas à ficha ================= */
 const LIVROS_KEY = chaveLocal('livros');
-const LIVROS = {
-  regras: { nome: 'CEMK — Livro de Regras', paginas: 71, dim: [992, 1404] },
-  jacket: { nome: 'CEMK — The Jacket', paginas: 62, dim: [992, 1404] },
-  red:    { nome: 'Cyberpunk RED — Livro Básico', paginas: 458, dim: [1005, 1305] }
-};
+// os livros que o sistema já conhece (registro); os PDFs adicionados entram aqui também (livros_local.js)
+const LIVROS = Object.fromEntries(Object.entries(SISTEMA.livros || {}).map(([id, l]) => [id, { ...l }]));
 // na pasta: arquivos ./livros/... ; no link publicado: páginas carregadas sob demanda (window.__livroCached / __livroLoad)
 const livroPageUrl = (book, page) => (window.__livroCached
   ? (window.__livroCached(book, page) || '')
@@ -23,7 +20,8 @@ function setupLivros() {
   if (!frame) return;
   let marks = [];
   let linkModeFor = null; // id da marcação esperando um campo da ficha
-  let curBook = 'regras', curPage = 1;
+  let curBook = Object.keys(LIVROS)[0] || null, curPage = 1;
+  const temLivro = () => !!LIVROS[curBook]; // sem nenhum livro (estante vazia), o leitor só mostra o aviso
   let editing = null;
   let clickTimer = null;
 
@@ -41,9 +39,9 @@ function setupLivros() {
   const view = $('#lv-view');
 
   function syncPageUi() {
-    $('#lv-book').value = curBook;
-    $('#lv-page').value = curPage;
-    $('#lv-total').textContent = `/ ${LIVROS[curBook].paginas}`;
+    $('#lv-book').value = curBook || '';
+    $('#lv-page').value = temLivro() ? curPage : '';
+    $('#lv-total').textContent = temLivro() ? `/ ${LIVROS[curBook].paginas}` : '';
   }
 
   // ---- texto selecionável: uma camada invisível por página, alinhada à imagem ----
@@ -71,6 +69,7 @@ function setupLivros() {
   function buildStack() {
     roTexto.disconnect();
     view.querySelector('.lv-stack')?.remove();
+    if (!temLivro()) return;
     const [w, h] = LIVROS[curBook].dim;
     const stack = el('div', 'lv-stack');
     const frag = document.createDocumentFragment();
@@ -102,7 +101,8 @@ function setupLivros() {
   }
 
   function openBook(book, page) {
-    if (!LIVROS[book]) book = 'regras';
+    if (!LIVROS[book]) book = temLivro() ? curBook : Object.keys(LIVROS)[0];
+    if (!book) { syncPageUi(); if (window.__livroAviso) window.__livroAviso(null); showPage(5); return; }
     const trocou = book !== curBook;
     curBook = book;
     curPage = Math.min(Math.max(1, page | 0 || 1), LIVROS[curBook].paginas);
@@ -114,7 +114,7 @@ function setupLivros() {
       setLivroSrc(frame, curBook, curPage);
       // pré-carrega a próxima página pra navegação ficar instantânea
       frame.onload = () => {
-        if (curPage < LIVROS[curBook].paginas) {
+        if (temLivro() && curPage < LIVROS[curBook].paginas) {
           if (window.__livroLoad) window.__livroLoad(curBook, curPage + 1).catch(() => {});
           else { const pre = new Image(); pre.src = livroPageUrl(curBook, curPage + 1); }
         }
@@ -156,7 +156,7 @@ function setupLivros() {
     } else {
       view.querySelector('.lv-stack')?.remove();
       frame.style.display = '';
-      setLivroSrc(frame, curBook, curPage);
+      if (temLivro()) setLivroSrc(frame, curBook, curPage);
     }
   });
 
@@ -168,6 +168,7 @@ function setupLivros() {
   let lendo = false;
   const lvbPg = () => {
     const inp = $('#lvb-pg');
+    if (!temLivro()) { inp.value = ''; $('#lvb-tot').textContent = ''; return; }
     if (document.activeElement !== inp) inp.value = curPage;
     inp.max = LIVROS[curBook].paginas;
     $('#lvb-tot').textContent = `/ ${LIVROS[curBook].paginas}`;
@@ -238,7 +239,7 @@ function setupLivros() {
   };
   $('#lv-read').addEventListener('click', entrarLeitura);
   $('#lvb-sair').addEventListener('click', sairLeitura);
-  const passo = (d) => { const p = Math.min(LIVROS[curBook].paginas, Math.max(1, curPage + d)); openBook(curBook, p); irPara(p); };
+  const passo = (d) => { if (!temLivro()) return; const p = Math.min(LIVROS[curBook].paginas, Math.max(1, curPage + d)); openBook(curBook, p); irPara(p); };
   $('#lvb-prev').addEventListener('click', () => passo(-1));
   $('#lvb-next').addEventListener('click', () => passo(1));
   $('#lvb-pg').addEventListener('change', () => { const v = parseInt($('#lvb-pg').value, 10); if (v) { $('#lvb-pg').blur(); passo(v - curPage); } });
@@ -267,6 +268,7 @@ function setupLivros() {
   });
 
   $('#lv-save').addEventListener('click', () => {
+    if (!temLivro()) return;
     const p = Math.max(1, parseInt($('#lv-page').value, 10) || curPage);
     const m = { id: `m${Date.now()}`, book: curBook, page: p, title: `${LIVROS[curBook].nome} — pág. ${p}`, note: '', link: null, linkLabel: null };
     marks.push(m);
@@ -281,12 +283,14 @@ function setupLivros() {
     const d = e.detail || {};
     for (const k in idxCache) delete idxCache[k];
     if (d.abrir && LIVROS[d.abrir]) { curBook = d.abrir; curPage = 1; }
-    if (!LIVROS[curBook]) curBook = Object.keys(LIVROS)[0];
+    if (!LIVROS[curBook]) curBook = Object.keys(LIVROS)[0] || null;
+    if (!curBook) { syncPageUi(); try { lvbPg(); } catch { /* leitor ainda não montado */ } if (window.__livroAviso) window.__livroAviso(null); return; }
     curPage = Math.min(Math.max(1, curPage), LIVROS[curBook].paginas);
     syncPageUi();
     try { lvbPg(); } catch { /* leitor ainda não montado */ }
     const mexeu = d.abrir || (d.ids || []).includes(curBook);
-    if (scrollMode) { if (view.querySelector('.lv-stack') && (mexeu || d.inicio)) { buildStack(); scrollToPage(curPage); } }
+    // na rolagem, refaz a pilha de páginas se o livro mudou (ou se ainda não tinha: a estante estava vazia)
+    if (scrollMode) { if (mexeu || d.inicio || !view.querySelector('.lv-stack')) { buildStack(); scrollToPage(curPage); } }
     else if (mexeu || d.inicio) setLivroSrc(frame, curBook, curPage);
     if (window.__livroAviso) window.__livroAviso(curBook);
   });
@@ -331,7 +335,7 @@ function setupLivros() {
     box.innerHTML = '';
     const terms = norm(raw).split(/\s+/).filter(Boolean);
     if (!terms.length) { box.append(el('div', 'lv-empty', 'Digita uma palavra ou termo pra buscar.')); return; }
-    const books = $('#lv-qall').checked ? Object.keys(LIVROS) : [curBook];
+    const books = $('#lv-qall').checked ? Object.keys(LIVROS) : (temLivro() ? [curBook] : []);
     box.append(el('div', 'lv-empty', 'Buscando…'));
     let total = 0;
     const frag = document.createDocumentFragment();
@@ -418,7 +422,7 @@ function setupLivros() {
       if (!m.link) continue;
       const inp = document.querySelector(`[data-f="${CSS.escape(m.link)}"]`);
       if (!inp) continue;
-      const host = inp.closest('.box,.skrow,.trow,.fx');
+      const host = inp.closest('[data-label]'); // a caixa do campo na ficha (qualquer sistema)
       if (!host) continue;
       const b = el('button', 'bkbadge');
       b.type = 'button';
@@ -456,7 +460,7 @@ function setupLivros() {
   }
   document.addEventListener('click', (e) => {
     if (!linkModeFor) return;
-    const host = e.target.closest('.box,.skrow,.trow,.fx');
+    const host = e.target.closest('[data-label]');
     if (!host || !host.closest('.sheet')) return; // cliques fora da ficha (menu, abas…) passam normal
     e.preventDefault();
     e.stopPropagation();
@@ -465,11 +469,7 @@ function setupLivros() {
     const m = marks.find(x => x.id === linkModeFor);
     if (m) {
       m.link = inp.dataset.f;
-      m.linkLabel = host.dataset.label
-        || host.querySelector('.lbl')?.textContent.trim()
-        || host.querySelector('.slabel')?.textContent.trim()
-        || (inp.value && inp.value.trim())
-        || inp.dataset.f;
+      m.linkLabel = host.dataset.label || inp.dataset.f;
       persist();
       renderMarks();
       status.textContent = `Página vinculada a “${m.linkLabel}” — 1 clique no selo abre o livro · 2 cliques editam`;

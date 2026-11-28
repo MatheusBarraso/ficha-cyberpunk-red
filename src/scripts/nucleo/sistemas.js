@@ -12,6 +12,12 @@ const SISTEMAS = {
     descricao: 'A ficha oficial, igual ao PDF, com cálculo de perícias, combate na mesa e os livros de regras.',
     itens: ['Ficha igual ao PDF', 'Perícias calculadas', 'Combate na mesa', 'Livros de regras'],
     paginas: ['Personagem', 'Fluxovida & Equipamento', 'Cyberware'], // desenho do PDF oficial
+    // livros que a ficha já conhece (o PDF é reconhecido pelo número de páginas e as marcações continuam valendo)
+    livros: {
+      regras: { nome: 'CEMK — Livro de Regras', paginas: 71, dim: [992, 1404] },
+      jacket: { nome: 'CEMK — The Jacket', paginas: 62, dim: [992, 1404] },
+      red: { nome: 'Cyberpunk RED — Livro Básico', paginas: 458, dim: [1005, 1305] },
+    },
     recursos: { ataque: true, demonstracao: true },
   },
   livre: {
@@ -20,6 +26,7 @@ const SISTEMAS = {
     descricao: 'Pra qualquer RPG: você monta a ficha com as seções e os campos que o seu jogo usa.',
     itens: ['Ficha que você monta', 'Anotações e história', 'Sessões com o mestre'],
     paginas: ['Ficha'],
+    livros: {}, // a estante começa vazia: o mestre adiciona os PDFs do jogo
     recursos: { ataque: false, demonstracao: false },
   },
 };
