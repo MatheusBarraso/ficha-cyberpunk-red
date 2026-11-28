@@ -8,12 +8,9 @@
   const PADRAO = 0.45;
   const stage = document.querySelector('.stage');
   if (!stage || typeof applyScale !== 'function') return;
-  // só aparelho de toque: no PC com zoom alto a janela fica estreita, mas continua sendo PC
-  const celular = () => matchMedia('(pointer: coarse)').matches && !matchMedia('(pointer: fine)').matches
-    && (document.body.classList.contains('mob') || document.body.classList.contains('land') || Math.min(screen.width, screen.height) <= 600);
   const emPe = () => celular() && !document.body.classList.contains('land');
   const folha = () => document.querySelector('.sheet.active');
-  const ehPdf = () => { const s = folha(); return !document.body.classList.contains('cartoes') && !!(s && s.classList.contains('pdfpage')); };
+  const ehPdf = () => { const s = folha(); return !!(s && s.classList.contains('pdfpage')); };
   const ampliada = () => zoomMode === 'manual';
 
   const b = (txt, tit, fn, cls) => { const e = document.createElement('button'); e.type = 'button'; e.className = 'zmc-b' + (cls ? ' ' + cls : ''); e.textContent = txt; e.title = tit; e.setAttribute('aria-label', tit); e.addEventListener('click', (ev) => { ev.stopPropagation(); fn(); }); return e; };
@@ -96,52 +93,8 @@
   pintar();
 })();
 
-/* ===== zoom do navegador (Ctrl + / Ctrl −) aumenta a ficha de verdade =====
-   O encaixe automático deixava a ficha sempre do tamanho da janela, então o zoom do navegador não fazia efeito.
-   Agora o encaixe é calculado como se o zoom estivesse em 100%: com 125% a ficha fica 25% maior (e rola). */
 (() => {
   if (typeof applyScale !== 'function') return;
-  const NIVEIS = [0.25, 0.33, 0.5, 0.67, 0.75, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5];
-  // só aparelho de toque: no PC com zoom alto a janela fica estreita, mas continua sendo PC
-  const celular = () => matchMedia('(pointer: coarse)').matches && !matchMedia('(pointer: fine)').matches
-    && (document.body.classList.contains('mob') || document.body.classList.contains('land') || Math.min(screen.width, screen.height) <= 600);
-  function zoomNavegador() {
-    if (celular() || !window.outerWidth || !window.innerWidth) return 1;
-    const r = window.outerWidth / window.innerWidth;
-    let melhor = 1, dif = 9;
-    for (const n of NIVEIS) { const d = Math.abs(r - n * 1.008); if (d < dif) { dif = d; melhor = n; } }
-    return dif <= 0.03 * melhor ? melhor : 1; // janela com painel lateral aberto etc.: não dá pra saber, fica como estava
-  }
-  window.__zoomNavegador = zoomNavegador;
-  const MENOR = 0.2; // menor zoom da ficha (20%)
-  function encaixe(z, land, vw) {
-    if (z == null) { land = document.body.classList.contains('land'); z = zoomNavegador(); vw = (document.documentElement.clientWidth - (land ? 56 : 16) - (window.__ladoW || 0)) * z; }
-    let s = Math.min(vw, 1920 * z) / 1920;
-    if (!land) { const tb = document.querySelector('.toolbar'); const vh = (window.innerHeight - (tb ? tb.offsetHeight : 0) - 60) * z; s = Math.min(s, Math.max(0.2, vh / 1080)); }
-    return s;
-  }
-  applyScale = function () {
-    const land = document.body.classList.contains('land');
-    const z = zoomMode === 'fit' ? zoomNavegador() : 1;
-    const vw = (document.documentElement.clientWidth - (land ? 56 : 16) - (window.__ladoW || 0)) * z;
-    let s;
-    if (zoomMode === 'fit') s = encaixe(z, land, vw);
-    else s = Math.min(ZMAX, Math.max(MENOR, zoomVal));
-    const fluid = document.body.classList.contains('mob');
-    for (const sc of document.querySelectorAll('.scaler')) {
-      if ((fluid && sc.classList.contains('fl')) || (land && sc.classList.contains('fl'))) {
-        const fl = sc.querySelector('.sheet'); sc.style.width = ''; sc.style.height = ''; fl.style.transform = ''; fl.style.zoom = '';
-        continue;
-      }
-      sc.style.width = `${1920 * s}px`;
-      sc.style.height = `${1080 * s}px`;
-      const sh = sc.querySelector('.sheet');
-      if (ZOOM_OK) { sh.style.transform = ''; sh.style.zoom = s; } else sh.style.transform = `scale(${s})`;
-    }
-    const pct = document.getElementById('zoom-pct'); if (pct) pct.textContent = `${Math.round(s * 100)}%`;
-  };
-  applyScale();
-
   /* ===== zoom na ficha com Ctrl + rodinha (ou pinça do touchpad) e Ctrl + / Ctrl −, aproximando onde está o mouse =====
      Só a ficha aumenta (a barra de cima fica do tamanho normal) e o ponto embaixo do mouse continua no lugar. */
   const toque = () => matchMedia('(pointer: coarse)').matches && !matchMedia('(pointer: fine)').matches;
@@ -154,7 +107,7 @@
     const r = sh.getBoundingClientRect();
     const atual = r.width / 1920;
     const fit = encaixe();
-    let novo = Math.min(ZMAX, Math.max(MENOR, atual * fator));
+    let novo = Math.min(ZMAX, Math.max(ZMIN, atual * fator));
     // ponto da ficha embaixo do mouse (em px da ficha sem escala). Durante um mesmo gesto o ponto fica guardado:
     // enquanto a ficha ainda é mais estreita que a tela ela fica centralizada e não dá pra segurar o ponto,
     // mas assim que der pra rolar ele volta pra baixo do mouse.
