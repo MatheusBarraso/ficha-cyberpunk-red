@@ -22,6 +22,9 @@ function setupLivros() {
   let linkModeFor = null; // id da marcação esperando um campo da ficha
   let curBook = Object.keys(LIVROS)[0] || null, curPage = 1;
   const temLivro = () => !!LIVROS[curBook]; // sem nenhum livro (estante vazia), o leitor só mostra o aviso
+  // as listas de livros (leitor e janela da página salva) saem de LIVROS: os do sistema e os PDFs adicionados
+  const opcoesLivros = (sel) => sel.replaceChildren(...Object.entries(LIVROS).map(([id, l]) => { const o = el('option'); o.value = id; o.textContent = l.nome; return o; }));
+  opcoesLivros($('#lv-book'));
   let editing = null;
   let clickTimer = null;
 
@@ -102,7 +105,7 @@ function setupLivros() {
 
   function openBook(book, page) {
     if (!LIVROS[book]) book = temLivro() ? curBook : Object.keys(LIVROS)[0];
-    if (!book) { syncPageUi(); if (window.__livroAviso) window.__livroAviso(null); showPage(5); return; }
+    if (!book) { syncPageUi(); if (window.__livroAviso) window.__livroAviso(null); return; } // estante vazia: fica onde está
     const trocou = book !== curBook;
     curBook = book;
     curPage = Math.min(Math.max(1, page | 0 || 1), LIVROS[curBook].paginas);
@@ -484,6 +487,7 @@ function setupLivros() {
     if (!m) return;
     editing = id;
     $('#bk-title').value = m.title || '';
+    opcoesLivros($('#bk-book'));
     $('#bk-book').value = m.book;
     $('#bk-page').value = m.page;
     $('#bk-note').value = m.note || '';

@@ -98,10 +98,11 @@
   function estadoFicha() {
     const sem = S.lob.papel === 'mestre' && !R.id;
     document.body.classList.toggle('cm-semficha', sem);
-    document.querySelectorAll('.sheet.pdfpage .pdflayer').forEach((l) => { l.inert = sem; });
+    // os campos ficam fora de alcance (o aviso, não)
+    document.querySelectorAll('.sheet.sk-ficha > :not(.cm-semficha-box)').forEach((l) => { l.inert = sem; });
   }
   function caixasSemFicha() {
-    document.querySelectorAll('.sheet.pdfpage').forEach((sh) => {
+    document.querySelectorAll('.sheet.sk-ficha').forEach((sh) => {
       if (sh.querySelector(':scope > .cm-semficha-box')) return;
       sh.append(h('div', { class: 'cm-semficha-box' },
         h('div', { class: 'cm-sf-faixa', text: 'Mestre' }),

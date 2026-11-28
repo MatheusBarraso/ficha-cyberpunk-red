@@ -25,7 +25,7 @@ service cloud.firestore {
     }
     function membroSala(sid) { return logado() && exists(/databases/$(database)/documents/sessoes/$(sid)) && liberado(gmDe(sid), sid); }
     function gmSala(sid) { return logado() && exists(/databases/$(database)/documents/sessoes/$(sid)) && gmDe(sid) == eu() && mestreOk(); }
-    // quem digitou a senha do mestre (o documento só é criado com a senha certa, ver /chaves)
+    // acesso de mestre da conta: o documento /chaves/{uid} existe (hoje criado com a senha certa; ver /chaves)
     function mestreOk() { return logado() && exists(/databases/$(database)/documents/chaves/$(eu())); }
     function autorNovo() { return request.resource.data.autor == eu(); }
     function autorAtual() { return resource.data.autor == eu(); }
@@ -49,7 +49,8 @@ service cloud.firestore {
       allow create: if logado() && request.resource.data.dono == eu() && request.resource.data.url is string && request.resource.data.url.size() < 1000000;
       allow delete: if logado() && resource.data.dono == eu();
     }
-    // senha do mestre: o servidor só aceita gravar se o hash da senha bater. A senha não fica escrita aqui.
+    // acesso de mestre: o servidor só aceita gravar se o hash da senha da equipe bater (a senha não fica
+    // escrita aqui). Quando o acesso vier de compra, quem cria é o servidor da compra e esta regra sai.
     match /chaves/{uid} {
       allow get: if logado() && uid == eu();
       allow create, update: if logado() && uid == eu()

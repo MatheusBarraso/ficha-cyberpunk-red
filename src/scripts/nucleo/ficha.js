@@ -16,6 +16,8 @@ function montarFicha(dados) {
     stage.insertBefore(vaga, comuns);
   }
   document.querySelectorAll('template[id^="paginas-"]').forEach((x) => x.remove());
+  // .sk-ficha: as folhas de ficha de verdade (quem precisa achar "a ficha", seja de que sistema for)
+  stage.querySelectorAll(':scope > .scaler:not(.sem-pagina) > .sheet').forEach((sh, i) => { if (i < SISTEMA.paginas.length) sh.classList.add('sk-ficha'); });
   if (FICHA.montar) FICHA.montar(dados || {});
 }
 // página de ficha que o sistema aberto não usa

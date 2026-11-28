@@ -90,7 +90,7 @@
         h('button', { type: 'button', class: 'cm-ml-recolher', title: 'Recolher o painel', 'aria-label': 'Recolher o painel', text: '›', onclick: () => { S.ladoFechado = true; pintarRemota(); } })),
       h('div', { class: 'cm-ml-corpo' },
         h('div', { class: 'cm-ml-acoes' },
-          btn(inimigo ? 'Atacar' : 'Aplicar dano', () => abrirAtaque(inimigo ? null : R.id), 'cm-mini cm-pri'),
+          SISTEMA.recursos.ataque ? btn(inimigo ? 'Atacar' : 'Aplicar dano', () => abrirAtaque(inimigo ? null : R.id), 'cm-mini cm-pri') : null,
           btn('Alertar players', abrirAlerta, 'cm-mini'),
           btn('Combate', () => { sairRemota(true); S.ferrVer = 'combate'; abrir('ferramentas'); }, 'cm-mini'),
           btn('Fichas', () => { sairRemota(true); S.ferrVer = 'fichas'; abrir('ferramentas'); }, 'cm-mini')),

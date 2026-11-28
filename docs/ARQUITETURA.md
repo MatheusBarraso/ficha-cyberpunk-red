@@ -61,6 +61,11 @@ Herança do jeito que o site cresceu — a refatoração vai trocando isso por m
   `{ detail: { pagina } }`. Quem precisa reagir escuta o evento — não embrulhe a função.
 - **Tecla Esc**: quem abre algo por cima registra `aoEsc(prioridade, fechar)` (ver `nucleo/esc.js`); um Esc
   fecha só a camada aberta de maior prioridade. Janelas modais tratam o próprio Esc e marcam o evento.
+- **Sessões e sistemas**: a sessão guarda o RPG (`sistema`); `comunidade/sistema-sessao.js` troca o Sketcher
+  quando a pessoa entra numa sessão de outro RPG e continua a entrada depois de recarregar (`sk-entrar` no
+  sessionStorage). Ferramentas que dependem das regras de um sistema olham `SISTEMA.recursos`.
+- **Acesso de mestre**: permissão da conta (`chaves/{uid}` no banco), conferida em `comunidade/acesso-mestre.js`
+  (`S.lob.acessoMestre`) e pelo servidor (`mestreOk()`).
 - **Eventos**: `cm-fechou` (Comunidade fechou), `cm-asset` (imagem chegou), `livros-mudaram`,
   `cpr-escuro` (tema trocou), `cm-gate-fim` (Comunidade liberou a ficha).
 

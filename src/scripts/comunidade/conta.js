@@ -29,11 +29,11 @@
     if (S.sess && S.sess.id === sid) { abrir(); return; }
     if (S.sess) sairSala();
     if (S.lob.papel !== p) trocarPapel(p); else liberarFicha();
-    if (p === 'mestre' && S.lob.chave !== true) { abrir(); return; }
+    if (p === 'mestre' && S.lob.acessoMestre !== true) { abrir(); return; }
     entrarSala(gm, sid, dados);
   }
   function minhasSessoes() {
-    const ms = (S.lob.chave === true || S.lob.papel === 'mestre') ? S.lob.minhas.filter((x) => !x.encerrada).map((x) => ({ p: 'mestre', gm: x.gm, sid: x.id, nome: x.nome, dados: x })) : [];
+    const ms = (S.lob.acessoMestre === true || S.lob.papel === 'mestre') ? S.lob.minhas.filter((x) => !x.encerrada).map((x) => ({ p: 'mestre', gm: x.gm, sid: x.id, nome: x.nome, dados: x })) : [];
     const ps = Object.entries(S.lob.meusPedidos || {}).filter(([, it]) => it && !it.cancelado).map(([sid, it]) => {
       const ss = S.lob.sessDe[sid];
       return { p: 'player', gm: it.gm, sid, nome: (ss && ss.nome) || it.nome || 'Sessão', dados: ss, st: ss === undefined ? 'carregando' : acesso(ss, S.lob.meuMembro[sid], it) };

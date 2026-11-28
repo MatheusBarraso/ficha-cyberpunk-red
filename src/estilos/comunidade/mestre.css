@@ -1,14 +1,20 @@
-/* ---------- mestre: senha, ficha dos players ---------- */
+/* ---------- mestre: acesso de mestre, ficha dos players ---------- */
 .cm-senha .cm-in{max-width:420px}
 #menu .cm-go[hidden]{display:none!important}
 /* o mestre não tem ficha própria: aviso por cima das páginas da ficha */
-.sheet.pdfpage .cm-semficha-box{display:none}
-body.cm-semficha .sheet.pdfpage .cm-semficha-box{--ln:3px;display:flex;position:absolute;inset:0;z-index:40;flex-direction:column;align-items:center;justify-content:center;gap:30px;
+.sheet.sk-ficha .cm-semficha-box{display:none}
+body.cm-semficha .sheet.sk-ficha .cm-semficha-box{--ln:3px;display:flex;position:absolute;inset:0;z-index:40;flex-direction:column;align-items:center;justify-content:center;gap:30px;
   background:rgba(255,255,255,.96);color:var(--ink);text-align:center;font-family:var(--font);padding:120px 260px}
 .cm-semficha-box .cm-sf-faixa{background:#0d0d0d;color:#fff;font:700 30px var(--font);letter-spacing:3px;text-transform:uppercase;padding:8px 40px;
   clip-path:polygon(18px 0,100% 0,calc(100% - 18px) 100%,0 100%)}
 .cm-semficha-box b{font:700 64px var(--font);letter-spacing:2px;text-transform:uppercase;color:var(--red)}
 .cm-semficha-box p{font:500 32px/1.4 var(--font);margin:0;max-width:1100px}
 .cm-semficha-box .cm-btn{font-size:28px;padding:14px 40px;min-height:0}
+/* folha fluida (Sistema livre no celular): o aviso no tamanho da tela, não no da folha grande */
+body.mob .scaler.fl .cm-semficha-box,body.land .scaler.fl .cm-semficha-box{gap:14px;padding:20px}
+body.mob .scaler.fl .cm-semficha-box .cm-sf-faixa,body.land .scaler.fl .cm-semficha-box .cm-sf-faixa{font-size:16px;padding:4px 22px}
+body.mob .scaler.fl .cm-semficha-box b,body.land .scaler.fl .cm-semficha-box b{font-size:24px}
+body.mob .scaler.fl .cm-semficha-box p,body.land .scaler.fl .cm-semficha-box p{font-size:16px}
+body.mob .scaler.fl .cm-semficha-box .cm-btn,body.land .scaler.fl .cm-semficha-box .cm-btn{font-size:15px;padding:8px 18px}
 body.cm-remota #btn-clear{display:none!important}
 

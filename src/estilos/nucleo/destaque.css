@@ -5,6 +5,8 @@
 .cm-foco-leg{background:var(--acc2)!important;color:var(--acc2-ink)!important;border-color:var(--acc2)!important}
 .pdflayer.cm-foco-on .fx.cm-foco-alvo>input,.pdflayer.cm-foco-on .fx.cm-foco-alvo>textarea{background:color-mix(in srgb,var(--acc2) 14%,#fff)}
 html.cpr-escuro .pdflayer.cm-foco-on .fx.cm-foco-alvo>input,html.cpr-escuro .pdflayer.cm-foco-on .fx.cm-foco-alvo>textarea{background:color-mix(in srgb,var(--acc2) 12%,#1c1d20)}
+.sheet.livre .cm-foco-alvo input:not([type=checkbox]),.sheet.livre .cm-foco-alvo textarea{background:color-mix(in srgb,var(--acc2) 14%,#fff)}
+html.cpr-escuro .sheet.livre .cm-foco-alvo input:not([type=checkbox]),html.cpr-escuro .sheet.livre .cm-foco-alvo textarea{background:color-mix(in srgb,var(--acc2) 12%,#1c1d20)}
 /* sua vez no combate */
 body.cm-vez-ficha .scaler::after{box-shadow:0 0 0 2px var(--acc2),0 0 14px 2px var(--acc2),0 0 30px 4px color-mix(in srgb,var(--acc2) 60%,transparent)}
 .cm-fb-w.cm-vez{filter:drop-shadow(0 0 4px var(--acc2)) drop-shadow(0 0 10px var(--acc2))}

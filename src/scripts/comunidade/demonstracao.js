@@ -122,8 +122,8 @@
         h('div', { class: 'cm-faixa', text: tit }),
         h('div', { class: 'cm-fb-grade' }, itens.length ? itens : h('div', { class: 'cm-vazio', text: vazio })));
       rc(S.ui.area,
-        nota('Fichas na mesa', 'Toque numa ficha pra abrir e mexer à vontade. A de player muda na ficha dele na hora; as de NPC e monstro só você vê. Por enquanto todas usam o mesmo modelo de ficha.'),
-        h('div', { class: 'cm-row' }, (S.d.fichasM || []).some((f) => f.demo)
+        nota('Fichas na mesa', 'Toque numa ficha pra abrir e mexer à vontade. A de player muda na ficha dele na hora; as de NPC e monstro só você vê. ' + (SISTEMA.id === 'livre' ? 'Cada ficha tem as suas seções: abra e use “Editar ficha”.' : 'Por enquanto todas usam o mesmo modelo de ficha.')),
+        !SISTEMA.recursos.demonstracao ? null : h('div', { class: 'cm-row' }, (S.d.fichasM || []).some((f) => f.demo)
           ? btn('Apagar as fichas de demonstração', async () => { if (await confirmar('Apagar as 9 fichas de demonstração?', 'Apagar')) await salvar(async () => { for (const f of S.d.fichasM.filter((x) => x.demo)) { if (R.id === f.id) sairRemota(true); await dok('fichasMestre', f.id).delete(); } }); }, 'cm-mini')
           : btn('Criar fichas de demonstração', async () => { if (await salvar(() => criarDemos(baseDe('fichasMestre')))) toast('Fichas', '3 players, 3 NPCs e 3 monstros de demonstração criados.'); }, 'cm-mini cm-pri')),
         grupo(`Players (${players.filter((u) => !morta('player', u)).length + vivos('demo')})`, blocos([...players.map((u) => ['player', u]), ...doTipo('demo').map((f) => ['demo', f.id])], true), 'Ninguém na mesa ainda.'),

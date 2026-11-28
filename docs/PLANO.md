@@ -89,5 +89,13 @@ Passos:
       virou módulo do sistema (`src/sistemas/cpr/`) e o núcleo passou a montar "a ficha do sistema aberto".
       Livros por sistema: a estante do Sistema livre começa vazia (o mestre adiciona os PDFs) e o leitor
       ganhou o estado "nenhum livro ainda" — com teste (`teste_livre.py`) e 5 telas novas na comparação.
-- [ ] 3d. Comunidade com sistema na sessão; Sistema livre nas sessões (ficha do player, mestre abrindo, modo ajuda).
+- [x] 3d. Comunidade com sistema na sessão: a sessão guarda o RPG (`sistema`; as antigas são do CPR), as listas e a
+      busca mostram o RPG de sessões de outro, e entrar numa delas troca o Sketcher e continua a entrada depois de
+      recarregar (`comunidade/sistema-sessao.js`); o convite leva `#rpg=` no link. Sistema livre nas sessões:
+      ficha do player chegando no mestre com o modelo, mestre mexendo em valores e no modelo, modo ajuda
+      apontando campo da ficha livre, aviso de "mestre sem ficha" em qualquer sistema (`.sk-ficha`). Ataque,
+      fichas de demonstração e cidade de exemplo só no CPR (`recursos`). Acesso de mestre virou permissão da
+      conta (`comunidade/acesso-mestre.js`; a senha é só o jeito de liberar hoje — ver `FIREBASE.md` pra compra).
+      As listas de livros saem do registro (corrigiu a janela da página salva, que não listava PDFs adicionados)
+      — com teste (`teste_livre_comunidade.py`).
 - [ ] 3e. Nome Sketcher no site, app do Windows e PWA; endereço `/sketcher` (renomear o repositório) e app novo.

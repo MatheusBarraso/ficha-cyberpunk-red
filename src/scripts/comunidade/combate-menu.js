@@ -18,7 +18,7 @@
         h('span', { class: 'cm-ordem-n', text: k + 1 }), h('span', { class: `cm-ml-tag cm-ml-${x.tipo}`, text: SIGLA[x.tipo] }),
         h('span', { class: 'cm-ml-nome', text: tituloFicha(x.tipo, x.id) }),
         o.vez === k ? h('span', { class: 'cm-cb-vez', text: 'Vez' }) : null,
-        h('span', { class: 'cm-ml-pv', text: d[PV] ? `PV ${d[PV]}` : 'PV —' }));
+        SISTEMA.recursos.ataque ? h('span', { class: 'cm-ml-pv', text: d[PV] ? `PV ${d[PV]}` : 'PV —' }) : null);
     };
     const cont = (S.d.ataques || []).filter((a) => a.estado === 'contestado');
     const lados = porLado();
@@ -26,7 +26,7 @@
     const resolvidos = (S.d.ataques || []).filter((a) => a.estado !== 'pendente' && a.estado !== 'contestado');
     rc(S.ui.area,
       h('div', { class: 'cm-cb-acoes' },
-        btn('Atacar / aplicar dano', () => abrirAtaque(), 'cm-pri'),
+        SISTEMA.recursos.ataque ? btn('Atacar / aplicar dano', () => abrirAtaque(), 'cm-pri') : null,
         btn('Alertar players', abrirAlerta),
         o ? btn('Editar ordem', abrirOrdem) : null),
       cont.length ? h('div', { class: 'cm-fb-grupo' }, h('div', { class: 'cm-faixa', text: `Contestaram (${cont.length})` }),

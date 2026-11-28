@@ -39,12 +39,13 @@
   };
   const SALA_KEY = 'cpr-com-sala', PAPEL_KEY = 'cpr-com-papel', ULTIMA_KEY = 'cpr-com-ultima';
   function entrarSala(gm, sid, dados) {
+    if (dados && deOutroSistema(dados)) { trocarPraSessao(gm, sid, dados); return; }
     if (S.sess && S.sess.id === sid && S.sess.gm === gm) { S.verLobby = false; abrir(); return; }
     if (S.sess) sairSala();
     limparSala();
     S.sess = { ...(dados || {}), id: sid, gm };
     S.mestre = gm === S.me;
-    try { localStorage.setItem(SALA_KEY, JSON.stringify({ gm, sid })); localStorage.setItem(ULTIMA_KEY, JSON.stringify({ gm, sid, nome: (dados && dados.nome) || '', papel: gm === S.me ? 'mestre' : 'player', me: S.me })); } catch { /* ok */ }
+    try { localStorage.setItem(SALA_KEY, JSON.stringify({ gm, sid })); localStorage.setItem(ULTIMA_KEY, JSON.stringify({ gm, sid, nome: (dados && dados.nome) || '', papel: gm === S.me ? 'mestre' : 'player', me: S.me, sistema: SISTEMA.id })); } catch { /* ok */ }
     if (!S.assets) claude.use('assets').then((a) => { S.assets = a; }).catch(() => {});
     assinarSala();
     S.sec = 'historia';

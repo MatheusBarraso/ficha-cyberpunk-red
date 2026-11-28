@@ -74,7 +74,9 @@
     sub(sessRef(g.gm, g.id), (s) => {
       if (!s.exists) { expulsar('Essa sessão não existe mais.'); return; }
       S.sess = { ...s.data(), id: g.id, gm: g.gm };
-      try { const u = JSON.parse(localStorage.getItem(ULTIMA_KEY) || 'null'); if (u && u.sid === g.id && u.nome !== S.sess.nome) localStorage.setItem(ULTIMA_KEY, JSON.stringify({ ...u, nome: S.sess.nome || '' })); } catch { /* ok */ }
+      try { const u = JSON.parse(localStorage.getItem(ULTIMA_KEY) || 'null'); if (u && u.sid === g.id && (u.nome !== S.sess.nome || u.sistema !== sistemaDe(S.sess))) localStorage.setItem(ULTIMA_KEY, JSON.stringify({ ...u, nome: S.sess.nome || '', sistema: sistemaDe(S.sess) })); } catch { /* ok */ }
+      // entrou sem saber o sistema (pelo "Continuar", por exemplo) e a sessão é de outro: troca e volta pra ela
+      if (deOutroSistema(S.sess)) { const sess = S.sess; sairSala(); trocarPraSessao(sess.gm, sess.id, sess); return; }
       pintarChips();
       if (S.sess.encerrada && !S.mestre) expulsar('O mestre encerrou essa sessão.');
     }, 'sessao');

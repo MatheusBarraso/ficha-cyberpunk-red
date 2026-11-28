@@ -40,9 +40,10 @@
     try { const w = user ? await user.can('data.write') : null; S.escreve = w !== false && !!S.me; } catch { S.escreve = !!S.me; }
     if (!S.me) { if (S.aberto) montar(); return; }
     limparSalvoAntigo();
+    retomarEntrada(); // veio de outro sistema pra entrar numa sessão deste
     sub(S.db.collection('perfis'), (s) => { S.d.perfis = Object.fromEntries(s.docs.map((d) => [d.id, d.data()])); }, 'perfis', null);
     assinarLobby();
-    conferirChave();
+    conferirAcessoMestre();
     if (S.aberto) montar();
     mudou();
   }

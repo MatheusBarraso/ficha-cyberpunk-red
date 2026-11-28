@@ -111,9 +111,19 @@ Só o **mestre** carrega livros. Os players veem os que o mestre compartilhou co
 
 ## Mestre
 
-- Pra entrar como **Mestre** precisa da senha do mestre (cada conta digita uma vez). Quem confere é o servidor: a senha não fica escrita no site nem neste repositório, só o "hash" dela nas regras.
+- Pra entrar como **Mestre** a conta precisa de **acesso de mestre**: é o documento `chaves/{uid}`, e é ele que
+  o servidor confere (`mestreOk()` nas regras). Hoje o acesso é liberado com a senha da equipe (cada conta digita
+  uma vez): o servidor só aceita criar o documento com a senha certa — ela não fica escrita no site nem neste
+  repositório, só o "hash" dela nas regras.
+  - **Quando vier a compra**: quem cria `chaves/{uid}` passa a ser o servidor da compra (uma Cloud Function com
+    acesso de administrador, que não passa pelas regras), depois do pagamento confirmado. Aí é só tirar o
+    `allow create, update` de `/chaves` nas regras (a senha deixa de valer) e trocar a tela "Acesso de mestre"
+    do site (`src/scripts/comunidade/acesso-mestre.js`) pelo botão de comprar. O resto do site já confere só
+    se o documento existe.
 - O mestre não tem ficha própria. Na sala da sessão tem a aba **Ferramentas**, com a ficha de cada player da mesa: dá pra abrir e mexer em tudo, e a mudança chega na ficha do player na hora.
 - A ficha do player é enviada pra sessão automaticamente quando ele está numa sessão (só ele e o mestre conseguem ler).
+- Cada sessão é de um RPG (o campo `sistema` da sessão; as antigas são do Cyberpunk RED). Entrar numa sessão de
+  outro RPG troca o Sketcher pra ele. O convite leva o RPG no link (`#rpg=…`).
 
 ## A ficha
 

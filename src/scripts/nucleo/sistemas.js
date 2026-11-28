@@ -18,7 +18,9 @@ const SISTEMAS = {
       jacket: { nome: 'CEMK — The Jacket', paginas: 62, dim: [992, 1404] },
       red: { nome: 'Cyberpunk RED — Livro Básico', paginas: 458, dim: [1005, 1305] },
     },
-    recursos: { ataque: true, demonstracao: true },
+    // ferramentas da Comunidade que dependem das regras do CPR: ataque com PV/armadura, fichas de
+    // demonstração e a cidade de exemplo (Night City)
+    recursos: { ataque: true, demonstracao: true, exemplo: true },
   },
   livre: {
     id: 'livre',
@@ -27,7 +29,7 @@ const SISTEMAS = {
     itens: ['Ficha que você monta', 'Anotações e história', 'Sessões com o mestre'],
     paginas: ['Ficha'],
     livros: {}, // a estante começa vazia: o mestre adiciona os PDFs do jogo
-    recursos: { ataque: false, demonstracao: false },
+    recursos: { ataque: false, demonstracao: false, exemplo: false },
   },
 };
 const SISTEMA = SISTEMAS[document.documentElement.getAttribute('data-sistema')] || SISTEMAS.cpr;

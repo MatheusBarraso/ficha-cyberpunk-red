@@ -79,23 +79,24 @@
       if (window.__cmLogin && (S.db || S.erro)) { rc(L, h('div', { class: 'cm-h' }, h('h2', { text: S.lob.papel === 'mestre' ? 'Mestre' : 'Player' }), btn('Trocar', () => trocarPapel(null), 'cm-mini')), h('div', { class: 'cm-caixa cm-login' }, h('div', { class: 'cm-txt', text: 'Entre com a conta Google pra ' + (S.lob.papel === 'mestre' ? 'criar sessões.' : 'entrar numa sessão.') }), btn('Entrar com Google', () => { try { sessionStorage.setItem('cpr-com-poslogin', S.lob.papel || ''); } catch { /* ok */ } window.__cmLogin(); }, 'cm-pri'))); return; }
       rc(L, h('div', { class: 'cm-vazio', text: S.db ? 'Entre com a sua conta do Claude pra usar a Comunidade.' : 'Conectando…' })); return;
     }
-    rc(L, S.lob.papel === 'mestre' ? (S.lob.chave !== true ? telaSenha() : S.lob.ger ? painelSessao() : telaMestre()) : telaPlayer());
+    rc(L, S.lob.papel === 'mestre' ? (S.lob.acessoMestre !== true ? telaAcessoMestre() : S.lob.ger ? painelSessao() : telaMestre()) : telaPlayer());
     resolverNomes();
   }
-  function trocarPapel(p) { sairRemota(true); if (p) liberarFicha(); if (p === 'mestre' && S.lob.chave === undefined) conferirChave(); if (S.aberto && !S.db && !S.erro && p) { /* ainda conectando: monta de novo quando chegar */ } S.lob.papel = p; S.lob.ger = null; S.lob.busca = null; try { p ? localStorage.setItem(PAPEL_KEY, p) : localStorage.removeItem(PAPEL_KEY); } catch { /* ok */ } dispatchEvent(new Event('cm-papel')); estadoFicha(); pintarTopo(); montar(); corpo.scrollTop = 0; mudou(); }
+  function trocarPapel(p) { sairRemota(true); if (p) liberarFicha(); if (p === 'mestre' && S.lob.acessoMestre === undefined) conferirAcessoMestre(); if (S.aberto && !S.db && !S.erro && p) { /* ainda conectando: monta de novo quando chegar */ } S.lob.papel = p; S.lob.ger = null; S.lob.busca = null; try { p ? localStorage.setItem(PAPEL_KEY, p) : localStorage.removeItem(PAPEL_KEY); } catch { /* ok */ } dispatchEvent(new Event('cm-papel')); estadoFicha(); pintarTopo(); montar(); corpo.scrollTop = 0; mudou(); }
   function telaEscolha() {
     const cartao = (cls, tit, txt, p) => h('button', { type: 'button', class: `sk-escolha ${cls}`, onclick: () => trocarPapel(p) },
       h('span', { class: 'sk-esc-tit', text: tit }), h('span', { class: 'sk-esc-txt', text: txt }),
       h('span', { class: 'sk-esc-ir', text: S.lob.ultimo === p ? 'Entrar · última vez' : 'Entrar' }));
     let u = null; try { u = JSON.parse(localStorage.getItem(ULTIMA_KEY) || 'null'); } catch { /* ok */ }
-    const cont = S.me && u && u.sid && u.me === S.me && (u.papel === 'player' || S.lob.chave === true)
-      ? h('button', { type: 'button', class: 'cm-continuar', onclick: () => entrarComo(u.papel, u.gm, u.sid, null) },
-        h('span', { class: 'sk-esc-tit', text: 'Continuar' }), h('span', { class: 'sk-esc-txt' }, h('b', { text: u.nome || 'Última sessão' }), ' · como ' + (u.papel === 'mestre' ? 'Mestre' : 'Player')), h('span', { class: 'sk-esc-ir', text: 'Entrar ›' }))
+    const cont = S.me && u && u.sid && u.me === S.me && (u.papel === 'player' || S.lob.acessoMestre === true)
+      ? h('button', { type: 'button', class: 'cm-continuar', onclick: () => entrarComo(u.papel, u.gm, u.sid, u.sistema ? { nome: u.nome, sistema: u.sistema } : null) },
+        h('span', { class: 'sk-esc-tit', text: 'Continuar' }), h('span', { class: 'sk-esc-txt' }, h('b', { text: u.nome || 'Última sessão' }), ' · como ' + (u.papel === 'mestre' ? 'Mestre' : 'Player'),
+          u.sistema && u.sistema !== SISTEMA.id && SISTEMAS[u.sistema] ? ' · ' + SISTEMAS[u.sistema].nome : ''), h('span', { class: 'sk-esc-ir', text: 'Entrar ›' }))
       : null;
     return [h('div', { class: 'cm-esc-topo' }, h('div', { class: 'sk-esc-logo' }, h('span', { text: 'Sketcher' }), h('b', { text: SISTEMA.nome })),
       btn('Trocar de RPG', () => abrirEscolhaRpg(), 'cm-mini')), cont,
       h('div', { class: 'sk-esc-grid' },
-        cartao('mestre', 'Mestre', 'Cria a sessão, convida a mesa e cuida da cidade. Precisa da senha.', 'mestre'),
+        cartao('mestre', 'Mestre', 'Cria a sessão, convida a mesa e cuida da cidade. Precisa de acesso de mestre.', 'mestre'),
         cartao('player vermelha', 'Player', 'Entra na sessão com o código do mestre.', 'player'))];
   }
 
@@ -118,7 +119,7 @@
     return h('div', { class: 'cm-sessao' + (s.encerrada ? ' cm-off' : '') },
       h('div', { class: 'cm-sessao-info' },
         h('b', { class: 'cm-sessao-nome', text: s.nome }),
-        h('span', { class: 'cm-sub' }, s.encerrada ? 'Encerrada' : `${ocup}/${s.limite} jogadores`, pend ? h('span', { class: 'cm-n', text: pend }) : null, pend ? ` pedido${pend === 1 ? '' : 's'}` : null, !s.encerrada && venc ? h('span', { class: 'cm-err', text: ' · código vencido' }) : null)),
+        h('span', { class: 'cm-sub' }, tagSistema(s), s.encerrada ? 'Encerrada' : `${ocup}/${s.limite} jogadores`, pend ? h('span', { class: 'cm-n', text: pend }) : null, pend ? ` pedido${pend === 1 ? '' : 's'}` : null, !s.encerrada && venc ? h('span', { class: 'cm-err', text: ' · código vencido' }) : null)),
       !s.encerrada ? h('span', { class: 'cm-codigo' + (venc ? ' venc' : '') }, h('span', { text: s.codigo })) : null,
       h('div', { class: 'cm-row' }, btn('Gerenciar', () => { S.lob.ger = s.id; atualizarLobby(); corpo.scrollTop = 0; }, 'cm-mini'), !s.encerrada ? btn('Abrir sala', () => entrarSala(s.gm, s.id, s), 'cm-mini cm-pri') : null));
   }
@@ -129,7 +130,7 @@
     const lim = h('input', { class: 'cm-in', type: 'number', min: 1, max: 20, value: s.limite || 5 });
     const apr = h('select', { class: 'cm-sel' }, h('option', { value: 'manual', text: 'Eu aprovo cada pedido' }), h('option', { value: 'automatica', text: 'Entra direto com o código' })); apr.value = s.aprovacao || 'manual';
     const val = h('select', { class: 'cm-sel' }, [[1, '1 dia'], [7, '7 dias'], [30, '30 dias'], [0, 'Sem validade']].map(([v, t]) => h('option', { value: v, text: t }))); val.value = String(s.validadeDias != null ? s.validadeDias : 7);
-    const ex = h('input', { type: 'checkbox' });
+    const ex = SISTEMA.recursos.exemplo ? h('input', { type: 'checkbox' }) : null; // a cidade de exemplo é do Cyberpunk RED
     const lbl = (t, e) => h('label', { class: 'cm-lbl' }, t, e);
     const st = h('span', { class: 'cm-sub' });
     const salvarB = btn(s.id ? 'Salvar' : 'Criar sessão', async () => {
@@ -143,10 +144,10 @@
         }
         const codigo = await novoCodigo();
         const ref = S.db.collection(`mestres/${S.me}/sessoes`).doc();
-        await ref.set({ nome: nm, descricao: desc.value.trim(), limite, aprovacao: apr.value, validadeDias: +val.value, codigo, codigoExpira: expiraEm(+val.value), codigosAceitos: [codigo], encerrada: false, gm: S.me, criada: agora(), ts: agora() });
+        await ref.set({ nome: nm, descricao: desc.value.trim(), limite, aprovacao: apr.value, validadeDias: +val.value, codigo, codigoExpira: expiraEm(+val.value), codigosAceitos: [codigo], encerrada: false, gm: S.me, sistema: SISTEMA.id, criada: agora(), ts: agora() });
         await S.db.doc('convites/' + codigo).set({ gm: S.me, sid: ref.id, ts: agora() });
         await S.db.doc('sessoes/' + ref.id).set({ gm: S.me, ts: agora() });
-        if (ex.checked) await criarExemplo(ref.id);
+        if (ex && ex.checked) await criarExemplo(ref.id);
         S.lob.ger = ref.id;
       });
       salvarB.disabled = false; st.textContent = '';
@@ -155,7 +156,7 @@
     return h('div', { class: 'cm-caixa' }, h('div', { class: 'cm-faixa', text: s.id ? 'Editar sessão' : 'Nova sessão' }),
       lbl('Nome da campanha', nomeI), lbl('Descrição', desc),
       h('div', { class: 'cm-grid', style: 'grid-template-columns:repeat(auto-fill,minmax(180px,1fr))' }, lbl('Limite de jogadores', lim), lbl('Entrada', apr), lbl('Validade do código', val)),
-      !s.id ? h('label', { class: 'cm-row cm-check' }, ex, 'Incluir cidade de exemplo') : null,
+      !s.id && ex ? h('label', { class: 'cm-row cm-check' }, ex, 'Incluir cidade de exemplo') : null,
       h('div', { class: 'cm-row' }, salvarB, st, h('span', { style: 'flex:1' }), btn('Cancelar', () => { S.lob.criando = false; S.lob.editando = false; atualizarLobby(); }, 'cm-mini')));
   }
   function painelSessao() {
@@ -166,7 +167,7 @@
     const lotada = ocup >= s.limite;
     const venc = s.codigoExpira && s.codigoExpira < agora();
     const out = [h('div', { class: 'cm-row' }, btn('← Suas sessões', () => { S.lob.ger = null; S.lob.editando = false; atualizarLobby(); }, 'cm-mini')),
-      h('div', { class: 'cm-h' }, h('h2', { text: s.nome }), s.encerrada ? h('span', { class: 'cm-tag', text: 'Encerrada' }) : null, !s.encerrada ? btn('Abrir sala', () => entrarSala(S.me, s.id, s), 'cm-mini cm-pri') : null)];
+      h('div', { class: 'cm-h' }, h('h2', { text: s.nome }), tagSistema(s), s.encerrada ? h('span', { class: 'cm-tag', text: 'Encerrada' }) : null, !s.encerrada ? btn('Abrir sala', () => entrarSala(S.me, s.id, s), 'cm-mini cm-pri') : null)];
     if (s.descricao) out.push(h('div', { class: 'cm-txt', text: s.descricao }));
     // convite
     if (!s.encerrada) out.push(h('div', { class: 'cm-caixa' }, h('div', { class: 'cm-faixa', text: 'Código de convite' }),
@@ -228,7 +229,7 @@
       const st = ss === undefined ? 'carregando' : acesso(ss, S.lob.meuMembro[sid], it);
       return h('div', { class: 'cm-sessao' + (st === 'ok' ? '' : ' cm-off') },
         h('div', { class: 'cm-sessao-info' }, h('b', { class: 'cm-sessao-nome', text: (ss && ss.nome) || it.nome || 'Sessão' }),
-          h('span', { class: 'cm-sub' }, st === 'carregando' ? '…' : ESTADO_TXT[st], ' · mestre ', spanNome(it.gm))),
+          h('span', { class: 'cm-sub' }, tagSistema(ss), st === 'carregando' ? '…' : ESTADO_TXT[st], ' · mestre ', spanNome(it.gm))),
         h('div', { class: 'cm-row' }, st === 'ok' ? btn('Entrar na sala', () => entrarSala(it.gm, sid, ss), 'cm-mini cm-pri') : null,
           btn(st === 'pendente' ? 'Cancelar pedido' : 'Tirar', () => cancelarPedido(sid), 'cm-mini')));
     })));
@@ -269,7 +270,8 @@
       : btn(s.aprovacao === 'automatica' ? 'Confirmar entrada' : 'Solicitar entrada', () => pedirEntrada(s, b.codigo), 'cm-pri');
     return h('div', { class: 'cm-caixa cm-entra' }, h('div', { class: 'cm-faixa', text: 'Sessão encontrada' }),
       h('div', { class: 'cm-sessao-nome cm-nome', text: s.nome }),
-      h('div', { class: 'cm-meta' }, h('span', null, 'Mestre ', spanNome(s.gm)), h('span', { text: `${b.ocup}/${s.limite} jogadores` }), h('span', { text: s.aprovacao === 'automatica' ? 'entrada direta' : 'o mestre aprova' })),
+      deOutroSistema(s) ? h('div', { class: 'cm-aviso', text: `Essa sessão é de ${SISTEMAS[sistemaDe(s)].nome}. Ao entrar, o Sketcher abre o ${SISTEMAS[sistemaDe(s)].nome} (a sua ficha de ${SISTEMA.nome} continua guardada).` }) : null,
+      h('div', { class: 'cm-meta' }, h('span', null, tagSistema(s), 'Mestre ', spanNome(s.gm)), h('span', { text: `${b.ocup}/${s.limite} jogadores` }), h('span', { text: s.aprovacao === 'automatica' ? 'entrada direta' : 'o mestre aprova' })),
       s.descricao ? h('div', { class: 'cm-txt', text: s.descricao }) : null, acao);
   }
   async function pedirEntrada(sess, codigo) {

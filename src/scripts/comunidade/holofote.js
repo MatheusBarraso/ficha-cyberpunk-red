@@ -1,6 +1,8 @@
   // ----- o holofote: uma camada fixa na tela que segue o campo a cada quadro -----
   // ao aparecer, o escuro fecha devagar das bordas da tela até o campo (com zoom ou no celular, o player acha onde ir)
-  const FOCO_SEL = (c) => `.pdflayer [data-f="${CSS.escape(c)}"]`;
+  // o campo numa folha de ficha de qualquer sistema; a caixa dele é quem tem data-label (CPR: .fx; Sistema livre: .sl-campo)
+  const FOCO_SEL = (c) => `.sheet.sk-ficha [data-f="${CSS.escape(c)}"]`;
+  const naFicha = (t) => t instanceof HTMLElement && !!t.dataset.f && !!t.closest('.sheet.sk-ficha');
   const suave = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
   function recorte(f) { // área onde o escuro aparece: a ficha (não cobre barra nem painéis)
     const vw = innerWidth, vh = innerHeight;
@@ -46,17 +48,20 @@
   }
   function focoEm(campo, texto, lento) {
     const inp = document.querySelector(FOCO_SEL(campo));
-    if (!inp) { focoLimpar(); return null; }
-    const fx = inp.closest('.fx');
+    const fx = inp && inp.closest('[data-label]');
     if (!fx) { focoLimpar(); return null; }
     if (focoAtual && focoAtual.campo === campo && focoAtual.inp === inp) { if (texto) { legenda.textContent = texto; legenda.hidden = false; } return fx; }
     const anterior = focoAtual && focoAtual.ultimo;
     focoLimpar();
-    const a = areaDoCampo(fx);
-    const marca = h('div', { class: 'cm-foco-marca', 'aria-hidden': 'true' });
-    marca.style.cssText = `left:${a.x0}px;top:${a.y0}px;width:${a.x1 - a.x0}px;height:${a.y1 - a.y0}px`;
-    a.layer.append(marca); a.layer.classList.add('cm-foco-on');
-    const layer = a.layer, els = a.els, alvoEl = marca;
+    // no desenho do PDF a área é a linha inteira com o rótulo (modo-ajuda.js); na ficha em HTML, a própria caixa
+    let a = { layer: null, els: [fx], parcial: false }, marca = null;
+    if (fx.closest('.pdflayer')) {
+      a = areaDoCampo(fx);
+      marca = h('div', { class: 'cm-foco-marca', 'aria-hidden': 'true' });
+      marca.style.cssText = `left:${a.x0}px;top:${a.y0}px;width:${a.x1 - a.x0}px;height:${a.y1 - a.y0}px`;
+      a.layer.append(marca); a.layer.classList.add('cm-foco-on');
+    }
+    const layer = a.layer, els = a.els, alvoEl = marca || fx;
     els.forEach((e) => e.classList.add('cm-foco-alvo'));
     const luz = h('div', { class: 'cm-foco-luz', 'aria-hidden': 'true' });
     const moldura = h('div', { class: 'cm-foco-moldura', 'aria-hidden': 'true' }, luz);
@@ -69,7 +74,7 @@
   }
   // mestre: entrou num campo
   document.addEventListener('focusin', (e) => {
-    const t = e.target; if (!(t instanceof HTMLElement) || !t.dataset.f || !t.closest('.pdflayer')) return;
+    const t = e.target; if (!naFicha(t)) return;
     if (!S.mestre || !R.id || !ajudaOn()) return;
     clearTimeout(tAjuda);
     const fx = focoEm(t.dataset.f, null);
@@ -82,11 +87,11 @@
     }
   });
   document.addEventListener('focusout', (e) => {
-    const t = e.target; if (!(t instanceof HTMLElement) || !t.dataset.f || !t.closest('.pdflayer') || !S.mestre) return;
+    const t = e.target; if (!naFicha(t) || !S.mestre) return;
     clearTimeout(tAjuda);
     tAjuda = setTimeout(() => {
       const a = document.activeElement;
-      if (a && a.dataset && a.dataset.f && a.closest('.pdflayer')) return; // foi pra outro campo: o focusin cuida
+      if (naFicha(a)) return; // foi pra outro campo: o focusin cuida
       focoLimpar();
       if (ajudaEnviada && S.sess) { ajudaEnviada = null; sessRef(S.sess.gm, S.sess.id).update({ ajuda: null }).catch(() => {}); }
     }, 250);
@@ -101,7 +106,7 @@
     if (chave === ajudaVista) return;
     ajudaVista = chave;
     if (!vale) { focoLimpar(); return; }
-    const inp = document.querySelector(`.pdflayer [data-f="${CSS.escape(a.campo)}"]`);
+    const inp = document.querySelector(FOCO_SEL(a.campo));
     const sheet = inp && inp.closest('.sheet');
     const idx = sheet ? [...document.querySelectorAll('.sheet')].indexOf(sheet) : -1;
     if (idx >= 0 && !sheet.classList.contains('active') && typeof showPage === 'function' && !S.aberto) showPage(idx);

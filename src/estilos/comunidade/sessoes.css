@@ -18,6 +18,7 @@
 html.cm-gate body > :not(#comu):not(#sk-rpg):not(.cm-toasts):not(.jn-bg):not(.cfm-bg):not(#cpr-nova):not(.cm-modal-fundo){visibility:hidden!important}
 html.cm-gate body{background:var(--bg)}
 html.cm-gate .cm-tabs{display:none}
+.cm-tag-sis{margin-right:6px;border-color:var(--red);color:var(--red-dark)}
 .cm-esc-topo{display:flex;align-items:center;justify-content:space-between;gap:8px 12px;flex-wrap:wrap}
 
 /* janelas (formulários do mestre) */
