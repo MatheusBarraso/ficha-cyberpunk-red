@@ -1,4 +1,5 @@
   // ---------- montagem das seções ----------
+  const moldura = criarMoldura(); // a folha do painel
   let wrap = null;
   function montar() {
     rc(corpo, );

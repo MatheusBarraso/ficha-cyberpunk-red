@@ -13,7 +13,7 @@ async def main():
             ctx = await b.new_context(viewport=vp, device_scale_factor=2.625, is_mobile=True, has_touch=True, user_agent='Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 Chrome/130 Mobile Safari/537.36'); await ctx.route('**/*', handler)
             m = await ctx.new_page(); errs=[]; m.on('pageerror', lambda e: errs.append(str(e)))
             await m.goto('https://ficha.test/index.html#u=p1&login=1'); await m.wait_for_timeout(1500)
-            await m.tap('.cm-escolha.player'); await m.wait_for_timeout(300)
+            await m.tap('.sk-escolha.player'); await m.wait_for_timeout(300)
             await m.evaluate("[...document.querySelectorAll('#comu .cm-bar .cm-btn')].find(b=>/Ficha/i.test(b.textContent)).click()"); await m.wait_for_timeout(3500)
             print(nome, 'controle:', await m.evaluate("[...document.querySelectorAll('.zmc > *')].filter(e=>!e.hidden).map(e=>e.textContent)"))
             await m.screenshot(path=f'tests/saida/z_{nome}_0.png')

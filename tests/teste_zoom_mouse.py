@@ -13,7 +13,7 @@ async def main():
         ctx = await b.new_context(viewport={'width':1600,'height':900}); await ctx.route('**/*', handler)
         m = await ctx.new_page(); errs=[]; m.on('pageerror', lambda e: errs.append(str(e)))
         await m.goto('https://ficha.test/index.html#u=p1&login=1'); await m.wait_for_timeout(1500)
-        await m.click('.cm-escolha.player'); await m.wait_for_timeout(300)
+        await m.click('.sk-escolha.player'); await m.wait_for_timeout(300)
         await m.click('#comu .cm-bar button:has-text(\"Ficha\")'); await m.wait_for_timeout(3000)
         x, y, *_ = await m.evaluate(C); print('antes', await m.evaluate(C))
         await m.mouse.move(x, y)

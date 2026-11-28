@@ -13,7 +13,7 @@ async def main():
         errs=[]
         gm = await ctx.new_page(); gm.on('pageerror', lambda e: errs.append(str(e)))
         await gm.goto('https://ficha.test/index.html#u=gm&login=1'); await gm.wait_for_timeout(1500)
-        await gm.click('.cm-escolha.mestre'); await gm.wait_for_timeout(1500)
+        await gm.click('.sk-escolha.mestre'); await gm.wait_for_timeout(1500)
         print('brilho por baixo da comunidade?', await gm.evaluate("!!document.querySelector('.sheet.brilha')"))
         await gm.click('text=＋ Nova sessão'); await gm.fill('label:has-text("Nome da campanha") input', 'Noites de Cromo'); await gm.check('label:has-text("cidade de exemplo") input')
         await gm.click('#comu button:has-text("Criar sessão")'); await gm.wait_for_timeout(2500)
@@ -39,7 +39,7 @@ async def main():
         # celular em pé
         c2 = await b.new_context(viewport={'width':390,'height':844}, is_mobile=True, has_touch=True); await c2.route('**/*', handler)
         m = await c2.new_page(); await m.goto('https://ficha.test/index.html#u=p1&login=1'); await m.wait_for_timeout(1500)
-        await m.click('.cm-escolha.player'); await m.wait_for_timeout(300)
+        await m.click('.sk-escolha.player'); await m.wait_for_timeout(300)
         await m.evaluate("[...document.querySelectorAll('#comu .cm-bar .cm-btn')].find(b=>/Ficha/i.test(b.textContent)).click()"); await m.wait_for_timeout(3500)
         print('em pé:', await m.evaluate("({mob:document.body.classList.contains('mob'), sheet:getComputedStyle(document.querySelector('.sheet.active')).display, mpage:document.querySelector('#mpage-0') && getComputedStyle(document.querySelector('#mpage-0')).display, zoom:document.getElementById('zoom-pct').textContent, nomeNaFicha: !!document.querySelector('.sheet.active [data-f=\"NOME\"]')})"))
         await m.screenshot(path='tests/saida/n_empe.png')

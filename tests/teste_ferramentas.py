@@ -17,7 +17,7 @@ async def main():
             await pg.goto(f'https://ficha.test/index.html#u={u}&login=1{extra}'); await pg.wait_for_timeout(1300); return pg
         # ---- senha ----
         m2 = await nova('m2', '&semchave')
-        await m2.click('.cm-escolha.mestre'); await m2.wait_for_timeout(600)
+        await m2.click('.sk-escolha.mestre'); await m2.wait_for_timeout(600)
         print('m2 tela:', await txt(m2, '#comu .cm-body'))
         await m2.fill('.cm-senha input', 'lapis e legal'); await m2.click('text=Entrar como mestre'); await m2.wait_for_timeout(600)
         print('senha errada ->', await txt(m2, '.cm-senha .cm-err'))
@@ -27,14 +27,14 @@ async def main():
         await m2.close()
         # ---- mestre sem ficha ----
         gm = await nova('gm')
-        await gm.click('.cm-escolha.mestre'); await gm.wait_for_timeout(400)
+        await gm.click('.sk-escolha.mestre'); await gm.wait_for_timeout(400)
         await gm.click('text=＋ Nova sessão')
         await gm.fill('label:has-text("Nome da campanha") input', 'Mesa ferramentas'); await gm.select_option('label:has-text("Entrada") select', 'automatica')
         await gm.click('#comu button:has-text("Criar sessão")'); await gm.wait_for_timeout(2000)
         code = await txt(gm, '.cm-codigo.grande span')
         await gm.locator("#comu button").filter(has_text="sala").first.click(); await gm.wait_for_timeout(1200)
         print('gm abas:', await gm.evaluate("[...document.querySelectorAll('.cm-tab')].filter(t=>!t.hidden).map(t=>t.textContent)"))
-        p1 = await nova('p1'); await p1.click('.cm-escolha.player'); await buscar(p1, code)
+        p1 = await nova('p1'); await p1.click('.sk-escolha.player'); await buscar(p1, code)
         await p1.click('#comu button:has-text("Confirmar entrada")'); await p1.wait_for_timeout(1500)
         print('p1 abas:', await p1.evaluate("[...document.querySelectorAll('.cm-tab')].filter(t=>!t.hidden).map(t=>t.textContent)"))
         await p1.evaluate("showPage(0)"); await p1.wait_for_timeout(500)

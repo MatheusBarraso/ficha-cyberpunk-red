@@ -84,18 +84,18 @@
   }
   function trocarPapel(p) { sairRemota(true); if (p) liberarFicha(); if (p === 'mestre' && S.lob.chave === undefined) conferirChave(); if (S.aberto && !S.db && !S.erro && p) { /* ainda conectando: monta de novo quando chegar */ } S.lob.papel = p; S.lob.ger = null; S.lob.busca = null; try { p ? localStorage.setItem(PAPEL_KEY, p) : localStorage.removeItem(PAPEL_KEY); } catch { /* ok */ } dispatchEvent(new Event('cm-papel')); estadoFicha(); pintarTopo(); montar(); corpo.scrollTop = 0; mudou(); }
   function telaEscolha() {
-    const cartao = (cls, tit, txt, p) => h('button', { type: 'button', class: `cm-escolha ${cls}`, onclick: () => trocarPapel(p) },
-      h('span', { class: 'cm-esc-tit', text: tit }), h('span', { class: 'cm-esc-txt', text: txt }),
-      h('span', { class: 'cm-esc-ir', text: S.lob.ultimo === p ? 'Entrar · última vez' : 'Entrar' }));
+    const cartao = (cls, tit, txt, p) => h('button', { type: 'button', class: `sk-escolha ${cls}`, onclick: () => trocarPapel(p) },
+      h('span', { class: 'sk-esc-tit', text: tit }), h('span', { class: 'sk-esc-txt', text: txt }),
+      h('span', { class: 'sk-esc-ir', text: S.lob.ultimo === p ? 'Entrar · última vez' : 'Entrar' }));
     let u = null; try { u = JSON.parse(localStorage.getItem(ULTIMA_KEY) || 'null'); } catch { /* ok */ }
     const cont = S.me && u && u.sid && u.me === S.me && (u.papel === 'player' || S.lob.chave === true)
       ? h('button', { type: 'button', class: 'cm-continuar', onclick: () => entrarComo(u.papel, u.gm, u.sid, null) },
-        h('span', { class: 'cm-esc-tit', text: 'Continuar' }), h('span', { class: 'cm-esc-txt' }, h('b', { text: u.nome || 'Última sessão' }), ' · como ' + (u.papel === 'mestre' ? 'Mestre' : 'Player')), h('span', { class: 'cm-esc-ir', text: 'Entrar ›' }))
+        h('span', { class: 'sk-esc-tit', text: 'Continuar' }), h('span', { class: 'sk-esc-txt' }, h('b', { text: u.nome || 'Última sessão' }), ' · como ' + (u.papel === 'mestre' ? 'Mestre' : 'Player')), h('span', { class: 'sk-esc-ir', text: 'Entrar ›' }))
       : null;
-    return [h('div', { class: 'cm-esc-logo' }, h('span', { text: 'FICHA' }), h('b', { text: 'CYBERPUNK RED' })), cont,
-      h('div', { class: 'cm-esc-grid' },
+    return [h('div', { class: 'sk-esc-logo' }, h('span', { text: 'FICHA' }), h('b', { text: 'CYBERPUNK RED' })), cont,
+      h('div', { class: 'sk-esc-grid' },
         cartao('mestre', 'Mestre', 'Cria a sessão, convida a mesa e cuida da cidade. Precisa da senha.', 'mestre'),
-        cartao('player', 'Player', 'Entra na sessão com o código do mestre.', 'player'))];
+        cartao('player vermelha', 'Player', 'Entra na sessão com o código do mestre.', 'player'))];
   }
 
   // ----- MESTRE -----

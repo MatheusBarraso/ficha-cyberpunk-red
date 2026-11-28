@@ -14,7 +14,7 @@ async def main():
         errs=[]
         gm = await ctx.new_page(); gm.on('pageerror', lambda e: errs.append(str(e)))
         await gm.goto('https://ficha.test/index.html#u=gm&login=1'); await gm.wait_for_timeout(1300)
-        await gm.click('.cm-escolha.mestre'); await gm.wait_for_timeout(500)
+        await gm.click('.sk-escolha.mestre'); await gm.wait_for_timeout(500)
         for nome in ('Noites de Cromo', 'Porto Sombrio'):
             await gm.click('text=＋ Nova sessão'); await gm.fill('label:has-text("Nome da campanha") input', nome)
             await gm.click('#comu button:has-text("Criar sessão")'); await gm.wait_for_timeout(2000)

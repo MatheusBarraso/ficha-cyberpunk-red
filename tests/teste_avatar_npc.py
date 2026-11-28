@@ -19,7 +19,7 @@ async def main():
         gm = await ctx.new_page()
         gm.on('pageerror', lambda e: errs.append(str(e)))
         await gm.goto('https://ficha.test/index.html#u=gm&login=1'); await gm.wait_for_timeout(1500)
-        await gm.click('.cm-escolha.mestre'); await gm.wait_for_timeout(1200)
+        await gm.click('.sk-escolha.mestre'); await gm.wait_for_timeout(1200)
         await gm.click('text=＋ Nova sessão'); await gm.fill('label:has-text("Nome da campanha") input', 'Teste de retratos')
         await gm.check('label:has-text("cidade de exemplo") input')
         await gm.click('#comu button:has-text("Criar sessão")'); await gm.wait_for_timeout(2500)

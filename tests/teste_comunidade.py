@@ -17,19 +17,19 @@ async def main():
             await pg.goto(f'https://ficha.test/index.html#u={u}' + ('&login=1' if login else '')); await pg.wait_for_timeout(1200); return pg
         if CFG != 'ok':
             pg = await pg_new('gm')
-            await pg.wait_for_selector('.cm-escolha'); await pg.click('.cm-escolha.mestre'); await pg.wait_for_timeout(400)
+            await pg.wait_for_selector('.sk-escolha'); await pg.click('.sk-escolha.mestre'); await pg.wait_for_timeout(400)
             print('semconfig:', await pg.evaluate("document.querySelector('#comu').innerText.slice(0,400)"))
             await pg.screenshot(path='tests/saida/gh_semconfig.png')
             print('ficha liberada?', await pg.evaluate("!document.documentElement.classList.contains('cm-gate')"))
             print('errors', errs); await b.close(); return
         # login pelo botão
         gm = await pg_new('gm', login=False)
-        await gm.wait_for_selector('.cm-escolha'); await gm.click('.cm-escolha.mestre'); await gm.wait_for_timeout(300)
+        await gm.wait_for_selector('.sk-escolha'); await gm.click('.sk-escolha.mestre'); await gm.wait_for_timeout(300)
         print('antes do login:', await gm.evaluate("document.querySelector('#comu').innerText.slice(0,200)"))
         await gm.screenshot(path='tests/saida/gh_login.png')
         await gm.click('#comu button:has-text("Entrar com Google")'); await gm.wait_for_timeout(1500)
         print('depois:', await txt(gm, '.cm-cidade'), 'me=', await gm.evaluate("__comuEstado && __comuEstado.me"))
-        if await gm.locator('.cm-escolha.mestre').count(): await gm.click('.cm-escolha.mestre'); await gm.wait_for_timeout(300)
+        if await gm.locator('.sk-escolha.mestre').count(): await gm.click('.sk-escolha.mestre'); await gm.wait_for_timeout(300)
         await gm.click('text=＋ Nova sessão')
         await gm.fill('label:has-text("Nome da campanha") input', 'Noites de Cromo'); await gm.fill('label:has-text("Descrição") textarea', 'Campanha de teste.')
         await gm.fill('label:has-text("Limite de jogadores") input', '1')
@@ -37,7 +37,7 @@ async def main():
         await gm.click('#comu button:has-text("Criar sessão")'); await gm.wait_for_timeout(2500)
         code = await txt(gm, '.cm-codigo.grande span'); print('code', code, 'neg gm', await neg(gm))
         p1 = await pg_new('p1')
-        await p1.wait_for_selector('.cm-escolha'); await p1.click('.cm-escolha.player'); await p1.wait_for_timeout(200)
+        await p1.wait_for_selector('.sk-escolha'); await p1.click('.sk-escolha.player'); await p1.wait_for_timeout(200)
         await buscar(p1, 'ABCD-2345'); print('inexistente', await msgs(p1))
         await buscar(p1, code); print('achou', await txt(p1, '.cm-entra .cm-nome'), await txt(p1, '.cm-entra .cm-meta'))
         await p1.click('#comu button:has-text("Solicitar entrada")'); await p1.wait_for_timeout(700)
@@ -68,7 +68,7 @@ async def main():
         print('forjar autor:', await p1.evaluate("""(async()=>{const db=await claude.use('db');const sid=__comuEstado.sess.id;try{await db.collection('sessoes/'+sid+'/mural').add({autor:'gm',texto:'falso',ts:1});return 'GRAVOU'}catch(e){return e.code}})()"""))
         print('forjar NPC:', await p1.evaluate("""(async()=>{const db=await claude.use('db');const sid=__comuEstado.sess.id;try{await db.collection('sessoes/'+sid+'/mural').add({autor:'p1',mestre:true,npc:'ex-kira',texto:'falso',ts:1});return 'GRAVOU'}catch(e){return e.code}})()"""))
         p2 = await pg_new('p2')
-        await p2.wait_for_selector('.cm-escolha'); await p2.click('.cm-escolha.player'); await buscar(p2, code); print('p2 lotada', await txt(p2, '.cm-entra .cm-err'))
+        await p2.wait_for_selector('.sk-escolha'); await p2.click('.sk-escolha.player'); await buscar(p2, code); print('p2 lotada', await txt(p2, '.cm-entra .cm-err'))
         # remover p1 -> perde acesso no servidor
         await gm.bring_to_front(); await gm.click('#comu button:has-text("Remover")'); await gm.click('.cfm .ok'); await gm.wait_for_timeout(700)
         await p1.bring_to_front(); await p1.wait_for_timeout(900)

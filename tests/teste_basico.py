@@ -14,7 +14,7 @@ async def run(p, nome, vp, mobile=False):
     pg.on('pageerror', lambda e: errs.append('ERR '+str(e)[:200]))
     pg.on('console', lambda m: m.type in ('error','warning') and 'blocked by Playwright' not in m.text and errs.append(m.type+' '+m.text[:200]))
     await pg.goto('https://ficha.test/index.html#u=gm&login=1'); await pg.wait_for_timeout(1500)
-    await pg.click('.cm-escolha.player'); await pg.wait_for_timeout(300)
+    await pg.click('.sk-escolha.player'); await pg.wait_for_timeout(300)
     await pg.evaluate("document.querySelector('#comu .cm-bar button[title*=ficha], #comu .cm-bar .cm-btn')"); 
     await pg.evaluate("[...document.querySelectorAll('#comu .cm-bar .cm-btn')].find(b=>/Ficha/i.test(b.textContent)).click()"); await pg.wait_for_timeout(800)
     for i in range(6):
@@ -25,7 +25,7 @@ async def run(p, nome, vp, mobile=False):
     await pg.evaluate("(()=>{const e=document.querySelector('[data-f=\"NOME\"]');e.value='Teste Smoke';e.dispatchEvent(new Event('input',{bubbles:true}))})()"); await pg.wait_for_timeout(1500)
     salvo = await pg.evaluate("JSON.stringify(Object.keys(localStorage).filter(k=>!k.startsWith('fake')).map(k=>[k,(localStorage.getItem(k)||'').includes('Teste Smoke')]))")
     await pg.reload(); await pg.wait_for_timeout(1500)
-    await pg.click('.cm-escolha.player'); await pg.wait_for_timeout(300)
+    await pg.click('.sk-escolha.player'); await pg.wait_for_timeout(300)
     await pg.evaluate("[...document.querySelectorAll('#comu .cm-bar .cm-btn')].find(b=>/Ficha/i.test(b.textContent)).click()"); await pg.wait_for_timeout(600)
     volta = await pg.evaluate("document.querySelector('[data-f=\"NOME\"]').value")
     print(nome, 'salvou:', salvo[:200], '| depois de recarregar:', volta)

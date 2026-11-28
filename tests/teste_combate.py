@@ -16,7 +16,7 @@ async def main():
             pg = await ctx.new_page(); pg.on('pageerror', lambda e: errs.append(u+str(e)))
             await pg.goto(f'https://ficha.test/index.html#u={u}&login=1'); await pg.wait_for_timeout(1300); return pg
         gm = await nova('gm')
-        await gm.click('.cm-escolha.mestre'); await gm.wait_for_timeout(400)
+        await gm.click('.sk-escolha.mestre'); await gm.wait_for_timeout(400)
         await gm.click('text=＋ Nova sessão')
         await gm.fill('label:has-text("Nome da campanha") input', 'Combate'); await gm.select_option('label:has-text("Entrada") select', 'automatica')
         await gm.fill('label:has-text("Limite") input', '4') if await gm.locator('label:has-text("Limite") input').count() else None
@@ -25,7 +25,7 @@ async def main():
         await gm.locator("#comu button").filter(has_text="sala").first.click(); await gm.wait_for_timeout(1200)
         pls = {}
         for u, nm, pv in (('p1','Kira','40'), ('p2','Rex','30')):
-            pg = await nova(u); await pg.click('.cm-escolha.player'); await buscar(pg, code)
+            pg = await nova(u); await pg.click('.sk-escolha.player'); await buscar(pg, code)
             await pg.click('#comu button:has-text("Confirmar entrada")'); await pg.wait_for_timeout(1500)
             await pg.evaluate("showPage(0)"); await pg.wait_for_timeout(300)
             await pg.fill('[data-f="NOME"]', nm); await pg.fill('[data-f="PONTOS DE VIDA"]', pv); await pg.wait_for_timeout(2200)

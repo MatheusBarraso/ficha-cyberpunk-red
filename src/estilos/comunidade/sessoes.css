@@ -43,7 +43,6 @@ body.land #fold-paginas{grid-row:2/5}
   .cm-msg{max-width:92%}
   .cm-fichas{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
   .cm-doc-tit{font-size:18px}
-  .cm-esc-tit{font-size:24px}
   .cm-bar .cm-btn.cm-mini{padding:3px 8px}
   .cm-papel{display:none}
   .cm-in-codigo{font-size:18px;letter-spacing:2px;padding:7px 6px}

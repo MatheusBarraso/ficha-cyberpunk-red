@@ -1,0 +1,23 @@
+/* ---------- peças de tela do núcleo: moldura de folha e cartões de escolha ----------
+   usadas pela escolha de RPG e pela entrada da Comunidade (Mestre / Player); --ln e --corte vêm de quem usa */
+.sk-moldura{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+.sk-moldura path{fill:var(--paper);stroke:var(--red);stroke-width:2;stroke-linejoin:miter}
+
+.sk-esc-logo{display:flex;align-items:baseline;gap:10px;font-weight:700;letter-spacing:2px;font-size:clamp(22px,5vw,32px);text-transform:uppercase;color:var(--ink)}
+.sk-esc-logo b{color:var(--red)}
+.sk-esc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+/* cartão: canto de baixo cortado com a linha diagonal, como as caixas da ficha */
+.sk-escolha{text-align:left;background:#fff;border:var(--ln) solid var(--red);color:var(--ink);padding:0 0 16px;display:flex;flex-direction:column;gap:12px;cursor:pointer;font-family:var(--font);
+  --c:18px;position:relative;clip-path:polygon(0 0,100% 0,100% calc(100% - var(--c)),calc(100% - var(--c)) 100%,0 100%)}
+.sk-escolha::after{content:'';position:absolute;right:calc(-1 * var(--ln));bottom:calc(-1 * var(--ln));
+  width:calc(var(--c) + var(--ln));height:calc(var(--c) + var(--ln));pointer-events:none;
+  background:linear-gradient(to bottom right,transparent calc(50% - var(--ln) * .5),var(--red) calc(50% - var(--ln) * .5),var(--red) calc(50% + var(--ln) * .5),transparent calc(50% + var(--ln) * .5))}
+.sk-escolha:hover,.sk-escolha:focus-visible{background:var(--tint);outline:none}
+.sk-esc-tit{align-self:flex-start;margin:2px 0 0 2px;background:#000;color:#fff;font-size:30px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:6px 30px 6px 14px;clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)}
+.sk-escolha.vermelha .sk-esc-tit{background:var(--red)}
+.sk-esc-txt{font-size:17px;line-height:1.4;padding:0 16px}
+.sk-esc-ir{margin:auto 16px 0;align-self:flex-start;border:var(--ln) solid var(--red);font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 14px}
+.sk-escolha:hover .sk-esc-ir{background:var(--red);color:#fff}
+@media (max-width:640px){
+  .sk-esc-tit{font-size:24px}
+}
