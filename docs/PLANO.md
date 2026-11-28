@@ -50,10 +50,33 @@ Decisões do Matheus (28/11/2026):
 
 ## Etapa 3 — Sketcher
 
-- [ ] Núcleo compartilhado (conta, comunidade, anotações, quadro, livros, temas) separado do que é de sistema.
-- [ ] Registro de sistemas: cada sistema em `src/sistemas/<id>/` com ficha, regras, conteúdo, demonstrações.
-- [ ] Cyberpunk RED como primeiro sistema; **Sistema livre** como segundo (ficha genérica com campos criados pelo usuário).
-- [ ] Tela de escolha de RPG.
-- [ ] Sessões da Comunidade guardam o sistema; dados atuais migrados sem perda (`cpr-*` → por sistema).
-- [ ] "Acesso de mestre" como permissão por conta (pronto pro sistema de compra).
-- [ ] Nome Sketcher no site, app do Windows e PWA; endereço `/sketcher`.
+Desenho (decidido na análise da etapa 2):
+
+- **Sistema atual por carregamento.** O sistema (`cpr`, `livre`, …) é decidido antes de tudo carregar, por
+  `#rpg=<id>` no endereço ou pela última escolha (`sk-sistema` no navegador), e fica em
+  `<html data-sistema="…">`. Trocar de sistema recarrega a página: cada sistema começa limpo.
+- **Registro de sistemas** (`src/scripts/nucleo/sistemas.js`): id, nome, descrição, quais páginas tem
+  (ex.: o CPR usa as 3 páginas do PDF; o Sistema livre uma página só) e quais ferramentas da Comunidade
+  valem (ex.: ataque com PV/armadura só no CPR). Cada sistema mora em `src/sistemas/<id>/`.
+- **Dados por sistema.** `chaveLocal(nome)` dá a chave do navegador: o CPR continua com as chaves de sempre
+  (`cpr-ficha-v1`, `cpr-notas-v2`, `cpr-quadro-v2`, `cpr-livros-v1`) — nenhum dado é migrado, então nada
+  se perde —; os outros sistemas usam `sk-<id>-<nome>`. O backup leva o id do sistema.
+- **Tela de escolha de RPG** (início do Sketcher): aparece na primeira visita e pelo "Trocar de RPG"
+  (menu e menu da conta).
+- **Sistema livre**: ficha em HTML (não é desenho de PDF) com seções e campos que o usuário cria
+  (texto, número, texto longo, atributo, recurso atual/máximo). A estrutura vai num campo escondido
+  `__layout` dentro dos próprios dados da ficha — assim salvar, backup, mandar pro mestre e o mestre
+  abrir a ficha funcionam sem mudar nada disso. As páginas 2 e 3 (do PDF) somem; Anotações, História e
+  Livros continuam.
+- **Comunidade**: a sessão guarda `sistema` (sessões antigas = `cpr`; as regras do banco já aceitam o
+  campo). Entrar numa sessão de outro sistema troca o sistema. Ferramentas que dependem das regras do CPR
+  (ataque com PV/armadura, fichas de demonstração) só aparecem em sessões do CPR.
+- **Acesso de mestre** como permissão por conta, pronto pro sistema de compra.
+
+Passos:
+
+- [ ] 3a. Registro de sistemas + chaves por sistema (sem mudar nada no CPR).
+- [ ] 3b. Tela de escolha de RPG + "Trocar de RPG".
+- [ ] 3c. Ficha do Sistema livre (uso local: criar, editar, salvar, backup).
+- [ ] 3d. Comunidade com sistema na sessão; Sistema livre nas sessões (ficha do player, mestre abrindo, modo ajuda).
+- [ ] 3e. Nome Sketcher no site, app do Windows e PWA; endereço `/sketcher` (renomear o repositório) e app novo.
