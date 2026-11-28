@@ -5,6 +5,7 @@
 //   'sk:pagina'          — depois da troca (brilho das linhas, entrar na leitura, ajustar o zoom…)
 // Os dois levam { detail: { pagina } }.
 function showPage(i) {
+  if (paginaSemUso(i)) i = 0;
   dispatchEvent(new CustomEvent('sk:trocando-pagina', { detail: { pagina: i } }));
   document.querySelectorAll('.tab').forEach((t, k) => t.classList.toggle('active', k === i));
   document.querySelectorAll('.sheet').forEach((s, k) => s.classList.toggle('active', k === i));
@@ -14,6 +15,18 @@ function showPage(i) {
   window.scrollTo({ top: 0 });
   if (i === 4 && window.__boardShow) window.__boardShow();
   dispatchEvent(new CustomEvent('sk:pagina', { detail: { pagina: i } }));
+}
+// abas do menu: as páginas de ficha do sistema e depois Anotações, História e Livros, numeradas em ordem
+function rotularAbas() {
+  let n = 0;
+  const folhas = document.querySelectorAll('#stage > .scaler > .sheet');
+  document.querySelectorAll('#fold-paginas .tab').forEach((t, i) => {
+    const nome = i < PAGINAS_FICHA ? SISTEMA.paginas[i] : t.textContent.split(' · ').pop();
+    t.hidden = !nome;
+    if (!nome) return;
+    t.textContent = `${++n} · ${nome}`;
+    if (folhas[i]) folhas[i].setAttribute('aria-label', `Página ${n} — ${nome}`);
+  });
 }
 function openMenu(o) {
   $('#menu').classList.toggle('open', o);

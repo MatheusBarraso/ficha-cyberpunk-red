@@ -23,8 +23,8 @@ window.claude = { use: (n) => window.__fbPronto.then((a) => (a ? a[n] || null : 
 
 <link rel="icon" href="./icon-192.png">
 <title>Sketcher</title>
-<style>{{> estilos/nucleo/fonte.css}}{{> estilos/nucleo/base.css}}{{> estilos/nucleo/barra.css}}{{> estilos/nucleo/menu.css}}{{> estilos/nucleo/palco.css}}{{> estilos/nucleo/escolha.css}}{{> estilos/nucleo/escolha-rpg.css}}{{> estilos/ficha/paginas.css}}{{> estilos/anotacoes/anotacoes.css}}{{> estilos/historia/quadro.css}}{{> estilos/livros/livros.css}}{{> estilos/nucleo/impressao.css}}{{> estilos/celular/em-pe.css}}{{> estilos/celular/deitado.css}}{{> estilos/livros/leitura.css}}{{> estilos/livros/leitor-aba.css}}{{> estilos/livros/pdf-local.css}}{{> estilos/nucleo/aviso-versao.css}}</style>
-<style>{{> estilos/nucleo/confirmar.css}}{{> estilos/anotacoes/dossie-mural.css}}{{> estilos/ficha/neon.css}}{{> estilos/livros/texto-selecionavel.css}}{{> estilos/comunidade/base.css}}{{> estilos/comunidade/barra.css}}{{> estilos/comunidade/folha.css}}{{> estilos/comunidade/sessoes.css}}{{> estilos/comunidade/sala.css}}{{> estilos/comunidade/sino.css}}{{> estilos/comunidade/npc-foto.css}}{{> estilos/comunidade/mestre.css}}{{> estilos/comunidade/ferramentas.css}}{{> estilos/comunidade/painel-mestre.css}}{{> estilos/comunidade/combate.css}}{{> estilos/comunidade/estilo-livro.css}}{{> estilos/comunidade/conta-sino.css}}{{> estilos/comunidade/marca-canto.css}}{{> estilos/celular/zoom.css}}{{> estilos/comunidade/historia.css}}{{> estilos/comunidade/modo-ajuda.css}}{{> estilos/nucleo/destaque.css}}{{> estilos/nucleo/seta.css}}{{> estilos/nucleo/menu-principal.css}}{{> estilos/ficha/texto-real.css}}</style>
+<style>{{> estilos/nucleo/fonte.css}}{{> estilos/nucleo/base.css}}{{> estilos/nucleo/barra.css}}{{> estilos/nucleo/menu.css}}{{> estilos/nucleo/palco.css}}{{> estilos/nucleo/escolha.css}}{{> estilos/nucleo/escolha-rpg.css}}{{> sistemas/cpr/ficha.css}}{{> estilos/anotacoes/anotacoes.css}}{{> estilos/historia/quadro.css}}{{> estilos/livros/livros.css}}{{> estilos/nucleo/impressao.css}}{{> estilos/celular/em-pe.css}}{{> estilos/celular/deitado.css}}{{> estilos/livros/leitura.css}}{{> estilos/livros/leitor-aba.css}}{{> estilos/livros/pdf-local.css}}{{> estilos/nucleo/aviso-versao.css}}</style>
+<style>{{> estilos/nucleo/confirmar.css}}{{> estilos/anotacoes/dossie-mural.css}}{{> estilos/nucleo/neon.css}}{{> estilos/livros/texto-selecionavel.css}}{{> estilos/comunidade/base.css}}{{> estilos/comunidade/barra.css}}{{> estilos/comunidade/folha.css}}{{> estilos/comunidade/sessoes.css}}{{> estilos/comunidade/sala.css}}{{> estilos/comunidade/sino.css}}{{> estilos/comunidade/npc-foto.css}}{{> estilos/comunidade/mestre.css}}{{> estilos/comunidade/ferramentas.css}}{{> estilos/comunidade/painel-mestre.css}}{{> estilos/comunidade/combate.css}}{{> estilos/comunidade/estilo-livro.css}}{{> estilos/comunidade/conta-sino.css}}{{> estilos/comunidade/marca-canto.css}}{{> estilos/celular/zoom.css}}{{> estilos/comunidade/historia.css}}{{> estilos/comunidade/modo-ajuda.css}}{{> estilos/nucleo/destaque.css}}{{> estilos/nucleo/seta.css}}{{> estilos/nucleo/menu-principal.css}}{{> sistemas/cpr/texto-real.css}}</style>
 <script>{{> scripts/nucleo/confirmar.js}}</script>
 {{escuro estilos/escuro-ajustes.css}}</head>
 <body>
@@ -87,29 +87,9 @@ window.claude = { use: (n) => window.__fbPronto.then((a) => (a ? a[n] || null : 
 
 <main class="stage" id="stage">
 
-  <!-- PÁGINA 1 (desenho do PDF oficial) -->
-  <div class="scaler pp" data-sheet="0">
-    <section class="sheet pdfpage p1 active" aria-label="Página 1 — Personagem">
-      <div class="pdfbg">{{> sistemas/cpr/ficha/pagina-1.svg}}</div>
-      <div class="pdflayer" id="layer-0"></div>
-    </section>
-  </div>
-
-  <!-- PÁGINA 2 (desenho do PDF oficial) -->
-  <div class="scaler pp" data-sheet="1">
-    <section class="sheet pdfpage p2" aria-label="Página 2 — Fluxovida e Equipamento">
-      <div class="pdfbg">{{> sistemas/cpr/ficha/pagina-2.svg}}</div>
-      <div class="pdflayer" id="layer-1"></div>
-    </section>
-  </div>
-
-  <!-- PÁGINA 3 (desenho do PDF oficial) -->
-  <div class="scaler pp" data-sheet="2">
-    <section class="sheet pdfpage p3" aria-label="Página 3 — Cyberware">
-      <div class="pdfbg">{{> sistemas/cpr/ficha/pagina-3.svg}}</div>
-      <div class="pdflayer" id="layer-2"></div>
-    </section>
-  </div>
+  <!-- PÁGINAS 1–3: a ficha do sistema aberto. Cada sistema traz as suas (src/sistemas/<id>/ficha/paginas.html)
+       e nucleo/ficha.js põe as do sistema aberto aqui; as que ele não usa ficam vazias e escondidas. -->
+  <template id="paginas-cpr">{{> sistemas/cpr/ficha/paginas.html}}</template>
 
   <!-- PÁGINA 4 — ANOTAÇÕES -->
   <div class="scaler fl" data-sheet="3">
@@ -277,8 +257,8 @@ window.claude = { use: (n) => window.__fbPronto.then((a) => (a ? a[n] || null : 
 <script>{{> scripts/livros/fila-pdf.js}}</script>
 <script type="module" src="livros_local.js"></script>
 <script>{{> scripts/livros/primeiro-livro.js}}</script>
-<script>{{> scripts/nucleo/sistemas.js}}{{> scripts/ficha/paginas-pdf-inicio.js}}const FIELDMAP = {{> sistemas/cpr/ficha/campos.json}}{{> scripts/ficha/paginas-pdf.js}}{{> scripts/celular/em-pe.js}}{{> scripts/nucleo/persistencia.js}}{{> scripts/ficha/calculo.js}}{{> scripts/nucleo/esc.js}}{{> scripts/nucleo/moldura.js}}{{> scripts/nucleo/cores.js}}{{> scripts/nucleo/zoom.js}}{{> scripts/nucleo/menu-abas.js}}{{> scripts/nucleo/escolha-rpg.js}}{{> scripts/nucleo/backup.js}}{{> scripts/ficha/retrato.js}}{{> scripts/celular/deitado.js}}{{> scripts/nucleo/inicio.js}}{{> scripts/historia/quadro.js}}{{> scripts/anotacoes/janelas.js}}{{> scripts/anotacoes/editor.js}}{{> scripts/livros/marcacoes.js}}{{> scripts/nucleo/impressao.js}}</script>
-<script>{{> scripts/ficha/neon.js}}</script>
+<script>{{> scripts/nucleo/utilidades.js}}{{> scripts/nucleo/sistemas.js}}{{> sistemas/cpr/ficha.js}}{{> scripts/nucleo/ficha.js}}{{> scripts/celular/em-pe.js}}{{> scripts/nucleo/persistencia.js}}{{> scripts/nucleo/esc.js}}{{> scripts/nucleo/moldura.js}}{{> scripts/nucleo/cores.js}}{{> scripts/nucleo/zoom.js}}{{> scripts/nucleo/menu-abas.js}}{{> scripts/nucleo/escolha-rpg.js}}{{> scripts/nucleo/backup.js}}{{> scripts/nucleo/retrato.js}}{{> scripts/celular/deitado.js}}{{> scripts/nucleo/inicio.js}}{{> scripts/historia/quadro.js}}{{> scripts/anotacoes/janelas.js}}{{> scripts/anotacoes/editor.js}}{{> scripts/livros/marcacoes.js}}{{> scripts/nucleo/impressao.js}}</script>
+<script>{{> scripts/nucleo/neon.js}}</script>
 <script>
 {{> scripts/comunidade/estado.js}}{{> scripts/comunidade/utilidades.js}}{{> scripts/comunidade/avisos.js}}{{> scripts/comunidade/imagens.js}}{{> scripts/comunidade/cifra.js}}{{> scripts/comunidade/painel.js}}{{> scripts/comunidade/secoes.js}}{{> scripts/comunidade/novidades.js}}{{> scripts/comunidade/conta.js}}{{> scripts/comunidade/destaque.js}}{{> scripts/comunidade/mural.js}}{{> scripts/comunidade/historia.js}}{{> scripts/comunidade/lugares.js}}{{> scripts/comunidade/npcs.js}}{{> scripts/comunidade/pistas.js}}{{> scripts/comunidade/missoes.js}}{{> scripts/comunidade/perfis.js}}{{> scripts/comunidade/dados.js}}{{> scripts/comunidade/acesso.js}}{{> scripts/comunidade/convites.js}}{{> scripts/comunidade/assinaturas.js}}{{> scripts/comunidade/livros-mesa.js}}{{> scripts/comunidade/lobby.js}}{{> scripts/comunidade/cidade-exemplo.js}}{{> scripts/comunidade/limpeza-v67.js}}{{> scripts/comunidade/menu-principal.js}}{{> scripts/comunidade/senha-mestre.js}}{{> scripts/comunidade/fichas-players.js}}{{> scripts/comunidade/marca-canto.js}}{{> scripts/comunidade/mesa.js}}{{> scripts/comunidade/modo-ajuda.js}}{{> scripts/comunidade/holofote.js}}{{> scripts/comunidade/ferramentas.js}}{{> scripts/comunidade/ataque.js}}{{> scripts/comunidade/alerta.js}}{{> scripts/comunidade/ordem.js}}{{> scripts/comunidade/player-avisos.js}}{{> scripts/comunidade/demonstracao.js}}{{> scripts/comunidade/fichas-ocultas.js}}{{> scripts/comunidade/combate.js}}{{> scripts/comunidade/combate-menu.js}}
 {{> scripts/nucleo/nitidez.js}}

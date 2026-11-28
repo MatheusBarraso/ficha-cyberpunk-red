@@ -1,4 +1,9 @@
-;
+/* ================= Cyberpunk RED: a ficha é o desenho do PDF oficial =================
+   Três páginas (ficha/paginas.html: o desenho de cada uma + uma camada pros campos) e os campos postos
+   nas posições exatas do PDF a partir do FIELDMAP (ficha/campos.json): por página, cada campo
+   preenchível — k = chave salva (data-f), t = tipo (t texto, n número, a texto longo, c caixa,
+   atr/base calculados, img retrato), r = [x, y, largura, altura] em px. */
+const FIELDMAP = {{> sistemas/cpr/ficha/campos.json}};
 
 function buildPdfPages() {
   for (const [pi, list] of Object.entries(FIELDMAP)) {
@@ -41,3 +46,23 @@ function buildPdfPages() {
   }
 }
 
+/* ATR/BASE: o atributo de cada perícia e o total (nível + atributo) */
+let baseCells = null;
+function recalcCpr() {
+  const stats = {};
+  for (const s of document.querySelectorAll('input[data-stat]')) stats[s.dataset.stat] = parseInt(s.value, 10) || 0;
+  for (const c of document.querySelectorAll('.calc.atr')) c.textContent = stats[c.dataset.stat] || '';
+  if (!baseCells) baseCells = Array.from(document.querySelectorAll('.calc.base'))
+    .map(c => [c, document.querySelector(`input[data-f="${CSS.escape(c.dataset.nvlf)}"]`)]);
+  for (const [c, n] of baseCells) {
+    if (!n) continue;
+    const total = (parseInt(n.value, 10) || 0) + (stats[n.dataset.atr] || 0);
+    c.textContent = total || '';
+  }
+}
+
+registrarFicha('cpr', {
+  montar: buildPdfPages,
+  recalcular: recalcCpr,
+  gatilhoCalculo: 'input[data-stat], input[data-nvl]', // campos que mudam os valores calculados
+});

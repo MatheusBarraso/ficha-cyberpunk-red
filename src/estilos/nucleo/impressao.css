@@ -10,6 +10,7 @@
   .stage{padding:0;gap:0;display:block}
   .scaler{display:block!important;overflow:visible;max-width:none;width:auto!important;height:auto!important;page-break-after:always;margin:0}
   .scaler:last-child{page-break-after:auto}
+  .scaler.sem-pagina{display:none!important}
   .sheet{position:static;display:grid!important;transform:none!important;zoom:.54!important;border-width:4px}
   .sheet.p4,.sheet.p5,.sheet.p6{display:flex!important}
   .box input:focus,.box textarea:focus,.trow .cell input:focus{background:transparent}

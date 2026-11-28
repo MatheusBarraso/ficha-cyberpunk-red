@@ -8,10 +8,10 @@ O `index.html` da raiz é **gerado**: o código de verdade fica em `src/` e o bu
 | Pasta | O que tem |
 |---|---|
 | `src/pagina.html` | Esqueleto da página. A ordem das inclusões aqui é a ordem em que o CSS e o JS entram na página. |
-| `src/estilos/<área>/` | CSS por área: `nucleo`, `ficha`, `celular`, `anotacoes`, `historia`, `livros`, `comunidade`. |
+| `src/estilos/<área>/` | CSS por área: `nucleo`, `celular`, `anotacoes`, `historia`, `livros`, `comunidade`. |
 | `src/estilos/escuro-ajustes.css` | Ajustes à mão do modo escuro (o resto do escuro é gerado — ver abaixo). |
 | `src/scripts/<área>/` | JavaScript por área (mesmas áreas do CSS). |
-| `src/sistemas/cpr/` | O que é do Cyberpunk RED: desenho das 3 páginas da ficha (`pagina-N.svg`, arte do PDF oficial) e o mapa de campos (`campos.json`: onde fica cada campo em cada página). |
+| `src/sistemas/<id>/` | O que é de cada sistema de RPG. `ficha.js` registra a ficha (montar os campos, cálculos), `ficha.css` o visual dela e `ficha/paginas.html` as páginas (vão num `<template>`). No Cyberpunk RED, `ficha/` ainda tem o desenho das 3 páginas (`pagina-N.svg`, arte do PDF oficial) e o mapa de campos (`campos.json`: onde fica cada campo em cada página). |
 | `src/publico/` | Copiado como está pra raiz do site: ponte do Firebase (`fb.js`), configuração, leitor de PDF local (`livros_local.js` + `lib/`), PWA (`manifest.webmanifest`, `sw.js`), ícones, imagens de exemplo. |
 | `src/fontes/`, `src/imagens/` | Embutidos no CSS pelo build (base64). |
 | `tools/` | `build.mjs` (monta o site) e `escuro.mjs` (gera o modo escuro). Só Node, sem dependências. |
@@ -43,9 +43,10 @@ O build também confere a sintaxe de todo `<script>` montado e avisa sobre arqui
 Herança do jeito que o site cresceu — a refatoração vai trocando isso por módulos com contratos claros
 (ver `PLANO.md`).
 
-- **Script principal** (ficha, celular, leitor, anotações, história): os arquivos de `src/scripts/` que
-  entram no mesmo `<script>` dividem o escopo global. Funções globais usadas pelo resto:
-  `showPage(i)`, `applyScale()`, `openMenu(abrir)`, `save()`, `load()`, `recalc()`, `setMob()`, `setLand()`,
+- **Script principal** (ficha, celular, leitor, anotações, história): os arquivos de `src/scripts/` e as
+  fichas de `src/sistemas/` que entram no mesmo `<script>` dividem o escopo global. Funções globais usadas
+  pelo resto: `$()`, `el()`, `showPage(i)`, `applyScale()`, `openMenu(abrir)`, `save()`, `load()`,
+  `lerCampos()`, `recalc()`, `setMob()`, `setLand()`,
   `aoEsc()`, `abrirEscolhaRpg()`, `applyTheme(cor)` / `corDaFicha()` (cor do site, `nucleo/cores.js`).
 - **Peças de tela do núcleo**: `criarMoldura()` (`nucleo/moldura.js`, a moldura de folha com cantos
   cortados) e o cartão de escolha `.sk-escolha` / `.sk-esc-*` (`estilos/nucleo/escolha.css`). A Comunidade

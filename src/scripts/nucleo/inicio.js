@@ -1,16 +1,18 @@
 /* ================= boot ================= */
-buildPdfPages();
+const fichaSalva = lerSalvo();
+montarFicha(fichaSalva);
+rotularAbas();
 setMob(wantMob());
 setLand(wantLand());
-fields = Array.from(document.querySelectorAll('[data-f]'));
+lerCampos();
 
-load();
+load(fichaSalva);
 recalc();
 
 document.addEventListener('input', (e) => {
   if (!e.target.matches('[data-f]')) return;
   scheduleSave();
-  if (e.target.matches('input[data-stat], input[data-nvl]')) recalc();
+  if (FICHA.gatilhoCalculo && e.target.matches(FICHA.gatilhoCalculo)) recalc();
 });
 document.addEventListener('change', (e) => {
   if (e.target.matches('input[type=checkbox][data-f]')) scheduleSave();
@@ -84,18 +86,22 @@ $('#backup-file').addEventListener('change', (e) => {
 });
 $('#btn-clear').addEventListener('click', async () => {
   if (window.__fichaRemota) return; // o botão some enquanto o mestre edita a ficha de um player
-  if (!(await confirmar('Apagar TODA a ficha salva neste navegador? Isso não tem volta.'))) return;
+  // campos com data-estrutura (o modelo do Sistema livre) não são do personagem: ficam
+  const estrutura = fields.filter((f) => f.dataset.estrutura !== undefined);
+  const msg = 'Apagar TODA a ficha salva neste navegador? Isso não tem volta.' + (estrutura.length ? ' As seções e os campos que você montou continuam.' : '');
+  if (!(await confirmar(msg))) return;
   localStorage.removeItem(KEY);
   savedExtra = {};
   for (const f of fields) {
+    if (estrutura.includes(f)) continue;
     if (f.type === 'checkbox') f.checked = false; else f.value = '';
   }
   const img = $('#portrait-img');
-  img.removeAttribute('src');
-  $('#portrait').classList.remove('hasimg');
+  if (img) { img.removeAttribute('src'); $('#portrait').classList.remove('hasimg'); }
   if (window.__clearBoard) window.__clearBoard();
   if (window.__clearNotes) window.__clearNotes();
   recalc();
+  if (estrutura.length) save();
   openMenu(false);
   status.textContent = 'Ficha limpa — comece de novo';
 });

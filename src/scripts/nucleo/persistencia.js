@@ -5,12 +5,14 @@ const status = $('#savestatus');
 let saveTimer = null;
 let savedExtra = {}; // chaves salvas que não têm campo na tela (ex.: versões antigas) — continuam no salvamento
 
+// os campos da ficha na tela (todo elemento com data-f); a ficha do sistema chama de novo quando refaz os campos
+function lerCampos() { fields = Array.from(document.querySelectorAll('[data-f]')); }
 function collect() {
   const data = Object.assign({}, savedExtra);
   delete data.__img;
   for (const f of fields) data[f.dataset.f] = f.type === 'checkbox' ? f.checked : f.value;
   const img = $('#portrait-img');
-  if (img.src && img.src.startsWith('data:')) data.__img = img.src;
+  if (img && img.src && img.src.startsWith('data:')) data.__img = img.src;
   return data;
 }
 function save() {
@@ -29,9 +31,11 @@ function scheduleSave() {
   status.textContent = 'Salvando…';
   saveTimer = setTimeout(save, 400);
 }
-function load() {
-  let data = null;
-  try { data = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch { /* corrompido */ }
+// a ficha salva neste navegador (null se não tem)
+function lerSalvo() {
+  try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch { return null; /* corrompido */ }
+}
+function load(data = lerSalvo()) {
   if (!data) return;
   // antes as notas do equipamento (pág. 2) e as das armas (pág. 1) dividiam a chave "NOTAS n": agora cada uma tem a sua
   for (let i = 1; i <= 19; i++) {
@@ -44,9 +48,8 @@ function load() {
     if (v === undefined) continue;
     if (f.type === 'checkbox') f.checked = !!v; else f.value = v;
   }
-  if (data.__img) {
-    const img = $('#portrait-img');
-    img.src = data.__img;
+  if (data.__img && $('#portrait-img')) {
+    $('#portrait-img').src = data.__img;
     $('#portrait').classList.add('hasimg');
   }
   status.textContent = 'Ficha carregada — salva automaticamente neste navegador';
@@ -57,6 +60,8 @@ window.__fichaColetar = () => collect();
 window.__fichaAplicar = (data, chaves) => {
   data = data || {};
   const so = chaves ? new Set(chaves) : null;
+  // fichas montadas a partir dos próprios dados (Sistema livre) refazem os campos antes
+  if (FICHA.remontar && (!so || so.has('__layout'))) { FICHA.remontar(data); lerCampos(); }
   if (!so) savedExtra = Object.assign({}, data);
   else for (const k of so) { if (data[k] === undefined) delete savedExtra[k]; else savedExtra[k] = data[k]; }
   for (const f of fields) {
@@ -65,7 +70,7 @@ window.__fichaAplicar = (data, chaves) => {
     const v = data[k];
     if (f.type === 'checkbox') f.checked = !!v; else f.value = v == null ? '' : v;
   }
-  if (!so || so.has('__img')) {
+  if ((!so || so.has('__img')) && $('#portrait-img')) {
     const img = $('#portrait-img');
     if (data.__img) { img.src = data.__img; $('#portrait').classList.add('hasimg'); }
     else { img.removeAttribute('src'); $('#portrait').classList.remove('hasimg'); }

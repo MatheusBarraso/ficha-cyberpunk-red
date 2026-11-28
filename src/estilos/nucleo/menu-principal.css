@@ -23,6 +23,7 @@
 #menu .fold-body>.m-item+.m-item{border-top:1px solid var(--red)}
 #menu .m-item:hover{background:var(--tint);border-color:var(--red)}
 #menu .m-item.active{background:var(--red);color:#fff}
+#menu .m-item[hidden]{display:none}
 #menu .m-item.danger{color:var(--red-dark);border-color:var(--red)}
 #menu .m-item.danger:hover{background:var(--tint2)}
 #menu .m-item .cm-n{margin-left:auto}

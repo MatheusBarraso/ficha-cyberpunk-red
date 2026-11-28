@@ -1,6 +1,7 @@
 /* ================= retrato ================= */
 function setupPortrait() {
   const box = $('#portrait'), file = $('#portrait-file'), img = $('#portrait-img');
+  if (!box) return; // ficha sem retrato
   const open = () => file.click();
   box.addEventListener('click', open);
   box.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
