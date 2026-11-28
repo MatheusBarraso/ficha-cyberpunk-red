@@ -38,7 +38,7 @@ Decisões do Matheus (28/11/2026):
 
 ## Etapa 2 — limpeza e correções
 
-- [ ] Corrigir o `avatar` (NPCs mostrando a foto da conta).
+- [x] Corrigir o `avatar` (NPCs mostrando a foto da conta) — com teste (`teste_avatar_npc.py`).
 - [ ] Remover código morto: cartões do celular em pé, mapa antigo, ajudas de depuração (`__cmArea`),
       limpeza da v67 (depois de um tempo).
 - [ ] Troca de página por evento (`sk:pagina`) em vez de 3 embrulhos em `showPage`.

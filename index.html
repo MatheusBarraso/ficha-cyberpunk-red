@@ -17,11 +17,11 @@ window.claude = { use: (n) => window.__fbPronto.then((a) => (a ? a[n] || null : 
 </script>
 <script src="firebase-config.js"></script>
 <script type="module" src="fb.js"></script>
-<meta name="cpr-build" content="7ed2b794f9a7">
+<meta name="cpr-build" content="c8b3a2e5965b">
 <script>
 // avisa quando sai uma versão nova do site (o navegador pode ficar horas com a antiga aberta)
 (function () {
-  var atual = '7ed2b794f9a7', avisou = false;
+  var atual = 'c8b3a2e5965b', avisou = false;
   function mostrar() {
     if (avisou || !document.body) return; avisou = true;
     var b = document.createElement('div'); b.id = 'cpr-nova'; b.setAttribute('role', 'alert');
@@ -4693,7 +4693,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     const nome = c.nome || S.meuNome || (S.me && S.d.perfis && S.d.perfis[S.me] && S.d.perfis[S.me].nome) || '';
     return { nome, email: c.email || '', foto: c.foto || '' };
   }
-  function avatar(grande) {
+  function avatarConta(grande) {
     const { nome, foto } = dadosConta();
     const el = h('span', { class: 'cm-av' + (grande ? ' cm-av-g' : '') });
     const ini = () => { el.textContent = S.me ? ((nome.trim()[0] || '?').toUpperCase()) : '?'; };
@@ -4703,7 +4703,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
   function pintarChips() {
     const { nome } = dadosConta(), p = papelAtual();
     contas.forEach((b) => {
-      b.querySelector('.cm-av').replaceWith(avatar());
+      b.querySelector('.cm-av').replaceWith(avatarConta());
       b.querySelector('.cm-conta-nome').textContent = S.me ? (nome.split(/\s+/)[0] || 'Conta') : 'Entrar';
       b.querySelector('.cm-conta-papel').textContent = S.sess ? (S.mestre ? 'Mestre' : 'Player') + ' · ' + (S.sess.nome || 'Sessão') : p === 'mestre' ? 'Mestre' : p === 'player' ? 'Player' : 'Conta';
       b.classList.toggle('cm-conta-mestre', p === 'mestre');
@@ -4776,7 +4776,7 @@ window.addEventListener('afterprint', () => { $('#print-root')?.remove(); docume
     if (contaPainel.hidden) return;
     const { nome, email } = dadosConta();
     const sec = (tit, ...filhos) => h('div', { class: 'cm-conta-sec' }, tit ? h('div', { class: 'cm-conta-rot', text: tit }) : null, ...filhos);
-    const out = [h('div', { class: 'cm-conta-hd' }, avatar(true), h('div', { class: 'cm-conta-id' },
+    const out = [h('div', { class: 'cm-conta-hd' }, avatarConta(true), h('div', { class: 'cm-conta-id' },
       h('b', { text: S.me ? (nome || 'Sua conta') : 'Sem conta' }), h('small', { text: S.me ? (email || (window.__cmLogout ? '' : 'Conta do Claude')) : 'Entre com o Google pra criar ou entrar em sessões.' })))];
     if (!S.me) {
       if (window.__cmLogin && (S.db || S.erro)) out.push(sec(null, btn('Entrar com Google', () => { try { sessionStorage.setItem('cpr-com-poslogin', S.lob.papel || ''); } catch { /* ok */ } window.__cmLogin(); }, 'cm-pri cm-largo')));

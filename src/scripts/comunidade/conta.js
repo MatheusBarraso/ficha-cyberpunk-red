@@ -7,7 +7,7 @@
     const nome = c.nome || S.meuNome || (S.me && S.d.perfis && S.d.perfis[S.me] && S.d.perfis[S.me].nome) || '';
     return { nome, email: c.email || '', foto: c.foto || '' };
   }
-  function avatar(grande) {
+  function avatarConta(grande) {
     const { nome, foto } = dadosConta();
     const el = h('span', { class: 'cm-av' + (grande ? ' cm-av-g' : '') });
     const ini = () => { el.textContent = S.me ? ((nome.trim()[0] || '?').toUpperCase()) : '?'; };
@@ -17,7 +17,7 @@
   function pintarChips() {
     const { nome } = dadosConta(), p = papelAtual();
     contas.forEach((b) => {
-      b.querySelector('.cm-av').replaceWith(avatar());
+      b.querySelector('.cm-av').replaceWith(avatarConta());
       b.querySelector('.cm-conta-nome').textContent = S.me ? (nome.split(/\s+/)[0] || 'Conta') : 'Entrar';
       b.querySelector('.cm-conta-papel').textContent = S.sess ? (S.mestre ? 'Mestre' : 'Player') + ' · ' + (S.sess.nome || 'Sessão') : p === 'mestre' ? 'Mestre' : p === 'player' ? 'Player' : 'Conta';
       b.classList.toggle('cm-conta-mestre', p === 'mestre');
