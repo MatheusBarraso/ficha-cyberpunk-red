@@ -45,4 +45,3 @@
     return h('button', { type: 'button', role: 'switch', 'aria-checked': String(on), class: 'cm-switch' + (on ? ' on' : ''), onclick: () => { if (window.__cprEscuro) window.__cprEscuro(!escuroOn()); pintarConta(); } },
       h('span', { text: 'Modo escuro' }), h('i', { 'aria-hidden': 'true' }));
   }
-  // cor do site, a mesma da Configuração do menu ☰ (os botões de lá fazem o trabalho)

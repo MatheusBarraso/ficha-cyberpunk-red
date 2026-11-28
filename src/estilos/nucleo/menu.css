@@ -16,15 +16,6 @@
 #menu .m-sec .chev{transition:transform .18s;font-size:14px}
 #menu .m-sec.closed .chev{transform:rotate(-90deg)}
 .fold-body.closed{display:none}
-#menu .cfg-txt{padding:8px 16px 4px;font-size:13px;color:#999;line-height:1.4}
-#menu .cfg-swatches{display:flex;flex-wrap:wrap;gap:8px;padding:8px 16px 12px}
-#menu .csw{width:36px;height:36px;border:2px solid #555;background:var(--c);cursor:pointer;padding:0}
-#menu .csw:hover{border-color:#fff}
-#menu .csw.sel{border-color:#fff;box-shadow:0 0 0 3px var(--red)}
-#menu .csw-custom{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;
-  background:conic-gradient(#f55,#ff5,#5f5,#5ff,#55f,#f5f,#f55)}
-#menu .csw-custom input{position:absolute;inset:-8px;opacity:0;cursor:pointer}
-#menu .csw-custom::after{content:'+';color:#fff;font-weight:700;font-size:20px;text-shadow:0 0 4px #000;pointer-events:none}
 #menu .m-item{display:block;width:calc(100% - 24px);margin:4px 12px;padding:12px 14px;text-align:left;
   background:transparent;border:2px solid #444;color:#fff;font-size:16px;font-weight:700;
   text-transform:uppercase;letter-spacing:.5px;transition:border-color .15s,background .15s}

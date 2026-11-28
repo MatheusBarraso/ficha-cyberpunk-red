@@ -32,8 +32,7 @@
   const avisoLento = h('div', { class: 'cm-aviso cm-lento', hidden: true, text: 'Sem resposta do servidor ainda. Confira a internet.' });
   painel.append(h('header', { class: 'cm-top' }, h('div', { class: 'cm-bar' }, appBtn, titulo, h('span', { style: 'flex:1' }), fichaBtn, sinoBtn, contaBtn), tabs), avisoLento, corpo);
   queueMicrotask(() => painel.querySelector('.cm-top').append(ferrPainel));
-  let seguraPops = false; // clique de mentira nos botões do menu ☰ (cores) não fecha o painel
-  const fecharPops = () => { if (seguraPops) return; if (!sinoPainel.hidden) alternarSino(false); if (!contaPainel.hidden) alternarConta(false); };
+  const fecharPops = () => { if (!sinoPainel.hidden) alternarSino(false); if (!contaPainel.hidden) alternarConta(false); };
   document.addEventListener('click', fecharPops);
   aoEsc(60, () => { if (sinoPainel.hidden && contaPainel.hidden) return false; fecharPops(); return true; });
   addEventListener('resize', fecharPops);

@@ -22,12 +22,6 @@ html.cm-gate .cm-tabs{display:none}
 /* janelas (formulários do mestre) */
 .jn .cm-lbl{color:var(--ink)}
 
-/* menu deitado: a Comunidade ocupa as colunas 2 e 3, embaixo de Ficha e Configuração */
-body.land #menu [data-fold="fold-comu"]{grid-column:2/4;grid-row:3}
-body.land #fold-comu{grid-column:2/4;grid-row:4;display:grid!important;grid-template-columns:1fr 1fr;gap:5px}
-body.land #menu .m-body{grid-template-rows:auto auto auto auto}
-body.land #fold-paginas{grid-row:2/5}
-
 @media (max-width:640px){
   .cm-bar{padding:6px 8px;gap:8px}
   .cm-cidade{font-size:16px}

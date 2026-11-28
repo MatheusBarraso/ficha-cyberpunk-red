@@ -24,7 +24,7 @@ async def main():
         # cor azul pelo menu da conta
         await gm.click('#comu .cm-conta'); await gm.wait_for_timeout(300)
         await gm.click('.cm-conta-painel .cm-cor[title="Azul"]'); await gm.wait_for_timeout(400)
-        print('cor:', await gm.evaluate("getComputedStyle(document.documentElement).getPropertyValue('--red')"), await gm.evaluate(T, '.cm-conta-painel .cm-cor.on'), await gm.evaluate("document.querySelector('#menu .csw.sel').title"))
+        print('cor:', await gm.evaluate("getComputedStyle(document.documentElement).getPropertyValue('--red')"), await gm.evaluate(T, '.cm-conta-painel .cm-cor.on'), await gm.evaluate("localStorage.getItem('cpr-tema-v2')"))
         await gm.screenshot(path='tests/saida/l_cores.png')
         await gm.click('.cm-conta-painel button:has-text("Todas as sessões")'); await gm.wait_for_timeout(700)
         print('lista sem sair:', await gm.evaluate("[!!__comuEstado.sess, __comuEstado.verLobby]"), await gm.evaluate(T, '.cm-volta'), 'tabs escondidas', await gm.evaluate("document.querySelector('.cm-tabs').hidden"))

@@ -20,11 +20,7 @@
   async function iniciar() {
     document.body.append(painel, toasts, barraR, abaLado, sinoPainel, contaPainel, marca, legenda);
     { const tb = document.querySelector('.toolbar'); if (tb) { tb.append(barraT); const br = tb.querySelector('.brand'); if (br) br.after(tituloT); } }
-    // modo escuro também no menu ☰ → Configuração
-    { const fc = document.getElementById('fold-config');
-      if (fc) { const mb = h('button', { type: 'button', class: 'm-item', id: 'cfg-escuro', role: 'switch', onclick: () => window.__cprEscuro && window.__cprEscuro(!escuroOn()) });
-        const pinta = () => { mb.textContent = 'Modo escuro: ' + (escuroOn() ? 'ligado' : 'desligado'); mb.setAttribute('aria-checked', String(escuroOn())); };
-        pinta(); addEventListener('cpr-escuro', () => { pinta(); pintarConta(); }); fc.prepend(mb); } }
+    addEventListener('cpr-escuro', () => pintarConta()); // o modo escuro também muda por fora do menu da conta
     caixasSemFicha();
     try { S.lob.ultimo = localStorage.getItem(PAPEL_KEY) || null; } catch { S.lob.ultimo = null; }
     S.lob.papel = null;

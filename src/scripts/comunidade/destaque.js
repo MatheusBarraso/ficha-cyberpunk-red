@@ -15,27 +15,25 @@
     const outra = h('input', { type: 'color', class: 'cm-cor-outra', 'aria-label': 'Outra cor de destaque', title: 'Outra cor', value: atual });
     outra.addEventListener('input', () => aplicarDestaque(outra.value));
     outra.addEventListener('change', () => setTimeout(pintarConta, 0));
-    const escolher = (c) => { seguraPops = true; try { aplicarDestaque(c); } finally { seguraPops = false; } setTimeout(pintarConta, 0); };
+    const escolher = (c) => { aplicarDestaque(c); setTimeout(pintarConta, 0); };
     return h('div', { class: 'cm-cores' }, h('div', { class: 'cm-cores-tit' }, 'Cor de destaque', h('small', { text: 'Aparece só no que pede atenção: sua vez, novidades, modo ajuda, onde você está.' })),
       h('div', { class: 'cm-cores-grade' },
         DESTAQUES.map(([c, nome]) => h('button', { type: 'button', class: 'cm-cor' + (c === atual ? ' on' : ''), style: '--c:' + c, title: nome, 'aria-label': nome, 'aria-pressed': String(c === atual), onclick: () => escolher(c) })),
         h('label', { class: 'cm-cor cm-cor-mais', title: 'Outra cor' }, outra)),
       atual !== DESTAQUE_PADRAO ? btn('Voltar ao amarelo', () => escolher(DESTAQUE_PADRAO), 'cm-mini') : null);
   }
+  // cor do site (nucleo/cores.js)
   function coresConta() {
-    const orig = [...document.querySelectorAll('#menu .csw[data-c]')];
-    if (!orig.length) return null;
-    const atual = (getComputedStyle(document.documentElement).getPropertyValue('--red') || '').trim().toLowerCase();
-    const custom = document.getElementById('cfg-custom'), reset = document.getElementById('cfg-reset');
-    const repinta = () => setTimeout(pintarConta, 0);
-    const outra = h('input', { type: 'color', class: 'cm-cor-outra', 'aria-label': 'Outra cor', title: 'Outra cor', value: /^#[0-9a-f]{6}$/.test(atual) ? atual : '#cf2b21' });
-    outra.addEventListener('input', () => { if (custom) { custom.value = outra.value; custom.dispatchEvent(new Event('input')); } });
-    outra.addEventListener('change', repinta);
+    const atual = corDaFicha().toLowerCase();
+    const escolher = (c) => { applyTheme(c); setTimeout(pintarConta, 0); };
+    const outra = h('input', { type: 'color', class: 'cm-cor-outra', 'aria-label': 'Outra cor', title: 'Outra cor', value: /^#[0-9a-f]{6}$/.test(atual) ? atual : COR_PADRAO });
+    outra.addEventListener('input', () => applyTheme(outra.value));
+    outra.addEventListener('change', () => setTimeout(pintarConta, 0));
     return h('div', { class: 'cm-cores' }, h('div', { class: 'cm-cores-tit', text: 'Cor do site' }),
       h('div', { class: 'cm-cores-grade' },
-        orig.map((o) => h('button', { type: 'button', class: 'cm-cor' + (o.dataset.c.toLowerCase() === atual ? ' on' : ''), style: '--c:' + o.dataset.c, title: o.title || o.dataset.c, 'aria-label': o.title || o.dataset.c, 'aria-pressed': String(o.dataset.c.toLowerCase() === atual), onclick: () => { seguraPops = true; try { o.click(); } finally { seguraPops = false; } repinta(); } })),
+        CORES_SITE.map(([c, nome]) => h('button', { type: 'button', class: 'cm-cor' + (c === atual ? ' on' : ''), style: '--c:' + c, title: nome, 'aria-label': nome, 'aria-pressed': String(c === atual), onclick: () => escolher(c) })),
         h('label', { class: 'cm-cor cm-cor-mais', title: 'Outra cor' }, outra)),
-      reset ? btn('Voltar ao padrão', () => { seguraPops = true; try { reset.click(); } finally { seguraPops = false; } repinta(); }, 'cm-mini') : null);
+      btn('Voltar ao padrão', () => escolher(COR_PADRAO), 'cm-mini'));
   }
   function pintarConta() {
     pintarChips();

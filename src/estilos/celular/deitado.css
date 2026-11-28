@@ -32,19 +32,20 @@ body.land .p6 .lvpage{width:70px}
 .fx.qe-on{outline:4px solid var(--red);outline-offset:2px;background:var(--tint);z-index:2}
 @media print{.qedit{display:none!important}}
 
-/* menu do celular deitado: painel largo em 3 colunas, tudo cabe na altura */
+/* menu do celular deitado: painel largo em 2 colunas, tudo cabe na altura
+   coluna 1: Páginas · coluna 2: Ficha e, embaixo, Comunidade */
 body.land #menu{width:min(calc(100vw - 10px),760px);max-width:none}
 body.land #menu .m-head{padding:6px 10px;font-size:15px;border-bottom-width:2px}
 body.land #menu .m-head button{width:30px;height:30px;font-size:14px}
-body.land #menu .m-body{display:grid;grid-template-columns:1.5fr 1fr 1fr;grid-template-rows:auto auto;align-content:start;align-items:start;
+body.land #menu .m-body{display:grid;grid-template-columns:1.5fr 1fr;grid-template-rows:repeat(4,auto);align-content:start;align-items:start;
   column-gap:10px;padding:0 10px 8px;overflow-y:auto}
-/* cada seção fica presa na sua coluna e sempre aberta (no celular deitado tudo cabe, não precisa recolher) */
+/* cada seção fica presa no seu lugar e sempre aberta (no celular deitado tudo cabe, não precisa recolher) */
 body.land #menu [data-fold="fold-paginas"]{grid-column:1;grid-row:1}
-body.land #fold-paginas{grid-column:1;grid-row:2}
+body.land #fold-paginas{grid-column:1;grid-row:2/5}
 body.land #menu [data-fold="fold-ficha"]{grid-column:2;grid-row:1}
 body.land #fold-ficha{grid-column:2;grid-row:2}
-body.land #menu [data-fold="fold-config"]{grid-column:3;grid-row:1}
-body.land #fold-config{grid-column:3;grid-row:2}
+body.land #menu [data-fold="fold-comu"]{grid-column:2;grid-row:3}
+body.land #fold-comu{grid-column:2;grid-row:4;display:grid!important;grid-template-columns:1fr 1fr;gap:5px}
 body.land #menu .m-sec.fold{pointer-events:none}
 body.land #menu .m-sec .chev{display:none}
 body.land #menu .m-sec.fold{padding:8px 2px 5px;font-size:11px}
@@ -53,9 +54,6 @@ body.land #fold-paginas{display:grid!important;grid-template-columns:1fr 1fr;gap
 body.land #menu .fold-body.closed{display:flex!important}
 body.land #menu #fold-paginas.closed{display:grid!important}
 body.land #menu .m-item{width:auto;margin:0;padding:7px 8px;font-size:12px;letter-spacing:.3px;line-height:1.15;border-width:2px}
-body.land #menu .cfg-txt{padding:2px 0 4px;font-size:11px}
-body.land #menu .cfg-swatches{padding:0 0 6px;gap:5px;display:flex;flex-wrap:wrap}
-body.land #menu .csw{width:26px;height:26px}
 body.land #menu .m-status{display:none}
 body.land .zoomfab{width:46px;height:46px;right:10px;bottom:10px;border-width:2px}
 body.land .zoomfab svg{width:22px;height:22px}

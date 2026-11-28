@@ -33,7 +33,7 @@ document.querySelectorAll('.m-sec.fold').forEach(h => {
     body.classList.toggle('closed', c);
     h.setAttribute('aria-expanded', String(!c));
   };
-  setClosed(folds[h.dataset.fold] ?? (h.dataset.fold === 'fold-config')); // configuração começa recolhida
+  setClosed(!!folds[h.dataset.fold]);
   h.addEventListener('click', () => {
     const c = !body.classList.contains('closed');
     setClosed(c);
@@ -41,27 +41,6 @@ document.querySelectorAll('.m-sec.fold').forEach(h => {
     try { localStorage.setItem(FOLD_KEY, JSON.stringify(folds)); } catch { /* ok */ }
   });
 });
-
-// tema de cores (configuração)
-const corDaFicha = () => getComputedStyle(document.documentElement).getPropertyValue('--red').trim() || '#cf2b21';
-const THEME_KEY = 'cpr-tema-v2'; // nova chave: ignora a cor azul salva antes, e abre no vermelho padrão da ficha
-function darker(hex) {
-  const n = parseInt(hex.slice(1), 16);
-  const f = (v) => Math.max(0, Math.round(v * 0.72));
-  return `#${((f(n >> 16) << 16) | (f((n >> 8) & 255) << 8) | f(n & 255)).toString(16).padStart(6, '0')}`;
-}
-function applyTheme(c, save = true) {
-  document.documentElement.style.setProperty('--red', c);
-  document.documentElement.style.setProperty('--red-dark', darker(c));
-  document.querySelectorAll('.csw[data-c]').forEach(b => b.classList.toggle('sel', b.dataset.c.toLowerCase() === c.toLowerCase()));
-  const ci = $('#cfg-custom');
-  if (ci) ci.value = c;
-  if (save) { try { localStorage.setItem(THEME_KEY, c); } catch { /* ok */ } }
-}
-document.querySelectorAll('.csw[data-c]').forEach(b => b.addEventListener('click', () => applyTheme(b.dataset.c)));
-$('#cfg-custom').addEventListener('input', (e) => applyTheme(e.target.value));
-$('#cfg-reset').addEventListener('click', () => applyTheme('#cf2b21'));
-applyTheme(localStorage.getItem(THEME_KEY) || '#cf2b21', false);
 
 // abas (dentro do menu)
 document.querySelectorAll('.tab').forEach((t, i) => t.addEventListener('click', () => { showPage(i); openMenu(false); }));

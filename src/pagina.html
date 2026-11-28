@@ -24,7 +24,7 @@ window.claude = { use: (n) => window.__fbPronto.then((a) => (a ? a[n] || null : 
 <link rel="icon" href="./icon-192.png">
 <title>Ficha Cyberpunk RED</title>
 <style>{{> estilos/nucleo/fonte.css}}{{> estilos/nucleo/base.css}}{{> estilos/nucleo/barra.css}}{{> estilos/nucleo/menu.css}}{{> estilos/nucleo/palco.css}}{{> estilos/nucleo/escolha.css}}{{> estilos/ficha/paginas.css}}{{> estilos/anotacoes/anotacoes.css}}{{> estilos/historia/quadro.css}}{{> estilos/livros/livros.css}}{{> estilos/nucleo/impressao.css}}{{> estilos/celular/em-pe.css}}{{> estilos/celular/deitado.css}}{{> estilos/livros/leitura.css}}{{> estilos/livros/leitor-aba.css}}{{> estilos/livros/pdf-local.css}}{{> estilos/nucleo/aviso-versao.css}}</style>
-<style>{{> estilos/nucleo/confirmar.css}}{{> estilos/anotacoes/dossie-mural.css}}{{> estilos/ficha/neon.css}}{{> estilos/livros/texto-selecionavel.css}}{{> estilos/comunidade/base.css}}{{> estilos/comunidade/barra.css}}{{> estilos/comunidade/folha.css}}{{> estilos/comunidade/sessoes.css}}{{> estilos/comunidade/sala.css}}{{> estilos/comunidade/sino.css}}{{> estilos/comunidade/npc-foto.css}}{{> estilos/comunidade/mestre.css}}{{> estilos/comunidade/ferramentas.css}}{{> estilos/comunidade/painel-mestre.css}}{{> estilos/comunidade/combate.css}}{{> estilos/comunidade/estilo-livro.css}}{{> estilos/comunidade/conta-sino.css}}{{> estilos/comunidade/marca-canto.css}}{{> estilos/celular/zoom.css}}{{> estilos/comunidade/historia.css}}{{> estilos/comunidade/modo-ajuda.css}}{{> estilos/nucleo/destaque.css}}{{> estilos/nucleo/seta.css}}{{> estilos/nucleo/menu-sem-configuracao.css}}{{> estilos/nucleo/menu-principal.css}}{{> estilos/ficha/texto-real.css}}</style>
+<style>{{> estilos/nucleo/confirmar.css}}{{> estilos/anotacoes/dossie-mural.css}}{{> estilos/ficha/neon.css}}{{> estilos/livros/texto-selecionavel.css}}{{> estilos/comunidade/base.css}}{{> estilos/comunidade/barra.css}}{{> estilos/comunidade/folha.css}}{{> estilos/comunidade/sessoes.css}}{{> estilos/comunidade/sala.css}}{{> estilos/comunidade/sino.css}}{{> estilos/comunidade/npc-foto.css}}{{> estilos/comunidade/mestre.css}}{{> estilos/comunidade/ferramentas.css}}{{> estilos/comunidade/painel-mestre.css}}{{> estilos/comunidade/combate.css}}{{> estilos/comunidade/estilo-livro.css}}{{> estilos/comunidade/conta-sino.css}}{{> estilos/comunidade/marca-canto.css}}{{> estilos/celular/zoom.css}}{{> estilos/comunidade/historia.css}}{{> estilos/comunidade/modo-ajuda.css}}{{> estilos/nucleo/destaque.css}}{{> estilos/nucleo/seta.css}}{{> estilos/nucleo/menu-principal.css}}{{> estilos/ficha/texto-real.css}}</style>
 <script>{{> scripts/nucleo/confirmar.js}}</script>
 {{escuro estilos/escuro-ajustes.css}}</head>
 <body>
@@ -57,23 +57,6 @@ window.claude = { use: (n) => window.__fbPronto.then((a) => (a ? a[n] || null : 
     <button class="m-item" id="btn-savebak" type="button">Salvar backup completo</button>
     <button class="m-item" id="btn-loadbak" type="button">Carregar backup</button>
     <button class="m-item danger" id="btn-clear" type="button">Limpar ficha</button>
-  </div>
-
-  <button class="m-sec fold closed" type="button" data-fold="fold-config" aria-expanded="false">Configuração <span class="chev">▾</span></button>
-  <div class="fold-body closed" id="fold-config">
-    <div class="cfg-txt">Cor do site</div>
-    <div class="cfg-swatches">
-      <button class="csw" data-c="#cf2b21" style="--c:#cf2b21" type="button" title="Vermelho padrão"></button>
-      <button class="csw" data-c="#f2a900" style="--c:#f2a900" type="button" title="Amarelo"></button>
-      <button class="csw" data-c="#e06c1f" style="--c:#e06c1f" type="button" title="Laranja"></button>
-      <button class="csw" data-c="#21a0cf" style="--c:#21a0cf" type="button" title="Azul"></button>
-      <button class="csw" data-c="#1fb8a6" style="--c:#1fb8a6" type="button" title="Ciano"></button>
-      <button class="csw" data-c="#3fae5a" style="--c:#3fae5a" type="button" title="Verde"></button>
-      <button class="csw" data-c="#9b59cf" style="--c:#9b59cf" type="button" title="Roxo"></button>
-      <button class="csw" data-c="#e0457a" style="--c:#e0457a" type="button" title="Rosa"></button>
-      <label class="csw csw-custom" title="Cor personalizada"><input type="color" id="cfg-custom" value="#cf2b21" aria-label="Cor personalizada"></label>
-    </div>
-    <button class="m-item" id="cfg-reset" type="button">Voltar ao padrão</button>
   </div>
 
   </div>
@@ -289,7 +272,7 @@ window.claude = { use: (n) => window.__fbPronto.then((a) => (a ? a[n] || null : 
 <script>{{> scripts/livros/fila-pdf.js}}</script>
 <script type="module" src="livros_local.js"></script>
 <script>{{> scripts/livros/primeiro-livro.js}}</script>
-<script>{{> scripts/nucleo/sistemas.js}}{{> scripts/ficha/paginas-pdf-inicio.js}}const FIELDMAP = {{> sistemas/cpr/ficha/campos.json}}{{> scripts/ficha/paginas-pdf.js}}{{> scripts/celular/em-pe.js}}{{> scripts/nucleo/persistencia.js}}{{> scripts/ficha/calculo.js}}{{> scripts/nucleo/esc.js}}{{> scripts/nucleo/moldura.js}}{{> scripts/nucleo/zoom.js}}{{> scripts/nucleo/menu-abas.js}}{{> scripts/nucleo/backup.js}}{{> scripts/ficha/retrato.js}}{{> scripts/celular/deitado.js}}{{> scripts/nucleo/inicio.js}}{{> scripts/historia/quadro.js}}{{> scripts/anotacoes/janelas.js}}{{> scripts/anotacoes/editor.js}}{{> scripts/livros/marcacoes.js}}{{> scripts/nucleo/impressao.js}}</script>
+<script>{{> scripts/nucleo/sistemas.js}}{{> scripts/ficha/paginas-pdf-inicio.js}}const FIELDMAP = {{> sistemas/cpr/ficha/campos.json}}{{> scripts/ficha/paginas-pdf.js}}{{> scripts/celular/em-pe.js}}{{> scripts/nucleo/persistencia.js}}{{> scripts/ficha/calculo.js}}{{> scripts/nucleo/esc.js}}{{> scripts/nucleo/moldura.js}}{{> scripts/nucleo/cores.js}}{{> scripts/nucleo/zoom.js}}{{> scripts/nucleo/menu-abas.js}}{{> scripts/nucleo/backup.js}}{{> scripts/ficha/retrato.js}}{{> scripts/celular/deitado.js}}{{> scripts/nucleo/inicio.js}}{{> scripts/historia/quadro.js}}{{> scripts/anotacoes/janelas.js}}{{> scripts/anotacoes/editor.js}}{{> scripts/livros/marcacoes.js}}{{> scripts/nucleo/impressao.js}}</script>
 <script>{{> scripts/ficha/neon.js}}</script>
 <script>
 {{> scripts/comunidade/estado.js}}{{> scripts/comunidade/utilidades.js}}{{> scripts/comunidade/avisos.js}}{{> scripts/comunidade/imagens.js}}{{> scripts/comunidade/cifra.js}}{{> scripts/comunidade/painel.js}}{{> scripts/comunidade/secoes.js}}{{> scripts/comunidade/novidades.js}}{{> scripts/comunidade/conta.js}}{{> scripts/comunidade/destaque.js}}{{> scripts/comunidade/mural.js}}{{> scripts/comunidade/historia.js}}{{> scripts/comunidade/lugares.js}}{{> scripts/comunidade/npcs.js}}{{> scripts/comunidade/pistas.js}}{{> scripts/comunidade/missoes.js}}{{> scripts/comunidade/perfis.js}}{{> scripts/comunidade/dados.js}}{{> scripts/comunidade/acesso.js}}{{> scripts/comunidade/convites.js}}{{> scripts/comunidade/assinaturas.js}}{{> scripts/comunidade/livros-mesa.js}}{{> scripts/comunidade/lobby.js}}{{> scripts/comunidade/cidade-exemplo.js}}{{> scripts/comunidade/limpeza-v67.js}}{{> scripts/comunidade/menu-principal.js}}{{> scripts/comunidade/senha-mestre.js}}{{> scripts/comunidade/fichas-players.js}}{{> scripts/comunidade/marca-canto.js}}{{> scripts/comunidade/mesa.js}}{{> scripts/comunidade/modo-ajuda.js}}{{> scripts/comunidade/holofote.js}}{{> scripts/comunidade/ferramentas.js}}{{> scripts/comunidade/ataque.js}}{{> scripts/comunidade/alerta.js}}{{> scripts/comunidade/ordem.js}}{{> scripts/comunidade/player-avisos.js}}{{> scripts/comunidade/demonstracao.js}}{{> scripts/comunidade/fichas-ocultas.js}}{{> scripts/comunidade/combate.js}}{{> scripts/comunidade/combate-menu.js}}

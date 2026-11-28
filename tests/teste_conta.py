@@ -52,7 +52,7 @@ async def main():
         # modo escuro pelo menu da conta
         await p1.click('#comu .cm-conta'); await p1.wait_for_timeout(300)
         await p1.click('.cm-conta-painel .cm-switch'); await p1.wait_for_timeout(500)
-        print('escuro:', await p1.evaluate("[document.documentElement.classList.contains('cpr-escuro'), localStorage.getItem('cpr-escuro'), document.querySelector('#cfg-escuro').textContent]"))
+        print('escuro:', await p1.evaluate("[document.documentElement.classList.contains('cpr-escuro'), localStorage.getItem('cpr-escuro'), document.querySelector('.cm-conta-painel .cm-switch').getAttribute('aria-checked')]"))
         await p1.screenshot(path='tests/saida/c_escuro_conta.png')
         await p1.evaluate("(()=>{const p=document.querySelector('.cm-conta-painel');if(p)p.scrollTop=99999})()"); await p1.wait_for_timeout(300)
         await p1.screenshot(path='tests/saida/c_destaque.png')
