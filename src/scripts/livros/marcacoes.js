@@ -422,7 +422,7 @@ function setupLivros() {
       if (!m.link) continue;
       const inp = document.querySelector(`[data-f="${CSS.escape(m.link)}"]`);
       if (!inp) continue;
-      const host = inp.closest('.box,.skrow,.trow,.fx,.mhost');
+      const host = inp.closest('.box,.skrow,.trow,.fx');
       if (!host) continue;
       const b = el('button', 'bkbadge');
       b.type = 'button';
@@ -460,8 +460,8 @@ function setupLivros() {
   }
   document.addEventListener('click', (e) => {
     if (!linkModeFor) return;
-    const host = e.target.closest('.box,.skrow,.trow,.fx,.mhost');
-    if (!host || !host.closest('.sheet, .mpage')) return; // cliques fora da ficha (menu, abas…) passam normal
+    const host = e.target.closest('.box,.skrow,.trow,.fx');
+    if (!host || !host.closest('.sheet')) return; // cliques fora da ficha (menu, abas…) passam normal
     e.preventDefault();
     e.stopPropagation();
     const inp = host.querySelector('[data-f]');

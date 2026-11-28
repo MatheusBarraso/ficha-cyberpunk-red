@@ -20,6 +20,6 @@
     visto: null, nomes: {}, sec: 'historia', aberto: false, carregou: new Set(), conhecidos: null,
     ui: {}, abertosCom: new Set(), abertosDesc: new Set(), rascCom: {}, rascDesc: {}, npcAberto: null, chatNpc: null, threadDe: null, subThread: null,
     sess: null, subsSala: [], lob: { pedFB: {}, papel: null, minhas: [], membrosDe: {}, pedidosTodos: {}, meusPedidos: {}, sessDe: {}, meuMembro: {}, ger: null, busca: null, criando: false, conhecidosLob: null }, subsLob: {}, 
-    pistasVer: 'pub', missoesVer: 'abertas', filtroLocal: '', pondo: false, movendo: null, mz: 1, perfilAberto: null, verDen: false,
+    pistasVer: 'pub', missoesVer: 'abertas', filtroLocal: '', perfilAberto: null, verDen: false,
   };
 

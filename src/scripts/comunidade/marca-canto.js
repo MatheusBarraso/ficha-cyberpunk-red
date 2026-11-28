@@ -98,10 +98,10 @@
   function estadoFicha() {
     const sem = S.lob.papel === 'mestre' && !R.id;
     document.body.classList.toggle('cm-semficha', sem);
-    document.querySelectorAll('.sheet.pdfpage .pdflayer, .mpage > .fb-grade, .mpage > .mcard').forEach((l) => { l.inert = sem; });
+    document.querySelectorAll('.sheet.pdfpage .pdflayer').forEach((l) => { l.inert = sem; });
   }
   function caixasSemFicha() {
-    document.querySelectorAll('.sheet.pdfpage, .mpage').forEach((sh) => {
+    document.querySelectorAll('.sheet.pdfpage').forEach((sh) => {
       if (sh.querySelector(':scope > .cm-semficha-box')) return;
       sh.append(h('div', { class: 'cm-semficha-box' },
         h('div', { class: 'cm-sf-faixa', text: 'Mestre' }),

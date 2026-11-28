@@ -10,9 +10,5 @@ body.reading #backdrop{z-index:265}
 /* selo de livro nos campos: no celular em pé fica menor, no canto, e o valor do campo dá espaço pra ele */
 body.mob .bkbadge{top:-8px!important;right:-8px!important;width:21px;height:21px;border-width:2px;box-shadow:0 1px 3px rgba(0,0,0,.35)}
 body.mob .bkbadge svg{width:11px;height:11px}
-body.mob .tem-selo .mslot>input,body.mob .tem-selo .mslot>textarea{padding-right:12px!important}
-body.mob .mcell.c.tem-selo .mslot>input{padding-left:4px!important}
 @media print{.lvbar,.lvdrawer{display:none!important}}
 
-body.mob .scaler.pp .sheet.active{display:block!important}
-body.mob .mpage{display:none!important}

@@ -1,6 +1,5 @@
 /* ================= boot ================= */
 buildPdfPages();
-buildMobile();
 setMob(wantMob());
 setLand(wantLand());
 fields = Array.from(document.querySelectorAll('[data-f]'));

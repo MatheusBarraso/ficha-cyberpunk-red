@@ -10,8 +10,6 @@
     }
     vistas.add(i);
     const sheet = document.querySelectorAll('.sheet')[i];
-    const mp = document.getElementById(`mpage-${i}`);
-    const emPe = false && mp;
     const fim = [];
     // passa a luz pela borda de cada elemento, com atraso conforme a posição na tela
     const acender = (lista, fx, fy) => {
@@ -25,10 +23,7 @@
         fim.push(() => { c.classList.remove('neon', 'neon-rel'); c.style.removeProperty('--d'); });
       });
     };
-    if (emPe) {
-      acender(mp.querySelectorAll('.mcell,.mtd,.mportrait,.mbox'), 0.25, 1.1);
-      mp.classList.add('brilha'); fim.push(() => mp.classList.remove('brilha'));
-    } else if (sheet) {
+    if (sheet) {
       const bg = sheet.querySelector('.pdfbg'), art = bg && bg.querySelector(':scope > .pdfart');
       if (art) {
         // cópia das linhas, clara e brilhante, que só aparece dentro da faixa de luz

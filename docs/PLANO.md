@@ -39,8 +39,9 @@ Decisões do Matheus (28/11/2026):
 ## Etapa 2 — limpeza e correções
 
 - [x] Corrigir o `avatar` (NPCs mostrando a foto da conta) — com teste (`teste_avatar_npc.py`).
-- [ ] Remover código morto: cartões do celular em pé, mapa antigo, ajudas de depuração (`__cmArea`),
-      limpeza da v67 (depois de um tempo).
+- [x] Remover código morto: cartões do celular em pé (montados a cada carregamento e escondidos) e a
+      tela do mapa antigo (com o botão "Mover no mapa", que não fazia mais nada). −29 KB.
+- [ ] Tirar a limpeza da v67 depois que todo mundo tiver entrado uma vez (fim de dezembro).
 - [ ] Troca de página por evento (`sk:pagina`) em vez de 3 embrulhos em `showPage`.
 - [ ] Um zoom só (tirar a `applyScale` original e os remendos dela).
 - [ ] Um controle de Esc (fecha só a camada de cima: modal → gaveta → menu).

@@ -1,6 +1,6 @@
   // ----- o holofote: uma camada fixa na tela que segue o campo a cada quadro -----
   // ao aparecer, o escuro fecha devagar das bordas da tela até o campo (com zoom ou no celular, o player acha onde ir)
-  const FOCO_SEL = (c) => `.pdflayer [data-f="${CSS.escape(c)}"], .mslot [data-f="${CSS.escape(c)}"]`;
+  const FOCO_SEL = (c) => `.pdflayer [data-f="${CSS.escape(c)}"]`;
   const suave = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
   function recorte(f) { // área onde o escuro aparece: a ficha (não cobre barra nem painéis)
     const vw = innerWidth, vh = innerHeight;
@@ -47,29 +47,21 @@
   function focoEm(campo, texto, lento) {
     const inp = document.querySelector(FOCO_SEL(campo));
     if (!inp) { focoLimpar(); return null; }
-    const naFicha = !!inp.closest('.pdflayer');
-    const fx = naFicha ? inp.closest('.fx') : inp;
+    const fx = inp.closest('.fx');
     if (!fx) { focoLimpar(); return null; }
     if (focoAtual && focoAtual.campo === campo && focoAtual.inp === inp) { if (texto) { legenda.textContent = texto; legenda.hidden = false; } return fx; }
     const anterior = focoAtual && focoAtual.ultimo;
     focoLimpar();
-    let alvoEl, marca = null, layer = null, els = [];
-    if (naFicha) {
-      const a = areaDoCampo(fx);
-      marca = h('div', { class: 'cm-foco-marca', 'aria-hidden': 'true' });
-      marca.style.cssText = `left:${a.x0}px;top:${a.y0}px;width:${a.x1 - a.x0}px;height:${a.y1 - a.y0}px`;
-      a.layer.append(marca); a.layer.classList.add('cm-foco-on');
-      layer = a.layer; els = a.els; alvoEl = marca; var parcial = a.parcial;
-    } else {
-      // celular: a linha do cartão (perícia, tabela, campo com rótulo)
-      alvoEl = inp.closest('.mskr') || inp.closest('.mtable') || inp.closest('.mkv') || inp.closest('.mrow') || inp.closest('.mcell') || inp.closest('.mhost') || inp;
-      els = [alvoEl];
-    }
+    const a = areaDoCampo(fx);
+    const marca = h('div', { class: 'cm-foco-marca', 'aria-hidden': 'true' });
+    marca.style.cssText = `left:${a.x0}px;top:${a.y0}px;width:${a.x1 - a.x0}px;height:${a.y1 - a.y0}px`;
+    a.layer.append(marca); a.layer.classList.add('cm-foco-on');
+    const layer = a.layer, els = a.els, alvoEl = marca;
     els.forEach((e) => e.classList.add('cm-foco-alvo'));
     const luz = h('div', { class: 'cm-foco-luz', 'aria-hidden': 'true' });
     const moldura = h('div', { class: 'cm-foco-moldura', 'aria-hidden': 'true' }, luz);
     document.body.append(moldura);
-    focoAtual = { campo, inp, fx, alvoEl, marca, layer, els, luz, moldura, stage: inp.closest('.stage'), parcial: naFicha && parcial,
+    focoAtual = { campo, inp, fx, alvoEl, marca, layer, els, luz, moldura, stage: inp.closest('.stage'), parcial: a.parcial,
       t0: performance.now(), dur: anterior ? (lento ? 700 : 260) : (lento ? 1700 : 420), de: anterior, raf: 0, ultimo: null };
     quadroFoco();
     if (texto) { legenda.textContent = texto; legenda.hidden = false; }
@@ -77,12 +69,12 @@
   }
   // mestre: entrou num campo
   document.addEventListener('focusin', (e) => {
-    const t = e.target; if (!(t instanceof HTMLElement) || !t.dataset.f || !t.closest('.pdflayer, .mslot')) return;
+    const t = e.target; if (!(t instanceof HTMLElement) || !t.dataset.f || !t.closest('.pdflayer')) return;
     if (!S.mestre || !R.id || !ajudaOn()) return;
     clearTimeout(tAjuda);
     const fx = focoEm(t.dataset.f, null);
     if (R.tipo === 'player' && S.sess) {
-      const hostM = t.closest('.mhost'); const rot = (fx && fx.dataset && fx.dataset.label) || (hostM && hostM.dataset.label) || t.dataset.f;
+      const rot = (fx && fx.dataset && fx.dataset.label) || t.dataset.f;
       if (!ajudaEnviada || ajudaEnviada.campo !== t.dataset.f || ajudaEnviada.uid !== R.id) {
         ajudaEnviada = { uid: R.id, campo: t.dataset.f, rotulo: rot, ts: agora() };
         sessRef(S.sess.gm, S.sess.id).update({ ajuda: ajudaEnviada }).catch(() => {});
@@ -90,11 +82,11 @@
     }
   });
   document.addEventListener('focusout', (e) => {
-    const t = e.target; if (!(t instanceof HTMLElement) || !t.dataset.f || !t.closest('.pdflayer, .mslot') || !S.mestre) return;
+    const t = e.target; if (!(t instanceof HTMLElement) || !t.dataset.f || !t.closest('.pdflayer') || !S.mestre) return;
     clearTimeout(tAjuda);
     tAjuda = setTimeout(() => {
       const a = document.activeElement;
-      if (a && a.dataset && a.dataset.f && a.closest('.pdflayer, .mslot')) return; // foi pra outro campo: o focusin cuida
+      if (a && a.dataset && a.dataset.f && a.closest('.pdflayer')) return; // foi pra outro campo: o focusin cuida
       focoLimpar();
       if (ajudaEnviada && S.sess) { ajudaEnviada = null; sessRef(S.sess.gm, S.sess.id).update({ ajuda: null }).catch(() => {}); }
     }, 250);
