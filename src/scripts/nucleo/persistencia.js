@@ -1,5 +1,5 @@
 /* ================= persistência ================= */
-const KEY = 'cpr-ficha-v1';
+const KEY = chaveLocal('ficha');
 let fields = [];
 const status = $('#savestatus');
 let saveTimer = null;

@@ -75,7 +75,7 @@ Desenho (decidido na análise da etapa 2):
 
 Passos:
 
-- [ ] 3a. Registro de sistemas + chaves por sistema (sem mudar nada no CPR).
+- [x] 3a. Registro de sistemas (`nucleo/sistemas.js`, `cabeca/sistema.js`) + chaves por sistema + backup sabendo o sistema — com teste (`teste_sistemas.py`).
 - [ ] 3b. Tela de escolha de RPG + "Trocar de RPG".
 - [ ] 3c. Ficha do Sistema livre (uso local: criar, editar, salvar, backup).
 - [ ] 3d. Comunidade com sistema na sessão; Sistema livre nas sessões (ficha do player, mestre abrindo, modo ajuda).

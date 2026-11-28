@@ -1,6 +1,6 @@
 /* ================= quadro livre (história) — com páginas ================= */
-const BOARD_KEY = 'cpr-quadro-v2';
-const BOARD_OLD = 'cpr-quadro-v1';
+const BOARD_KEY = chaveLocal('quadro');
+const BOARD_OLD = SISTEMA.id === 'cpr' ? 'cpr-quadro-v1' : null; // quadro da versão bem antiga (só do CPR)
 
 function setupBoard() {
   const cv = $('#board-canvas');
@@ -22,7 +22,7 @@ function setupBoard() {
   try {
     let d = JSON.parse(localStorage.getItem(BOARD_KEY) || 'null');
     if (!d) {
-      const old = JSON.parse(localStorage.getItem(BOARD_OLD) || 'null');
+      const old = BOARD_OLD && JSON.parse(localStorage.getItem(BOARD_OLD) || 'null');
       if (old) { d = { cur: 0, pages: [old] }; localStorage.removeItem(BOARD_OLD); }
     }
     if (d && Array.isArray(d.pages) && d.pages.length) {

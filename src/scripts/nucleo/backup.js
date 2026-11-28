@@ -4,6 +4,7 @@ function salvarBackup() {
     const payload = {
       app: 'cpr-ficha',
       versao: 1,
+      sistema: SISTEMA.id,
       salvoEm: new Date().toISOString(),
       ficha: window.__fichaRemota ? window.__fichaLocal() : collect(),
       notas: window.__notesData ? window.__notesData() : null,
@@ -15,7 +16,7 @@ function salvarBackup() {
     const nome = ($('input[data-f="NOME"]').value || 'personagem').trim().replace(/[\\/:*?"<>|]+/g, '-');
     const a = el('a');
     a.href = URL.createObjectURL(blob);
-    a.download = `ficha-${nome}-completa.json`;
+    a.download = `ficha-${SISTEMA.id === 'cpr' ? '' : SISTEMA.id + '-'}${nome}-completa.json`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 5000);
     status.textContent = 'Backup completo salvo (ficha + anotações + quadros)';
@@ -32,15 +33,23 @@ function carregarBackup(file) {
     try {
       const d = JSON.parse(rd.result);
       if (!d || d.app !== 'cpr-ficha' || typeof d.ficha !== 'object' || !d.ficha) throw new Error('inválido');
-      localStorage.setItem(KEY, JSON.stringify(d.ficha));
+      // o backup volta pro sistema de onde saiu (os de antes do Sketcher são do Cyberpunk RED)
+      const sis = SISTEMAS[d.sistema] ? d.sistema : 'cpr';
+      const chave = (nome) => chaveDe(sis, nome);
+      localStorage.setItem(chave('ficha'), JSON.stringify(d.ficha));
       if (d.notas && Array.isArray(d.notas.pages) && d.notas.pages.length) {
-        localStorage.setItem(NOTES_KEY, JSON.stringify({ cur: d.notas.cur | 0, pages: d.notas.pages }));
+        localStorage.setItem(chave('notas'), JSON.stringify({ cur: d.notas.cur | 0, pages: d.notas.pages }));
       }
       if (d.quadro && Array.isArray(d.quadro.pages) && d.quadro.pages.length) {
-        localStorage.setItem(BOARD_KEY, JSON.stringify({ cur: d.quadro.cur | 0, pages: d.quadro.pages }));
+        localStorage.setItem(chave('quadro'), JSON.stringify({ cur: d.quadro.cur | 0, pages: d.quadro.pages }));
       }
       if (d.tema) localStorage.setItem(THEME_KEY, d.tema);
-      if (Array.isArray(d.livros)) localStorage.setItem(LIVROS_KEY, JSON.stringify(d.livros));
+      if (Array.isArray(d.livros)) localStorage.setItem(chave('livros'), JSON.stringify(d.livros));
+      if (sis !== SISTEMA.id) {
+        status.textContent = `Backup do ${SISTEMAS[sis].nome} carregado — abrindo o ${SISTEMAS[sis].nome}…`;
+        setTimeout(() => trocarSistema(sis), 500);
+        return;
+      }
       status.textContent = 'Backup carregado — reabrindo a ficha…';
       setTimeout(() => location.reload(), 500);
     } catch (e) {

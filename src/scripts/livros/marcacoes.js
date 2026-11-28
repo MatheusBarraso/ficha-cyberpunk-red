@@ -1,5 +1,5 @@
 /* ================= livros + marcações vinculadas à ficha ================= */
-const LIVROS_KEY = 'cpr-livros-v1';
+const LIVROS_KEY = chaveLocal('livros');
 const LIVROS = {
   regras: { nome: 'CEMK — Livro de Regras', paginas: 71, dim: [992, 1404] },
   jacket: { nome: 'CEMK — The Jacket', paginas: 62, dim: [992, 1404] },

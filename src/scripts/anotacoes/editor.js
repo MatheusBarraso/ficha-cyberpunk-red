@@ -1,5 +1,5 @@
 /* ================= anotações (editor tipo word) — com páginas ================= */
-const NOTES_KEY = 'cpr-notas-v2';
+const NOTES_KEY = chaveLocal('notas');
 
 function setupNotes() {
   const pad = $('#notepad');
